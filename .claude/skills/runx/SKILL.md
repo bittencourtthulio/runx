@@ -1,0 +1,194 @@
+---
+name: runx
+description: Use para qualquer trabalho de manutenção e sustentação de sistema que já existe em produção — corrigir bug, investigar defeito ou erro relatado, apurar cálculo divergente, melhorar tela ou layout, ajustar fluxo e usabilidade, alterar regra de negócio ou fórmula, adicionar campo em formulário ou entidade, criar relatório dentro de estrutura existente, tratar chamado, ticket ou ocorrência de suporte. Use mesmo quando o usuário não disser runx, chamado nem ocorrência por nome: basta ele descrever um problema no sistema, algo que parou de funcionar, algo que está trazendo valor errado, ou pedir um ajuste em algo que já existe. Cobre investigação com base de conhecimento, causa raiz comprovada ou análise de impacto, plano de sprints/fases/tasks com TDD, execução autônoma, QA e relatórios de fechamento. Fronteira: runx é para o que já existe em produção; feature nova planejada do zero é a skill sprintx.
+---
+
+# runx
+
+runx é a metade **Run** do método da Expx (Exponencial): a sustentação do dia a dia. A metade **Build** é a `sprintx`, que planeja features novas do zero. As duas compartilham a mesma disciplina de engenharia — base antes do plano, hierarquia sprint → fase → task, TDD obrigatório, critério de aceite verificável, paralelismo declarado, execução guiada por orquestrador. Muda o gatilho e o tamanho, nunca o rigor.
+
+## Princípio central
+
+Não se corrige o que não se entendeu, e não se planeja o que não se mapeou. Primeiro a base do que será tocado, depois a causa, depois o plano, depois o código. O escopo fica travado no que a investigação provou: o que não está lá não é tocado.
+
+## Fronteira de escopo
+
+runx **começa** quando o chamado já chegou na mão do desenvolvedor. O que vem antes — cliente reclama, suporte atende e cadastra a ocorrência — acontece fora daqui e chega pronto.
+
+runx **termina** quando os relatórios estão gravados e a ocorrência está encerrada. O deploy em si é externo: runx registra que foi liberado, não executa o deploy.
+
+## Tipos de ocorrência
+
+| Tipo | Significado |
+|---|---|
+| `bug` | defeito em comportamento existente |
+| `melhoria-ui` | mudança visual, layout, componente |
+| `melhoria-ux` | mudança de fluxo, navegação, usabilidade |
+| `novo-relatorio` | relatório novo dentro de estrutura existente |
+| `regra-de-calculo` | alteração de fórmula ou regra de negócio |
+| `campo-novo` | novo campo em tela, formulário ou entidade |
+| `outro` | qualquer coisa que não caiba acima |
+
+O tipo é determinado no início e governa o comportamento do estágio E1: `bug` exige causa raiz comprovada; os demais tipos entram em análise de impacto.
+
+## Contratos
+
+### Contrato da Task — toda task declara, obrigatoriamente
+
+| Campo | Conteúdo |
+|---|---|
+| `id` | T-NN.MM |
+| `titulo` | título curto |
+| `objetivo` | uma frase |
+| `arquivos` | criados e alterados |
+| `teste_regressao` | apenas na primeira task da primeira fase: o teste que reproduz o problema e hoje falha. Obrigatório quando `tipo: bug` |
+| `teste_integracao` | o que valida, contra o quê |
+| `teste_funcional` | o que valida, com qual entrada e saída |
+| `criterio_aceite` | verificável, binário, sem adjetivo |
+| `depende_de` | [ids] ou [] |
+| `paralelizavel` | true \| false |
+| `status` | pendente \| em_andamento \| concluida \| bloqueada |
+
+`teste_regressao` é o único campo condicional: existe apenas na primeira task da primeira fase. Todos os demais são obrigatórios em toda task, qualquer que seja o tamanho da ocorrência.
+
+### Contrato da Fase
+
+Objetivo, tasks que a compõem, critério de saída, com qual outra fase pode rodar em paralelo.
+
+### Contrato da Sprint
+
+Objetivo, fases, critério de saída, riscos conhecidos.
+
+## Regra de proporcionalidade
+
+A estrutura é sempre a mesma; o tamanho é proporcional à ocorrência.
+
+- Uma correção de uma linha gera **1 sprint, 1 fase e 2 tasks**, e ainda assim com todos os campos do contrato preenchidos.
+- Uma ocorrência grande gera **mais fases**, e **mais de uma sprint apenas quando existe um portão real entre blocos entregáveis** — por exemplo, uma migração que precisa subir antes da mudança de tela.
+
+Proibido inflar o plano para parecer robusto. Proibido enxugar campos para parecer ágil. A skill nunca omite um campo do contrato alegando que a ocorrência é pequena.
+
+## Máquina de estados
+
+Os cinco estágios são estritamente sequenciais e a skill nunca pula estágio:
+
+E1 INVESTIGAÇÃO → E2 PLANO → E3 FIX → E4 QA → E5 RELATÓRIO
+
+Antes de agir, descubra em que estágio está inspecionando o disco em `docs/manutencao/<OC-ID>-<slug>/`:
+
+| Estado do disco | Estágio atual |
+|---|---|
+| a pasta não existe | E1 |
+| `base/` existe, `01-CAUSA-RAIZ.md` não | E1.b |
+| `01-CAUSA-RAIZ.md` existe, `sprint-01/` não | E2 |
+| `sprint-01/` existe, `ORQUESTRADOR.md` não | E2 (concluir) |
+| `ORQUESTRADOR.md` existe, há task pendente em aberto | E3 |
+| todas as tasks concluídas, `QA.md` não existe | E4 |
+| `QA.md` existe e contém `VEREDITO: APROVADO` | E5 |
+| `QA.md` existe e contém `VEREDITO: REPROVADO` | E3 |
+
+Há um único retorno que o disco não revela sozinho: se durante o E3 o teste de regressão passar **antes** do fix, a causa raiz ou o teste está errado — a execução para e volta ao E1, mesmo que o disco continue indicando E3. O E3 registra isso em `01-CAUSA-RAIZ.md` ao voltar.
+
+Se o usuário pedir um estágio adiantado, explique o que falta e execute o estágio pendente em vez de obedecer fora de ordem. Se houver mais de uma ocorrência aberta e o usuário não disser qual, liste as abertas com o estágio de cada uma e peça que escolha.
+
+Ao entrar em um estágio, leia o arquivo dele em `references/` (tabela abaixo) antes de qualquer ação — e somente o do estágio atual.
+
+## Contrato de entrada da ocorrência
+
+A ocorrência chega pronta de fora. A skill aceita **texto colado, identificador de ticket ou caminho de arquivo**, e extrai para `00-OCORRENCIA.md`:
+
+| Campo | Regra |
+|---|---|
+| identificador | o do ticket; se não houver, gere `OC-<AAAA>-<NNNN>` sequencial olhando `docs/manutencao/` e `docs/relatorios/` |
+| titulo | título curto da ocorrência |
+| tipo | classifique pela lista de tipos; se ambíguo, escolha o mais provável, registre a escolha e siga |
+| relato original | o texto do cliente, preservado **literalmente**, sem reescrever |
+| passos de reprodução | como reproduzir, ou `NÃO DETERMINADO` |
+| ambiente, versão e dados | quando houver |
+
+**Exceção única à autonomia:** se o tipo for `bug` e NÃO houver passos de reprodução nem evidência suficiente para investigar, a skill pergunta isso, e apenas isso, antes de começar. Investigar bug sem reprodução é chute. Para os demais tipos, siga com o que houver.
+
+## Estrutura em disco
+
+Duas árvores, propósitos diferentes.
+
+**Trabalho em andamento.** Permanece no repositório após o fechamento; a limpeza é decisão do usuário — a skill nunca apaga nem move nada:
+
+```
+docs/manutencao/
+  <OC-ID>-<slug>/
+    ORQUESTRADOR.md
+    00-OCORRENCIA.md      o chamado como chegou, preservado
+    01-CAUSA-RAIZ.md      ou análise de impacto, mesmo arquivo
+    BLOQUEIOS.md          criado vazio, preenchido durante E3
+    QA.md
+    base/
+      00-INDICE.md
+      00-LACUNAS.md
+      <uma área impactada>.md
+    sprint-01/
+      sprint.md
+      fases.md
+      tasks.md
+    sprint-02/ ...
+```
+
+**Histórico permanente do sistema:**
+
+```
+docs/relatorios/
+  INDICE.md
+  <AAAA-MM-DD>-<OC-ID>-<slug>/
+    tecnico.md
+    uso.md
+```
+
+A data no nome da pasta de relatório é a **data de fechamento**, para que uma listagem simples devolva a linha do tempo do sistema.
+
+### Regra de nomeação e slug
+
+O `<slug>` é derivado do título: minúsculas, sem acento (ç → c, ã → a, é → e, ...), espaços e separadores viram hífen, remova qualquer caractere fora de `a-z`, `0-9` e `-`, colapse hifens repetidos, **no máximo 6 palavras**. O mesmo slug é usado nas duas árvores.
+
+Exemplo: "Cálculo do frete divergente acima de 50kg" → `calculo-frete-divergente-acima-50kg`.
+
+`INDICE.md` é **append-only**, uma linha por ocorrência, mais recente no topo, com as colunas: `data | OC-ID | tipo | módulo afetado | resumo em uma linha | link`.
+
+### Migração de pastas que já existem
+
+Ao abrir uma pasta de ocorrência que já existe e cujos arquivos não têm frontmatter, a skill acrescenta o frontmatter **na próxima vez que gravar aquele arquivo**, inferindo os valores da prosa existente. A skill **nunca reescreve em massa** nem sai migrando pastas ou arquivos que não vai tocar, e continua nunca apagando nem movendo nada em `docs/manutencao/` (regra 12). Valor que não puder ser inferido com segurança vai como `null` (ou `[]`), nunca inventado. Detalhe em `references/00-schema.md`.
+
+### Onde ficam `docs/manutencao/` e `docs/relatorios/`
+
+Ambos são sempre ancorados na raiz do repositório Git mais próxima do diretório de trabalho atual (o diretório que contém `.git/`). Em um monorepo sem `.git` visível no diretório de trabalho, suba diretórios até encontrar a raiz do repositório; se não houver `.git` em nenhum ancestral, use a raiz do diretório de trabalho atual. Nunca crie essas pastas dentro de um pacote/workspace individual sem antes checar se já existe um `docs/` na raiz do repositório — se existir, use-o.
+
+## Regras invioláveis
+
+1. Nenhum plano nasce sem `base/` preenchida. Mapear antes de planejar.
+2. Bug não avança de E1 sem causa raiz comprovada.
+3. O plano segue sempre a hierarquia sprint → fase → task, com todos os campos do contrato, qualquer que seja o tamanho da ocorrência.
+4. Toda task tem teste de integração e teste funcional. Sem exceção.
+5. O teste de regressão é escrito antes do fix e tem que falhar antes.
+6. Toda transição tem critério de aceite verificável, e nada avança sem ele atendido.
+7. O paralelismo é declarado no plano, nunca decidido em execução.
+8. Escopo travado: o que não está em `01-CAUSA-RAIZ.md` e em `tasks.md` não é tocado — nada de refactor de brinde, nada de "já que estou aqui"; melhoria avulsa percebida vira sugestão de nova ocorrência no relatório técnico e não é implementada.
+9. A suíte inteira roda antes de qualquer task ser dada como concluída.
+10. Quem implementa não aprova: E4 é papel distinto de E3, e E4 não corrige nada.
+11. A ocorrência não fecha sem os dois relatórios gravados e o `INDICE.md` atualizado.
+12. A skill nunca apaga nem move nada em `docs/manutencao/`.
+13. Durante E3 a skill não pergunta nada. Dúvida nova vira registro em `BLOQUEIOS.md` e a task é pulada.
+14. Todo arquivo de estado é gravado com o frontmatter do contrato expx-schema v1, descrito em `references/00-schema.md`. Arquivo de estado sem frontmatter válido é considerado não entregue.
+
+Regra transversal: use sempre caminhos relativos; nunca escreva caminhos absolutos em nenhum artefato.
+
+## Estágios → arquivos da skill
+
+| Estágio | Roteiro operacional | Templates usados |
+|---|---|---|
+| **todos** | **`references/00-schema.md`** — contrato do frontmatter; **leitura obrigatória em qualquer estágio que grave arquivo** | — |
+| E1 INVESTIGAÇÃO | `references/01-investigacao.md` | `assets/TEMPLATE-ocorrencia.md`, `assets/TEMPLATE-base-area.md`, `assets/TEMPLATE-causa-raiz.md`, `assets/TEMPLATE-analise-impacto.md` |
+| E2 PLANO | `references/02-plano.md` | `assets/TEMPLATE-sprint.md`, `assets/TEMPLATE-fases.md`, `assets/TEMPLATE-tasks.md`, `assets/TEMPLATE-ORQUESTRADOR.md` |
+| E3 FIX | `references/03-fix.md` | — |
+| E4 QA | `references/04-qa.md` | `assets/TEMPLATE-qa.md` |
+| E5 RELATÓRIO | `references/05-relatorio.md` | `assets/TEMPLATE-relatorio-tecnico.md`, `assets/TEMPLATE-relatorio-uso.md`, `assets/TEMPLATE-INDICE.md` |
+
+Os caminhos acima são relativos à raiz desta skill. O detalhe operacional de cada estágio mora exclusivamente no reference correspondente; leia-o apenas quando o estágio chegar.

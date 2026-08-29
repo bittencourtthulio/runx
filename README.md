@@ -1,0 +1,305 @@
+# runx
+
+**A metade Run do método Expx** — a skill de sustentação e manutenção de sistemas em produção para [Claude Code](https://claude.com/claude-code).
+
+`runx` pega um chamado que chegou na mão do desenvolvedor e o leva até o fechamento com relatórios gravados, passando por cinco estágios obrigatórios: investigação com base de conhecimento, plano em sprints/fases/tasks, implementação sob TDD, QA independente e relatórios de encerramento.
+
+> **Não se corrige o que não se entendeu, e não se planeja o que não se mapeou.**
+> Primeiro a base do que será tocado, depois a causa, depois o plano, depois o código. O escopo fica travado no que a investigação provou: o que não está lá não é tocado.
+
+---
+
+## Build e Run
+
+O método Expx tem duas metades, irmãs e com a mesma disciplina de engenharia:
+
+| | **sprintx** (Build) | **runx** (Run) |
+|---|---|---|
+| **Gatilho** | feature nova, planejada do zero | ocorrência num sistema em produção |
+| **Entrada** | uma ideia, um requisito | um chamado, ticket ou relato de cliente |
+| **Estágios** | F1…F6 (ingestão → execução) | E1…E5 (investigação → relatório) |
+| **Saída** | a feature entregue | a ocorrência encerrada, com dois relatórios |
+
+As duas compartilham **exatamente** os mesmos contratos: base de conhecimento antes de qualquer plano, hierarquia sprint → fase → task, TDD obrigatório com no mínimo dois testes por task, critério de aceite verificável em toda transição, paralelismo declarado no plano e execução autônoma guiada por um arquivo orquestrador.
+
+**Muda o gatilho e o tamanho. Nunca o rigor.**
+
+---
+
+## Instalação
+
+Copie a skill e os comandos para o seu projeto:
+
+```bash
+git clone https://github.com/bittencourtthulio/runx.git /tmp/runx
+cp -r /tmp/runx/.claude/skills/runx   .claude/skills/
+cp    /tmp/runx/.claude/commands/runx*.md .claude/commands/
+```
+
+Ou, para deixar disponível em **todos** os seus projetos, instale no diretório global:
+
+```bash
+cp -r /tmp/runx/.claude/skills/runx   ~/.claude/skills/
+cp    /tmp/runx/.claude/commands/runx*.md ~/.claude/commands/
+```
+
+Reinicie a sessão do Claude Code para a skill ser carregada.
+
+---
+
+## Uso
+
+### O jeito mais simples
+
+Cole o relato do cliente. **Não é preciso dizer `runx`, "bug" nem "chamado"** — a skill dispara sozinha ao reconhecer a descrição de um problema num sistema que já existe:
+
+```
+O cliente reclamou que o cálculo do frete está trazendo valor
+divergente para pedidos acima de 50kg.
+```
+
+### Comandos
+
+| Comando | O que faz |
+|---|---|
+| `/runx` | detecta o estágio atual e continua de onde parou; sem argumento, lista as ocorrências abertas |
+| `/runx-causa` | **E1** — mapeia a base e comprova a causa raiz (ou mapeia o impacto) |
+| `/runx-plano` | **E2** — converte a investigação em sprints, fases e tasks + ORQUESTRADOR |
+| `/runx-fix` | **E3** — implementa sob TDD estrito, de forma autônoma |
+| `/runx-qa` | **E4** — valida a entrega, sem corrigir nada |
+| `/runx-relatar` | **E5** — grava os relatórios, atualiza o índice e encerra |
+
+Os comandos de estágio **recusam execução fora de ordem**: peça o fix sem base mapeada e a skill diz o que falta e executa o estágio pendente.
+
+---
+
+## Os cinco estágios
+
+```
+E1 INVESTIGAÇÃO → E2 PLANO → E3 FIX → E4 QA → E5 RELATÓRIO
+```
+
+Estritamente sequenciais. A skill descobre onde está **inspecionando o disco**, não perguntando.
+
+### E1 — Investigação
+
+Duas metades, nesta ordem.
+
+**E1.a — Base de conhecimento.** Antes de opinar sobre a causa, mapeia o pedaço do sistema que a ocorrência toca, lendo o código de verdade. Um arquivo por área impactada, com template fixo de 10 seções: o que é e onde vive, contratos de entrada e saída, estrutura de dados, funções e trechos relevantes, quem chama e quem é chamado, testes existentes, limites e regras de negócio, riscos e fonte.
+
+Regra dura: **nada de invenção**. Se o código não deixa claro, escreve `NÃO DETERMINADO`. Toda afirmação sobre comportamento aponta para arquivo e linha.
+
+**E1.b — Causa raiz ou análise de impacto.** Comportamento adaptativo pelo tipo:
+
+- **`bug`** → **causa raiz**, e é obrigatório *provar*, não supor. Prova aceita: um teste que reproduz e falha, um log/stack trace/query que evidencia o caminho do erro, ou o trecho de código com a linha e o porquê. **Hipótese sem prova não passa deste estágio.**
+- **demais tipos** → **análise de impacto**: como o sistema se comporta hoje, o que muda, o que pode quebrar junto, e o comportamento esperado depois.
+
+### E2 — Plano
+
+Converte base e investigação numa árvore de execução, com **proporcionalidade**: a estrutura é sempre a mesma, o tamanho é proporcional à ocorrência.
+
+- Uma correção de uma linha gera **1 sprint, 1 fase e 2 tasks** — e ainda assim com todos os campos do contrato preenchidos.
+- Uma ocorrência grande gera **mais fases**, e mais de uma sprint apenas quando existe um portão real entre blocos entregáveis (por exemplo, uma migração que precisa subir antes da mudança de tela).
+
+*Proibido inflar o plano para parecer robusto. Proibido enxugar campos para parecer ágil.*
+
+A primeira task da primeira fase é **sempre** o teste que reproduz o problema. Gera também o `ORQUESTRADOR.md`, escrito para quem abriu o repositório agora e não sabe nada.
+
+### E3 — Fix
+
+Percorre a árvore sob TDD estrito. Por task:
+
+1. Escrever o teste. Rodar. **Ele tem que falhar.**
+2. Implementar o mínimo para o teste passar.
+3. Escrever os dois testes da task (integração e funcional).
+4. Rodar a **suíte inteira**, não só os testes novos.
+5. Marcar como concluída apenas com tudo verde.
+
+Se o teste de regressão **passar antes** do fix, o teste está errado ou a causa está errada: para e volta ao E1. Durante o E3 a skill **não pergunta nada** — dúvida nova vai para `BLOQUEIOS.md`, a task é pulada e a próxima paralelizável assume.
+
+### E4 — QA
+
+A IA troca de papel: **valida, não implementa, e não corrige nada** do que encontrar. Verifica se o teste de regressão realmente falhava antes, se cada task tem os dois testes e se eles testam o que dizem testar, se existe teste que passaria mesmo com a implementação errada, se a suíte inteira passa, e se **nada fora do escopo declarado foi alterado** — conferindo o diff contra a lista de arquivos autorizados.
+
+Veredito de uma linha: `APROVADO` ou `REPROVADO`. Achado de severidade ALTA manda voltar para o E3. **Nunca cabe ao E4 corrigir.**
+
+### E5 — Relatório e fechamento
+
+Só executa com E4 aprovado. Gera **dois relatórios, para leitores diferentes**:
+
+- **`tecnico.md`** — para o próximo desenvolvedor que abrir este código. Causa, solução, decisões, testes, risco residual, o que observar em produção, e sugestões de novas ocorrências percebidas e não feitas.
+- **`uso.md`** — o suporte copia e devolve ao cliente. **Sem nome de arquivo, sem nome de função, sem nome de tabela, sem jargão técnico, sem stack trace.** Se um cliente não desenvolvedor não entenderia, está errado.
+
+---
+
+## Tipos de ocorrência
+
+| Tipo | Significado |
+|---|---|
+| `bug` | defeito em comportamento existente |
+| `melhoria-ui` | mudança visual, layout, componente |
+| `melhoria-ux` | mudança de fluxo, navegação, usabilidade |
+| `novo-relatorio` | relatório novo dentro de estrutura existente |
+| `regra-de-calculo` | alteração de fórmula ou regra de negócio |
+| `campo-novo` | novo campo em tela, formulário ou entidade |
+| `outro` | qualquer coisa que não caiba acima |
+
+O tipo governa o E1: `bug` exige causa raiz comprovada, os demais entram em análise de impacto.
+
+---
+
+## Os contratos
+
+### Task
+
+Toda task declara, obrigatoriamente:
+
+| Campo | Conteúdo |
+|---|---|
+| `id` | T-NN.MM |
+| `titulo` | título curto |
+| `objetivo` | uma frase |
+| `arquivos` | criados e alterados |
+| `teste_regressao` | só na primeira task da primeira fase; obrigatório quando o tipo é `bug` |
+| `teste_integracao` | o que valida, contra o quê |
+| `teste_funcional` | o que valida, com qual entrada e saída |
+| `criterio_aceite` | verificável, binário, sem adjetivo |
+| `depende_de` | [ids] ou [] |
+| `paralelizavel` | true \| false |
+| `status` | pendente \| em_andamento \| concluida \| bloqueada |
+
+**Fase:** objetivo, tasks que a compõem, critério de saída, com qual outra fase pode rodar em paralelo.
+**Sprint:** objetivo, fases, critério de saída, riscos conhecidos.
+
+**Granularidade:** se os dois testes de uma task não cabem em uma frase cada, a task está grande demais — quebrar.
+
+---
+
+## Estrutura em disco
+
+Duas árvores, propósitos diferentes.
+
+**Trabalho em andamento** — permanece no repositório após o fechamento; a limpeza é decisão do usuário:
+
+```
+docs/manutencao/<OC-ID>-<slug>/
+  ORQUESTRADOR.md
+  00-OCORRENCIA.md      o chamado como chegou, preservado
+  01-CAUSA-RAIZ.md      ou análise de impacto, mesmo arquivo
+  BLOQUEIOS.md
+  QA.md
+  base/
+    00-INDICE.md
+    00-LACUNAS.md
+    <uma área impactada>.md
+  sprint-01/
+    sprint.md
+    fases.md
+    tasks.md
+```
+
+**Histórico permanente do sistema:**
+
+```
+docs/relatorios/
+  INDICE.md
+  <AAAA-MM-DD>-<OC-ID>-<slug>/
+    tecnico.md
+    uso.md
+```
+
+A data no nome da pasta é a de fechamento, para que uma listagem simples devolva a linha do tempo do sistema.
+
+---
+
+## expx-schema v1
+
+Todo arquivo de estado carrega um **frontmatter YAML legível por máquina**, para que um painel de operação leia o andamento das ocorrências sem depender de prosa.
+
+```yaml
+---
+expx_schema: 1
+expx_tool: runx
+kind: tasks
+trabalho_id: OC-2026-0142
+sprint_id: sprint-01
+atualizado_em: 2026-08-29
+tasks:
+  - id: T-01.01
+    titulo: Teste que reproduz a divergencia acima de 50kg
+    fase: F-01.1
+    status: concluida
+    objetivo: Fixar o comportamento esperado antes de corrigir
+    arquivos:
+      cria: [src/frete/calculo.test.ts]
+      altera: []
+    teste_regressao: Pedido de 51kg deve retornar 42.90 e hoje retorna 41.00
+    teste_integracao: Checkout completo com 51kg fecha com o frete correto
+    teste_funcional: calcularFrete(51) retorna 42.90
+    criterio_aceite: O teste falha antes do fix e passa depois
+    depende_de: []
+    paralelizavel: false
+    concluida_em: 2026-08-29
+    suite: verde
+---
+```
+
+O painel apenas **lê**; a skill continua sendo a única a escrever. A máquina lê o YAML, a pessoa lê a prosa abaixo dele.
+
+**Kinds produzidos:** `orquestrador`, `ocorrencia`, `causa_raiz`, `sprint`, `fases`, `tasks`, `bloqueios`, `qa`, `base_indice`, `relatorio_tecnico`, `relatorio_uso`, `relatorios_indice`.
+
+Os kinds compartilhados com a `sprintx` — `orquestrador`, `sprint`, `fases`, `tasks`, `bloqueios`, `base_indice` — são **idênticos campo por campo** nas duas skills. Contrato completo em [`references/00-schema.md`](.claude/skills/runx/references/00-schema.md).
+
+---
+
+## As 14 regras invioláveis
+
+1. Nenhum plano nasce sem `base/` preenchida. Mapear antes de planejar.
+2. Bug não avança de E1 sem causa raiz comprovada.
+3. O plano segue sempre a hierarquia sprint → fase → task, com todos os campos do contrato, qualquer que seja o tamanho da ocorrência.
+4. Toda task tem teste de integração e teste funcional. Sem exceção.
+5. O teste de regressão é escrito antes do fix e tem que falhar antes.
+6. Toda transição tem critério de aceite verificável, e nada avança sem ele atendido.
+7. O paralelismo é declarado no plano, nunca decidido em execução.
+8. Escopo travado: o que não está em `01-CAUSA-RAIZ.md` e em `tasks.md` não é tocado. Melhoria avulsa vira sugestão de nova ocorrência, e não é implementada.
+9. A suíte inteira roda antes de qualquer task ser dada como concluída.
+10. Quem implementa não aprova: E4 é papel distinto de E3, e E4 não corrige nada.
+11. A ocorrência não fecha sem os dois relatórios gravados e o `INDICE.md` atualizado.
+12. A skill nunca apaga nem move nada em `docs/manutencao/`.
+13. Durante E3 a skill não pergunta nada. Dúvida nova vira registro em `BLOQUEIOS.md` e a task é pulada.
+14. Todo arquivo de estado é gravado com o frontmatter do contrato expx-schema v1. Arquivo de estado sem frontmatter válido é considerado não entregue.
+
+---
+
+## Estrutura do repositório
+
+```
+.claude/
+  skills/runx/
+    SKILL.md                    identidade, contratos, máquina de estados, regras
+    DECISOES-DA-SKILL.md        decisões de construção, com o porquê de cada uma
+    references/
+      00-schema.md              contrato expx-schema v1 (leitura obrigatória ao gravar)
+      01-investigacao.md        E1 — base de conhecimento + causa raiz/impacto
+      02-plano.md               E2 — sprints, fases, tasks e orquestrador
+      03-fix.md                 E3 — TDD estrito, portões e paralelismo
+      04-qa.md                  E4 — validação independente
+      05-relatorio.md           E5 — relatórios e fechamento
+    assets/
+      TEMPLATE-*.md             12 templates preenchíveis
+  commands/
+    runx.md, runx-causa.md, runx-plano.md,
+    runx-fix.md, runx-qa.md, runx-relatar.md
+```
+
+O `SKILL.md` é a porta de entrada e fica abaixo de 200 linhas. O detalhe operacional de cada estágio mora no `reference` correspondente, lido **só quando o estágio chega** — mantendo o contexto enxuto.
+
+---
+
+## Licença
+
+MIT
+
+---
+
+<sub>runx é a metade Run do método Expx (Exponencial). A metade Build é a skill sprintx.</sub>
