@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="250" viewBox="0 0 1000 250" role="img" aria-label="runx — a metade Run do metodo Expx">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0883e"/><stop offset="100%" stop-color="#f0883e" stop-opacity="0.5"/>
+    </linearGradient>
+    <pattern id="p" width="26" height="26" patternUnits="userSpaceOnUse">
+      <path d="M26 0H0v26" fill="none" stroke="#161b22" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1000" height="250" rx="14" fill="#0d1117"/>
+  <rect width="1000" height="250" rx="14" fill="url(#p)"/>
+  <rect x="0" y="0" width="6" height="250" rx="3" fill="url(#g)"/>
+
+  <text x="56" y="98" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="64" font-weight="700" fill="#e6edf3">runx</text>
+  <rect x="248" y="62" width="140" height="30" rx="15" fill="none" stroke="#f0883e" stroke-width="1.5"/>
+  <text x="318" y="82" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="13.5" fill="#f0883e">metodo Expx</text>
+
+  <text x="57" y="134" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="17" fill="#8b949e">Sustentacao e manutencao de sistemas em producao</text>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12.5">
+    <rect x="56"  y="162" width="122" height="34" rx="8" fill="#1c2430"/>
+    <text x="117" y="184" text-anchor="middle" fill="#e6edf3">E1 investigar</text>
+    <rect x="190" y="162" width="112" height="34" rx="8" fill="#1c2430"/>
+    <text x="246" y="184" text-anchor="middle" fill="#e6edf3">E2 planejar</text>
+    <rect x="314" y="162" width="72"  height="34" rx="8" fill="#1c2430"/>
+    <text x="350" y="184" text-anchor="middle" fill="#e6edf3">E3 fix</text>
+    <rect x="398" y="162" width="70"  height="34" rx="8" fill="#1c2430"/>
+    <text x="433" y="184" text-anchor="middle" fill="#e6edf3">E4 QA</text>
+    <rect x="480" y="162" width="106" height="34" rx="8" fill="#1c2430"/>
+    <text x="533" y="184" text-anchor="middle" fill="#e6edf3">E5 relatar</text>
+  </g>
+  <g stroke="#f0883e" stroke-width="1.5" fill="none" opacity="0.7">
+    <path d="M181 179h6"/><path d="M305 179h6"/><path d="M389 179h6"/><path d="M471 179h6"/>
+  </g>
+
+  <text x="944" y="218" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="#8b949e">Claude Code  +  OpenCode</text>
+</svg>

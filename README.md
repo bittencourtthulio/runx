@@ -1,6 +1,24 @@
-# runx
+<div align="center">
 
-**A metade Run do método Expx** — a skill de sustentação e manutenção de sistemas em produção para [Claude Code](https://claude.com/claude-code).
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/banner-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/banner-light.svg">
+  <img alt="runx — a metade Run do metodo Expx" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/banner-light.svg" width="100%">
+</picture>
+
+<p>
+  <img alt="harness: Claude Code" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/badge-claude.svg">
+  <img alt="harness: OpenCode" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/badge-opencode.svg">
+  <img alt="TDD obrigatorio" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/badge-tdd.svg">
+  <img alt="schema expx v1" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/badge-schema.svg">
+  <img alt="docs pt-BR" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/badge-lang.svg">
+  <img alt="licenca MIT" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/badge-license.svg">
+</p>
+
+<strong>A metade Run do método Expx</strong> — a skill de sustentação e manutenção<br>
+de sistemas em produção para <a href="https://claude.com/claude-code">Claude Code</a> e <a href="https://opencode.ai">OpenCode</a>.
+
+</div>
 
 `runx` pega um chamado que chegou na mão do desenvolvedor e o leva até o fechamento com relatórios gravados, passando por cinco estágios obrigatórios: investigação com base de conhecimento, plano em sprints/fases/tasks, implementação sob TDD, QA independente e relatórios de encerramento.
 
@@ -12,6 +30,12 @@
 ## Build e Run
 
 O método Expx tem duas metades, irmãs e com a mesma disciplina de engenharia:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/buildrun-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/buildrun-light.svg">
+  <img alt="sprintx (Build) e runx (Run), as duas metades do metodo Expx" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/buildrun-light.svg" width="100%">
+</picture>
 
 | | **sprintx** (Build) | **runx** (Run) |
 |---|---|---|
@@ -122,6 +146,12 @@ E1 INVESTIGAÇÃO → E2 PLANO → E3 FIX → E4 QA → E5 RELATÓRIO
 
 Estritamente sequenciais. A skill descobre onde está **inspecionando o disco**, não perguntando.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/pipeline-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/pipeline-light.svg">
+  <img alt="Os cinco estagios do runx, com os artefatos e os caminhos de retorno" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/pipeline-light.svg" width="100%">
+</picture>
+
 ### E1 — Investigação
 
 Duas metades, nesta ordem.
@@ -217,6 +247,12 @@ Toda task declara, obrigatoriamente:
 ---
 
 ## Estrutura em disco
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/disco-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/disco-light.svg">
+  <img alt="As duas arvores em disco: trabalho em andamento e historico permanente" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/disco-light.svg" width="100%">
+</picture>
 
 Duas árvores, propósitos diferentes.
 

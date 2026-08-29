@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-label="Build e Run: sprintx e runx, as duas metades do metodo Expx">
+  <rect width="900" height="300" rx="12" fill="#ffffff"/>
+  <text x="450" y="38" text-anchor="middle" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="16" font-weight="700" fill="#1f2328">O metodo Expx tem duas metades</text>
+
+  <!-- sprintx -->
+  <rect x="40" y="64" width="368" height="150" rx="12" fill="#f6f8fa" stroke="#8250df" stroke-width="1.5"/>
+  <text x="68" y="100" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="26" font-weight="700" fill="#8250df">sprintx</text>
+  <rect x="196" y="80" width="58" height="24" rx="12" fill="#8250df"/>
+  <text x="225" y="97" text-anchor="middle" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" font-weight="700" fill="#ffffff">BUILD</text>
+  <text x="68" y="128" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="13" fill="#1f2328">Feature nova, planejada do zero</text>
+  <text x="68" y="152" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" fill="#59636e">Entrada: uma ideia, um requisito</text>
+  <text x="68" y="172" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" fill="#59636e">F1 ... F6  ingestao ate execucao</text>
+  <text x="68" y="192" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" fill="#59636e">Saida: a feature entregue</text>
+
+  <!-- runx -->
+  <rect x="492" y="64" width="368" height="150" rx="12" fill="#f6f8fa" stroke="#bc4c00" stroke-width="1.5"/>
+  <text x="520" y="100" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="26" font-weight="700" fill="#bc4c00">runx</text>
+  <rect x="620" y="80" width="46" height="24" rx="12" fill="#bc4c00"/>
+  <text x="643" y="97" text-anchor="middle" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" font-weight="700" fill="#ffffff">RUN</text>
+  <text x="520" y="128" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="13" fill="#1f2328">Ocorrencia num sistema em producao</text>
+  <text x="520" y="152" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" fill="#59636e">Entrada: um chamado, um relato</text>
+  <text x="520" y="172" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" fill="#59636e">E1 ... E5  investigacao ate relatorio</text>
+  <text x="520" y="192" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" fill="#59636e">Saida: a ocorrencia encerrada</text>
+
+  <!-- ponte -->
+  <line x1="408" y1="139" x2="492" y2="139" stroke="#59636e" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <circle cx="450" cy="139" r="21" fill="#f6f8fa" stroke="#59636e" stroke-width="1.5"/>
+  <text x="450" y="144" text-anchor="middle" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="11" font-weight="700" fill="#59636e">Expx</text>
+
+  <!-- contratos compartilhados -->
+  <rect x="40" y="234" width="820" height="46" rx="10" fill="#f6f8fa" stroke="#d1d9e0"/>
+  <text x="450" y="254" text-anchor="middle" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" fill="#1f2328">Mesmos contratos: base antes do plano · sprint - fase - task · TDD com 2 testes por task</text>
+  <text x="450" y="271" text-anchor="middle" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" font-weight="700" fill="#1f2328">Muda o gatilho e o tamanho. Nunca o rigor.</text>
+</svg>

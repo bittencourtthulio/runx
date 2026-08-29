@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" role="img" aria-label="As duas arvores em disco: trabalho em andamento e historico permanente">
+  <rect width="900" height="360" rx="12" fill="#0d1117"/>
+  <text x="28" y="36" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="16" font-weight="700" fill="#e6edf3">Duas arvores, propositos diferentes</text>
+
+  <!-- esquerda -->
+  <rect x="28" y="58" width="410" height="272" rx="10" fill="#161b22" stroke="#30363d"/>
+  <rect x="28" y="58" width="410" height="4" rx="2" fill="#58a6ff"/>
+  <text x="48" y="88"  font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="13.5" font-weight="700" fill="#58a6ff">TRABALHO EM ANDAMENTO</text>
+  <text x="48" y="108" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="11.5" fill="#8b949e">Fica no repo depois do fechamento. A skill nunca apaga nem move.</text>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="#e6edf3">
+    <text x="48" y="140">docs/manutencao/&lt;OC-ID&gt;-&lt;slug&gt;/</text>
+    <text x="64" y="162">ORQUESTRADOR.md</text>
+    <text x="64" y="182">00-OCORRENCIA.md   <tspan fill="#8b949e">o chamado, preservado</tspan></text>
+    <text x="64" y="202">01-CAUSA-RAIZ.md   <tspan fill="#8b949e">ou analise de impacto</tspan></text>
+    <text x="64" y="222">BLOQUEIOS.md</text>
+    <text x="64" y="242">QA.md</text>
+    <text x="64" y="262">base/              <tspan fill="#8b949e">uma area por arquivo</tspan></text>
+    <text x="64" y="282">sprint-01/         <tspan fill="#8b949e">sprint · fases · tasks</tspan></text>
+    <text x="64" y="306" fill="#8b949e">a limpeza e decisao sua</text>
+  </g>
+
+  <!-- direita -->
+  <rect x="462" y="58" width="410" height="272" rx="10" fill="#161b22" stroke="#30363d"/>
+  <rect x="462" y="58" width="410" height="4" rx="2" fill="#3fb950"/>
+  <text x="482" y="88"  font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="13.5" font-weight="700" fill="#3fb950">HISTORICO PERMANENTE</text>
+  <text x="482" y="108" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="11.5" fill="#8b949e">A linha do tempo do sistema. Data no nome = ordem cronologica.</text>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="#e6edf3">
+    <text x="482" y="140">docs/relatorios/</text>
+    <text x="498" y="162">INDICE.md          <tspan fill="#8b949e">append-only</tspan></text>
+    <text x="498" y="188">&lt;AAAA-MM-DD&gt;-&lt;OC-ID&gt;-&lt;slug&gt;/</text>
+    <text x="514" y="210">tecnico.md         <tspan fill="#8b949e">p/ o proximo dev</tspan></text>
+    <text x="514" y="230">uso.md             <tspan fill="#8b949e">p/ o cliente</tspan></text>
+  </g>
+  <rect x="482" y="248" width="370" height="62" rx="8" fill="#0d1117" stroke="#30363d"/>
+  <text x="498" y="270" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="11.5" fill="#e6edf3">O uso.md e copiado pelo suporte e enviado ao cliente:</text>
+  <text x="498" y="290" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="11.5" fill="#8b949e">sem nome de arquivo, funcao ou tabela. Sem jargao. Frases curtas.</text>
+</svg>

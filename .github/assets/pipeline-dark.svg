@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="440" viewBox="0 0 1000 440" role="img" aria-label="Os cinco estagios do runx e os artefatos de cada um">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10z" fill="#58a6ff"/></marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10z" fill="#d29922"/></marker>
+  </defs>
+  <rect width="1000" height="440" rx="12" fill="#0d1117"/>
+  <text x="36" y="40" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="17" font-weight="700" fill="#e6edf3">Os cinco estagios</text>
+  <text x="36" y="62" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12.5" fill="#8b949e">Estritamente sequenciais. A skill descobre onde esta inspecionando o disco.</text>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace">
+    <rect x="36"  y="92" width="168" height="132" rx="10" fill="#161b22" stroke="#30363d"/>
+    <rect x="36"  y="92" width="168" height="4" rx="2" fill="#58a6ff"/>
+    <text x="50" y="121" font-size="13.5" font-weight="700" fill="#e6edf3">E1 INVESTIGACAO</text>
+    <text x="50" y="145" font-size="10" fill="#8b949e">mapeia a base do que</text>
+    <text x="50" y="161" font-size="10" fill="#8b949e">sera tocado, e so entao</text>
+    <text x="50" y="177" font-size="10" fill="#8b949e">prova a causa raiz</text>
+    <text x="50" y="203" font-size="9.5" fill="#58a6ff">base/ · 01-CAUSA-RAIZ</text>
+
+    <rect x="226" y="92" width="168" height="132" rx="10" fill="#161b22" stroke="#30363d"/>
+    <rect x="226" y="92" width="168" height="4" rx="2" fill="#58a6ff"/>
+    <text x="240" y="121" font-size="13.5" font-weight="700" fill="#e6edf3">E2 PLANO</text>
+    <text x="240" y="145" font-size="10" fill="#8b949e">sprint - fase - task</text>
+    <text x="240" y="161" font-size="10" fill="#8b949e">tamanho proporcional</text>
+    <text x="240" y="177" font-size="10" fill="#8b949e">paralelismo declarado</text>
+    <text x="240" y="203" font-size="9.5" fill="#58a6ff">sprint-NN/ · ORQUESTRA.</text>
+
+    <rect x="416" y="92" width="168" height="132" rx="10" fill="#161b22" stroke="#30363d"/>
+    <rect x="416" y="92" width="168" height="4" rx="2" fill="#58a6ff"/>
+    <text x="430" y="121" font-size="13.5" font-weight="700" fill="#e6edf3">E3 FIX</text>
+    <text x="430" y="145" font-size="10" fill="#8b949e">teste antes, ve falhar</text>
+    <text x="430" y="161" font-size="10" fill="#8b949e">suite inteira verde</text>
+    <text x="430" y="177" font-size="10" fill="#8b949e">escopo travado</text>
+    <text x="430" y="203" font-size="9.5" fill="#58a6ff">tasks.md · BLOQUEIOS</text>
+
+    <rect x="606" y="92" width="168" height="132" rx="10" fill="#161b22" stroke="#30363d"/>
+    <rect x="606" y="92" width="168" height="4" rx="2" fill="#d29922"/>
+    <text x="620" y="121" font-size="13.5" font-weight="700" fill="#e6edf3">E4 QA</text>
+    <text x="620" y="145" font-size="10" fill="#8b949e">valida, nao implementa</text>
+    <text x="620" y="161" font-size="10" fill="#8b949e">confere diff x escopo</text>
+    <text x="620" y="177" font-size="10" fill="#8b949e">nunca corrige nada</text>
+    <text x="620" y="203" font-size="9.5" fill="#d29922">QA.md · VEREDITO</text>
+
+    <rect x="796" y="92" width="168" height="132" rx="10" fill="#161b22" stroke="#30363d"/>
+    <rect x="796" y="92" width="168" height="4" rx="2" fill="#3fb950"/>
+    <text x="810" y="121" font-size="13.5" font-weight="700" fill="#e6edf3">E5 RELATAR</text>
+    <text x="810" y="145" font-size="10" fill="#8b949e">tecnico: p/ o proximo dev</text>
+    <text x="810" y="161" font-size="10" fill="#8b949e">uso: p/ o cliente</text>
+    <text x="810" y="177" font-size="10" fill="#8b949e">INDICE atualizado</text>
+    <text x="810" y="203" font-size="9.5" fill="#3fb950">docs/relatorios/</text>
+  </g>
+
+  <g stroke="#58a6ff" stroke-width="2" fill="none">
+    <path d="M206 158h12" marker-end="url(#a)"/>
+    <path d="M396 158h12" marker-end="url(#a)"/>
+    <path d="M586 158h12" marker-end="url(#a)"/>
+    <path d="M776 158h12" marker-end="url(#a)"/>
+  </g>
+
+  <g stroke="#d29922" stroke-width="1.8" fill="none" stroke-dasharray="5 4">
+    <path d="M690 224v40H510v-36" marker-end="url(#r)"/>
+  </g>
+  <text x="700" y="282" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.5" fill="#d29922">achado ALTA: REPROVADO volta pro E3</text>
+
+  <g stroke="#d29922" stroke-width="1.8" fill="none" stroke-dasharray="5 4">
+    <path d="M470 224v84H120v-80" marker-end="url(#r)"/>
+  </g>
+  <text x="300" y="326" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.5" fill="#d29922">regressao passa antes do fix: causa errada, volta pro E1</text>
+
+  <rect x="36" y="352" width="928" height="60" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="56" y="378" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12.5" fill="#e6edf3">Nenhum estagio e pulado. Pediu o fix sem base mapeada? A skill recusa, diz o que falta</text>
+  <text x="56" y="398" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12.5" fill="#e6edf3">e executa o estagio pendente — em vez de obedecer fora de ordem.</text>
+</svg>
