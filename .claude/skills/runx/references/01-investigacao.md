@@ -2,6 +2,30 @@
 
 Você está no E1. Este estágio tem duas metades, nesta ordem: **E1.a base de conhecimento**, depois **E1.b causa raiz ou análise de impacto**. Você não planeja nada e não escreve nenhum código de implementação neste estágio.
 
+## Delegue ao agente `investigador`, quando ele existir
+
+A investigação lê muito — código, chamadores, migrações, testes existentes. Em contexto próprio, essa leitura não consome o contexto que depois vai implementar.
+
+**Se o agente `investigador` estiver disponível, delegue a ele as duas metades deste estágio.** Passe: o caminho da pasta da ocorrência, o `00-OCORRENCIA.md` já preenchido (Passo 0 é sempre seu, não dele) e o tipo classificado. Ele devolve o conteúdo dos arquivos da `base/`, do `00-INDICE.md`, do `00-LACUNAS.md` e do `01-CAUSA-RAIZ.md` — prontos, mas **não gravados**: ele não tem ferramenta de escrita. Quem grava é você, com o frontmatter de `references/00-schema.md`.
+
+Ao receber o retorno, confira antes de gravar:
+
+- toda afirmação de comportamento aponta para arquivo e linha;
+- o que ficou sem prova está como `NÃO DETERMINADO`, não preenchido com suposição;
+- em `tipo: bug`, ou existe uma das três provas, ou o status é `NÃO COMPROVADO` com o que falta declarado.
+
+Se o agente devolver `comprovada: false`, **respeite**: grave assim, com `STATUS: NÃO COMPROVADO`, e pare. Não complete a lacuna com a sua própria hipótese para desbloquear o fluxo — plano construído sobre causa errada gasta uma rodada inteira de E3 e E4 para descobrir isso.
+
+Registre no rastro ao delegar e ao receber:
+
+```
+python3 .claude/runx-hooks/comum/rastro.py --evento agente_iniciado  --agente investigador --fase e1
+python3 .claude/runx-hooks/comum/rastro.py --evento agente_concluido --agente investigador --fase e1 \
+  --resultado <comprovada|nao_comprovada|impacto_mapeado> --detalhe "N arquivos de base, M lacunas"
+```
+
+**Sem o agente disponível, execute você mesmo tudo o que segue** — o método é idêntico, muda só quem carrega a leitura.
+
 ## Pré-requisitos verificáveis
 
 - A ocorrência chegou (texto colado, identificador de ticket ou caminho de arquivo).

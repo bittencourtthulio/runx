@@ -27,6 +27,25 @@ de sistemas em produção para <a href="https://claude.com/claude-code">Claude C
 
 ---
 
+## O ecossistema Expx
+
+O método Expx é um conjunto de skills que se compõem, instaladas e mantidas pelo CLI [`expxdev`](https://github.com/bittencourtthulio/expxdev).
+
+| Peça | Papel | Relação com a `runx` |
+|---|---|---|
+| **[expxdev](https://github.com/bittencourtthulio/expxdev)** | o CLI: instala, atualiza e diagnostica o ecossistema, e sobe o painel de operação | é quem instala esta skill (`npx expxdev init`) |
+| **[sprintx](https://github.com/bittencourtthulio/sprintx)** | **Build** — feature nova, F1…F6 | skill irmã; mesmos contratos, gatilho diferente |
+| **runx** *(este repositório)* | **Run** — ocorrência em produção, E1…E5 | — |
+| **[legadox](https://github.com/bittencourtthulio/legadox)** | **camada** de segurança para código legado | endurece os estágios da `runx` quando existe `PERFIL.md` |
+| **[stackx](https://github.com/bittencourtthulio/stackx)** | **camada** de convenções do repositório | a `runx` lê o `CONVENCOES.md` antes de planejar e de corrigir |
+| **[mergex](https://github.com/bittencourtthulio/mergex)** | entrega: branch, commit por task, PR e pacote de QA | abre a branch no início do E3 e entrega entre o E4 e o E5 |
+
+**Camadas** (`legadox`, `stackx`) sozinhas não fazem nada — elas modificam o comportamento da `sprintx` e da `runx`. A ausência de qualquer irmã nunca quebra o fluxo desta skill: insumo que não existe vira aviso do que falta, nunca invenção.
+
+Detalhes do ecossistema inteiro no [README do expxdev](https://github.com/bittencourtthulio/expxdev).
+
+---
+
 ## Build e Run
 
 O método Expx tem duas metades, irmãs e com a mesma disciplina de engenharia:
@@ -57,9 +76,13 @@ As duas compartilham **exatamente** os mesmos contratos: base de conhecimento an
 | | Claude Code | OpenCode |
 |---|---|---|
 | Skill (projeto) | `.claude/skills/runx/` | `.opencode/skills/runx/` |
-| Comandos (projeto) | `.claude/commands/` | `.opencode/commands/` |
+| Comandos (projeto) | `.claude/commands/` | `.opencode/command/` |
 | Skill (global) | `~/.claude/skills/runx/` | `~/.config/opencode/skills/runx/` |
-| Comandos (global) | `~/.claude/commands/` | `~/.config/opencode/commands/` |
+| Comandos (global) | `~/.claude/commands/` | `~/.config/opencode/command/` |
+| Agentes | `.claude/agents/` | — |
+| Hooks | `.claude/runx-hooks/` + `settings.json` | — |
+
+Hooks e agentes hoje só existem no Claude Code: o OpenCode tem sistema próprio, com formato diferente. **A skill funciona igual nos dois** — hooks e agentes são a rede de proteção, não o método.
 
 Os dois harnesses descobrem a skill do mesmo jeito — pelo `name` e pela `description` do frontmatter, carregando o corpo sob demanda — e os dois aceitam `$ARGUMENTS` nos comandos. Por isso um único conjunto de arquivos atende aos dois sem fork e sem condicional.
 
@@ -91,22 +114,34 @@ Isso cria `.claude/` **e** `.opencode/` no projeto atual. Para deixar disponíve
 | `--opencode` | só OpenCode |
 | `--force` | sobrescreve instalação existente sem perguntar |
 | `--dry-run` | mostra o que faria, sem escrever nada |
+| `--sem-hooks` | instala só a skill, sem hooks nem agentes |
 
 As flags combinam: `./install.sh --global --opencode` instala só o OpenCode, só no global.
 
 Sem `--force`, o instalador **nunca sobrescreve calado**: pergunta no modo interativo e pula quando não há terminal (CI). Rodar duas vezes é seguro.
 
+Ao registrar os hooks, o instalador **mescla** com o `settings.json` que já existe — nunca o substitui — e guarda uma cópia do anterior em `settings.json.runx-backup`. Registrar de novo não duplica nada.
+
 ### Instalação manual
 
-Se preferir copiar à mão, a fonte fica em `skill/` e `commands/` — sem prefixo de harness:
+Se preferir copiar à mão, a skill é a mesma pasta nos dois harnesses — só o destino muda:
 
 ```bash
 # Claude Code
-cp -r skill .claude/skills/runx && cp commands/*.md .claude/commands/
+cp -r .claude/skills/runx  meu-projeto/.claude/skills/
+cp .claude/commands/runx*.md  meu-projeto/.claude/commands/
 
 # OpenCode
-cp -r skill .opencode/skills/runx && cp commands/*.md .opencode/commands/
+cp -r .opencode/skills/runx  meu-projeto/.opencode/skills/
+cp .opencode/command/runx*.md  meu-projeto/.opencode/command/
+
+# Hooks e agentes (só Claude Code) — depois registre os hooks no settings.json,
+# como o `install.sh` faz, ou use o `.claude/hooks/hooks.json` como referência
+cp -r .claude/agents  meu-projeto/.claude/
+cp -r .claude/hooks   meu-projeto/.claude/runx-hooks
 ```
+
+Os hooks e os agentes ficam em `.claude/hooks/` e `.claude/agents/` — copie também se quiser a camada determinística; o registro deles vai junto, em `.claude/hooks/hooks.json`.
 
 Reinicie a sessão do seu harness para a skill ser carregada.
 
@@ -325,7 +360,7 @@ O painel apenas **lê**; a skill continua sendo a única a escrever. A máquina 
 
 **Kinds produzidos:** `orquestrador`, `ocorrencia`, `causa_raiz`, `sprint`, `fases`, `tasks`, `bloqueios`, `qa`, `base_indice`, `relatorio_tecnico`, `relatorio_uso`, `relatorios_indice`.
 
-Os kinds compartilhados com a `sprintx` — `orquestrador`, `sprint`, `fases`, `tasks`, `bloqueios`, `base_indice` — são **idênticos campo por campo** nas duas skills. Contrato completo em [`references/00-schema.md`](skill/references/00-schema.md).
+Os kinds compartilhados com a `sprintx` — `orquestrador`, `sprint`, `fases`, `tasks`, `bloqueios`, `base_indice` — são **idênticos campo por campo** nas duas skills. Contrato completo em [`references/00-schema.md`](.claude/skills/runx/references/00-schema.md).
 
 ---
 
@@ -348,24 +383,84 @@ Os kinds compartilhados com a `sprintx` — `orquestrador`, `sprint`, `fases`, `
 
 ---
 
-## Estrutura do repositório
+## Hooks: a regra que não depende de o modelo lembrar
 
-A fonte é **neutra de harness**: um único conjunto de arquivos, que o instalador materializa nos dois formatos.
+Toda regra inviolável acima é, sozinha, uma instrução que o modelo pode esquecer numa execução longa. Hook é script determinístico: roda sempre, porque quem executa é o harness, não o modelo.
+
+| Hook | Quando | O que faz |
+|---|---|---|
+| `comum/segredo-no-commit.py` | antes de escrever | barra credencial real indo para arquivo versionado |
+| `runx/causa-antes-do-plano.py` | antes de escrever | impede plano sem `01-CAUSA-RAIZ.md`, ou com causa não comprovada em ocorrência `bug` |
+| `runx/regressao-antes-do-fix.py` | antes de escrever | impede tocar código de produção antes do teste que reproduz (regra 5) |
+| `runx/task-so-fecha-verde.py` | antes de escrever | barra `status: concluida` sem `suite: verde` e sem os dois testes |
+| `runx/escopo-da-ocorrencia.py` | antes de escrever | avisa quando a escrita sai dos arquivos que a investigação autorizou (regra 8) |
+| `runx/sem-jargao-no-uso.py` | depois de escrever | detecta jargão técnico no `uso.md`, que é o texto que vai ao cliente |
+| `comum/rastro-arquivo.py` | depois de escrever | registra `arquivo_alterado` no rastro |
+| `comum/rastro-suite.py` | depois de rodar `Bash` | registra `suite_executada`, verde ou vermelha pelo código de saída |
+
+**Todo hook nasce em modo `aviso`** — registra e deixa passar. A promoção para `bloqueio` é decisão sua, tomada depois de semanas sem falso positivo, e o modo de cada um vive em `.expx/hooks.json`. A exceção é a segurança: `segredo-no-commit` nasce em `bloqueio` e falha fechada, porque segredo commitado não tem volta.
+
+Rode `python3 .claude/runx-hooks/comum/doctor.py` para ver em que modo cada hook está e quantas vezes cada regra foi violada — é o dado que diz qual já pode ser promovido.
+
+Os cinco hooks de escrita rodam por um **despachante único**, não como cinco processos: cada `python3` custa cerca de 30 ms só para subir, e cinco deles estourariam o orçamento de 200 ms por chamada de ferramenta. Um processo lê o evento uma vez e roda as cinco verificações em sequência.
+
+## Agentes
+
+Três subagentes rodam em contexto próprio, para que o julgamento não seja contaminado por quem produziu o trabalho:
+
+| Agente | Estágio | Papel |
+|---|---|---|
+| `investigador` | E1 | mapeia a base e comprova a causa raiz; só leitura, hipótese sem prova não passa |
+| `revisor-testes` | E3/E4 | responde a uma pergunta só: *esse teste passaria com a implementação errada?* |
+| `qa` | E4 | valida a entrega contra plano, escopo e suíte, e emite o veredito; **não corrige nada** |
+
+## O rastro de eventos
+
+Hooks e skill gravam um arquivo append-only, uma linha JSON por evento, seguindo o contrato `expx-eventos` v1:
 
 ```
-skill/                        fonte única da skill
-  SKILL.md                    identidade, contratos, máquina de estados, regras
-  DECISOES-DA-SKILL.md        decisões de construção, com o porquê de cada uma
-  references/
-    00-schema.md              contrato expx-schema v1 (leitura obrigatória ao gravar)
-    01-investigacao.md        E1 — base de conhecimento + causa raiz/impacto
-    02-plano.md               E2 — sprints, fases, tasks e orquestrador
-    03-fix.md                 E3 — TDD estrito, portões e paralelismo
-    04-qa.md                  E4 — validação independente
-    05-relatorio.md           E5 — relatórios e fechamento
-  assets/
-    TEMPLATE-*.md             12 templates preenchíveis
-commands/                     os 6 comandos, válidos nos dois harnesses
+docs/eventos/<OC-ID>.jsonl
+```
+
+É o que o **painel de operação** (`npx expxdev panel`) lê para mostrar o que aconteceu e quando — fase iniciada e concluída, task concluída ou bloqueada, suíte executada, arquivo alterado, regra violada, veredito emitido. Ninguém edita à mão.
+
+Duas coisas que só o rastro revela: **quantas voltas ao E3 o QA causou** em cada ocorrência — que é um indicador honesto de qualidade do plano, porque plano ruim gera volta — e a **duração real de cada task**, sem ninguém anotar nada.
+
+O rastro é ignorado pelo versionador por padrão: é local da máquina de quem executou e cresce rápido. Acima de 5 MB ele rotaciona para `<OC-ID>.1.jsonl` e um novo começa.
+
+---
+
+## Estrutura do repositório
+
+A skill é **neutra de harness**: o mesmo conteúdo serve aos dois, e só o registro difere.
+
+```
+.claude/
+  skills/runx/
+    SKILL.md                  identidade, contratos, máquina de estados, regras
+    DECISOES-DA-SKILL.md      decisões de construção, com o porquê de cada uma
+    references/
+      00-schema.md            contrato expx-schema v1 (leitura obrigatória ao gravar)
+      01-investigacao.md      E1 — base de conhecimento + causa raiz/impacto
+      02-plano.md             E2 — sprints, fases, tasks e orquestrador
+      03-fix.md               E3 — TDD estrito, portões e paralelismo
+      04-qa.md                E4 — validação independente
+      05-relatorio.md         E5 — relatórios e fechamento
+    assets/
+      TEMPLATE-*.md           12 templates preenchíveis
+  commands/runx*.md           os 6 comandos do Claude Code
+  agents/                     os 3 subagentes: investigador, revisor-testes, qa
+  hooks/
+    hooks.json                o registro dos hooks no harness
+    hooks.exemplo.json        template do modo de cada hook, copiado para .expx/
+    jargao.exemplo.json       a lista de jargão do hook do relatório de uso
+    comum/                    segredo, rastro, despachante e a biblioteca de eventos
+    runx/                     os cinco hooks de método
+    testes/                   a suíte dos próprios hooks
+.opencode/
+  skills/runx/                a mesma skill, no formato do OpenCode
+  command/runx*.md            os mesmos comandos, no formato do OpenCode
+.github/assets/               banner e badges do README
 install.sh                    instalador para Claude Code + OpenCode
 ```
 
@@ -379,4 +474,12 @@ MIT
 
 ---
 
-<sub>runx é a metade Run do método Expx (Exponencial). A metade Build é a skill sprintx.</sub>
+<div align="center">
+<sub>Parte do método <strong>Expx</strong> ·
+<a href="https://github.com/bittencourtthulio/expxdev">expxdev</a> ·
+<a href="https://github.com/bittencourtthulio/sprintx">sprintx</a> ·
+runx ·
+<a href="https://github.com/bittencourtthulio/legadox">legadox</a> ·
+<a href="https://github.com/bittencourtthulio/stackx">stackx</a> ·
+<a href="https://github.com/bittencourtthulio/mergex">mergex</a></sub>
+</div>

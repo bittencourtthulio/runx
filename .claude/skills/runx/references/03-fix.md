@@ -44,6 +44,17 @@ Para CADA task, exatamente nesta ordem, sem inverter nenhum passo:
 4. **Escreva os dois testes da task** — `teste_integracao` e `teste_funcional` — exatamente como a task os descreve, e faça-os passar.
 5. **Rode a suíte inteira, não só os testes novos.** O comando é o do ORQUESTRADOR. Verde na suíte inteira, não em um subconjunto.
 6. Antes de aceitar o verde, responda: **este teste falharia com uma implementação errada?** Se a resposta é não, o teste não discrimina — reescreva-o e volte ao passo 2.
+
+   **Se o agente `revisor-testes` estiver disponível, é ele quem responde essa pergunta** — você acabou de escrever o teste e é o pior juiz da própria armadilha. Passe a pasta da ocorrência e a task. Ele lê, roda o que precisar e devolve a tabela de achados mais a linha `TESTES: DISCRIMINAM` / `TESTES: NÃO DISCRIMINAM`. Ele não corrige: não tem ferramenta de escrita. Achado ALTA dele = teste reescrito por você e volta ao passo 2.
+
+   Na primeira task da primeira fase, peça a ele a checagem que mais falha em silêncio: **o `teste_regressao` realmente falhava antes do fix?** Ele confirma contra o código anterior (`git worktree`, `git show`) e devolve `REGRESSÃO PROVA` ou `REGRESSÃO NÃO PROVA`. `NÃO PROVA` cai na regra abaixo — para a execução e volta ao E1.
+
+   Registre no rastro:
+
+   ```
+   python3 .claude/runx-hooks/comum/rastro.py --evento veredito_emitido --agente revisor-testes \
+     --fase e3 --task <T-NN.MM> --resultado <discriminam|nao_discriminam> --detalhe "N achados"
+   ```
 7. Verifique **de fato** o `criterio_aceite` da task — não presuma que ele decorre do teste verde.
 8. Só então marque `status: concluida` em `tasks.md` — **no frontmatter e na prosa** — acrescentando na linha da task: data (obtenha com `date +%Y-%m-%d` do sistema, nunca de memória) e resultado da suíte. No YAML, isso significa `status: concluida`, `concluida_em` com a data e `suite: verde`, mais `atualizado_em` reescrito.
 

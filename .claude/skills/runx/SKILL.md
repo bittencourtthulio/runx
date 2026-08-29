@@ -180,6 +180,59 @@ Ambos são sempre ancorados na raiz do repositório Git mais próxima do diretó
 
 Regra transversal: use sempre caminhos relativos; nunca escreva caminhos absolutos em nenhum artefato.
 
+## Hooks e agentes
+
+Toda regra inviolável acima é, sozinha, uma instrução que o modelo pode esquecer numa execução longa. Hook é script determinístico: roda sempre, porque quem executa é o harness, não o modelo. Agente é contexto separado com ferramentas restritas: é o que torna "quem implementa não aprova" estrutural, e não uma promessa que o mesmo modelo faz a si mesmo.
+
+Ambos são **opcionais**: sem eles a skill funciona igual, apenas sem a rede de proteção. Nenhuma regra do método muda por causa deles.
+
+### Os agentes
+
+| Agente | Estágio | Ferramentas | Papel |
+|---|---|---|---|
+| `investigador` | E1 | leitura e busca | Monta a base e prova a causa raiz |
+| `revisor-testes` | E3 | leitura + rodar teste | Responde: esse teste passaria com a implementação errada? |
+| `qa` | E4 | leitura + rodar suíte | Valida contra o plano e o escopo; não corrige |
+
+**Os três têm acesso somente de leitura.** É isso que transforma "aponta, não corrige" de instrução em impossibilidade técnica. Nenhum deles grava arquivo: cada um devolve o conteúdo, e quem grava é a sessão principal, com o frontmatter do `references/00-schema.md`.
+
+O `qa` ainda é o mesmo modelo lendo o mesmo repositório — o que muda é que ele não viu a justificativa que o implementador deu a si mesmo, e isso já pega uma classe real de erro. Independência de verdade pediria rodá-lo em modelo diferente; vale testar depois que o básico estiver rodando, e medir se pega coisa a mais. Antes disso, é opinião.
+
+### Os hooks
+
+Hook de método **nasce em modo aviso**: registra no rastro e deixa passar. Hook de segurança nasce em bloqueio, porque segredo commitado não tem volta e o falso positivo ali é raro.
+
+| Hook | Evento | Modo inicial | O que faz |
+|---|---|---|---|
+| `segredo-no-commit` | `PreToolUse` escrita | **bloqueio** | Barra credencial indo para arquivo versionado |
+| `causa-antes-do-plano` | `PreToolUse` em `sprint-*/` | aviso | Barra plano sem `01-CAUSA-RAIZ.md`, ou com `comprovada: false` em `bug` (regras 1 e 2) |
+| `regressao-antes-do-fix` | `PreToolUse` escrita | aviso | Avisa ao tocar código de produção antes do `teste_regressao` existir (regra 5) |
+| `task-so-fecha-verde` | `PreToolUse` em `tasks.md` | aviso | Barra `status: concluida` sem `suite: verde` e sem os dois testes (regras 4 e 9) |
+| `escopo-da-ocorrencia` | `PreToolUse` escrita | aviso | Avisa ao escrever fora de `arquivos_impactados` e do `arquivos` das tasks (regra 8) |
+| `sem-jargao-no-uso` | `PostToolUse` em `uso.md` | aviso | Aponta caminho de arquivo, nome de função, tabela, stack trace e termo técnico no relatório do cliente |
+
+O modo de cada hook vive em `.expx/hooks.json`, e `doctor` mostra em que modo cada um está:
+
+```bash
+python3 .claude/runx-hooks/comum/doctor.py
+```
+
+Promova a bloqueio só com evidência: o hook que rodou semanas em aviso sem falso positivo. **Hook que dá falso positivo é desinstalado, e junto com ele vão os que funcionavam** — por isso a promoção é guiada pela coluna de violações do `doctor`, nunca por otimismo.
+
+Um hook de método que quebra nunca trava o trabalho: registra o erro e sai com 0. O de segurança falha fechada.
+
+### O rastro
+
+Os hooks e a skill gravam eventos em `docs/eventos/<trabalho_id>.jsonl`, uma linha JSON por evento, no formato do contrato `expx-eventos` v1. Ninguém edita à mão; o painel lê. É de lá que sai a linha do tempo da ocorrência, o que cada agente tocou, e **quantas voltas ao E3 o QA causou** — a contagem que revela qualidade de plano, porque plano ruim gera volta.
+
+Nas transições de estágio e ao receber veredito de agente, grave com:
+
+```bash
+python3 .claude/runx-hooks/comum/rastro.py --evento <evento> --agente <agente> --fase <e1..e5> [--task T-NN.MM] --resultado <r> --detalhe "<uma linha>"
+```
+
+O rastro é ignorado pelo versionador por padrão: é local da máquina de quem executou e cresce rápido.
+
 ## Estágios → arquivos da skill
 
 | Estágio | Roteiro operacional | Templates usados |
