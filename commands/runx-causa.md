@@ -1,6 +1,7 @@
 ---
-description: runx E1 — investigação: mapeia a base de conhecimento e comprova a causa raiz (ou mapeia o impacto)
-argument-hint: [ocorrência: texto do chamado, id do ticket ou caminho de arquivo]
+name: runx-causa
+description: "runx E1 — investigação: mapeia a base de conhecimento e comprova a causa raiz (ou mapeia o impacto)"
+argument-hint: "[ocorrência: texto do chamado, id do ticket ou caminho de arquivo]"
 ---
 
 Invoque a skill `runx` e execute o E1 INVESTIGAÇÃO seguindo `references/01-investigacao.md`.

@@ -26,24 +26,65 @@ As duas compartilham **exatamente** os mesmos contratos: base de conhecimento an
 
 ---
 
+## Compatibilidade
+
+`runx` funciona em **Claude Code** e em **OpenCode**, a partir da mesma fonte. Os arquivos da skill são idênticos nos dois — o que muda é apenas onde eles ficam:
+
+| | Claude Code | OpenCode |
+|---|---|---|
+| Skill (projeto) | `.claude/skills/runx/` | `.opencode/skills/runx/` |
+| Comandos (projeto) | `.claude/commands/` | `.opencode/commands/` |
+| Skill (global) | `~/.claude/skills/runx/` | `~/.config/opencode/skills/runx/` |
+| Comandos (global) | `~/.claude/commands/` | `~/.config/opencode/commands/` |
+
+Os dois harnesses descobrem a skill do mesmo jeito — pelo `name` e pela `description` do frontmatter, carregando o corpo sob demanda — e os dois aceitam `$ARGUMENTS` nos comandos. Por isso um único conjunto de arquivos atende aos dois sem fork e sem condicional.
+
+---
+
 ## Instalação
 
-Copie a skill e os comandos para o seu projeto:
+O instalador monta a estrutura **dos dois harnesses de uma vez**:
 
 ```bash
-git clone https://github.com/bittencourtthulio/runx.git /tmp/runx
-cp -r /tmp/runx/.claude/skills/runx   .claude/skills/
-cp    /tmp/runx/.claude/commands/runx*.md .claude/commands/
+git clone https://github.com/bittencourtthulio/runx.git
+cd runx
+./install.sh
 ```
 
-Ou, para deixar disponível em **todos** os seus projetos, instale no diretório global:
+Isso cria `.claude/` **e** `.opencode/` no projeto atual. Para deixar disponível em todos os seus projetos:
 
 ```bash
-cp -r /tmp/runx/.claude/skills/runx   ~/.claude/skills/
-cp    /tmp/runx/.claude/commands/runx*.md ~/.claude/commands/
+./install.sh --global
 ```
 
-Reinicie a sessão do Claude Code para a skill ser carregada.
+### Opções
+
+| Flag | Efeito |
+|---|---|
+| *(nenhuma)* | instala nos dois harnesses, no projeto atual |
+| `--global` | instala no diretório global do usuário, não no projeto |
+| `--claude` | só Claude Code |
+| `--opencode` | só OpenCode |
+| `--force` | sobrescreve instalação existente sem perguntar |
+| `--dry-run` | mostra o que faria, sem escrever nada |
+
+As flags combinam: `./install.sh --global --opencode` instala só o OpenCode, só no global.
+
+Sem `--force`, o instalador **nunca sobrescreve calado**: pergunta no modo interativo e pula quando não há terminal (CI). Rodar duas vezes é seguro.
+
+### Instalação manual
+
+Se preferir copiar à mão, a fonte fica em `skill/` e `commands/` — sem prefixo de harness:
+
+```bash
+# Claude Code
+cp -r skill .claude/skills/runx && cp commands/*.md .claude/commands/
+
+# OpenCode
+cp -r skill .opencode/skills/runx && cp commands/*.md .opencode/commands/
+```
+
+Reinicie a sessão do seu harness para a skill ser carregada.
 
 ---
 
@@ -248,7 +289,7 @@ O painel apenas **lê**; a skill continua sendo a única a escrever. A máquina 
 
 **Kinds produzidos:** `orquestrador`, `ocorrencia`, `causa_raiz`, `sprint`, `fases`, `tasks`, `bloqueios`, `qa`, `base_indice`, `relatorio_tecnico`, `relatorio_uso`, `relatorios_indice`.
 
-Os kinds compartilhados com a `sprintx` — `orquestrador`, `sprint`, `fases`, `tasks`, `bloqueios`, `base_indice` — são **idênticos campo por campo** nas duas skills. Contrato completo em [`references/00-schema.md`](.claude/skills/runx/references/00-schema.md).
+Os kinds compartilhados com a `sprintx` — `orquestrador`, `sprint`, `fases`, `tasks`, `bloqueios`, `base_indice` — são **idênticos campo por campo** nas duas skills. Contrato completo em [`references/00-schema.md`](skill/references/00-schema.md).
 
 ---
 
@@ -273,23 +314,23 @@ Os kinds compartilhados com a `sprintx` — `orquestrador`, `sprint`, `fases`, `
 
 ## Estrutura do repositório
 
+A fonte é **neutra de harness**: um único conjunto de arquivos, que o instalador materializa nos dois formatos.
+
 ```
-.claude/
-  skills/runx/
-    SKILL.md                    identidade, contratos, máquina de estados, regras
-    DECISOES-DA-SKILL.md        decisões de construção, com o porquê de cada uma
-    references/
-      00-schema.md              contrato expx-schema v1 (leitura obrigatória ao gravar)
-      01-investigacao.md        E1 — base de conhecimento + causa raiz/impacto
-      02-plano.md               E2 — sprints, fases, tasks e orquestrador
-      03-fix.md                 E3 — TDD estrito, portões e paralelismo
-      04-qa.md                  E4 — validação independente
-      05-relatorio.md           E5 — relatórios e fechamento
-    assets/
-      TEMPLATE-*.md             12 templates preenchíveis
-  commands/
-    runx.md, runx-causa.md, runx-plano.md,
-    runx-fix.md, runx-qa.md, runx-relatar.md
+skill/                        fonte única da skill
+  SKILL.md                    identidade, contratos, máquina de estados, regras
+  DECISOES-DA-SKILL.md        decisões de construção, com o porquê de cada uma
+  references/
+    00-schema.md              contrato expx-schema v1 (leitura obrigatória ao gravar)
+    01-investigacao.md        E1 — base de conhecimento + causa raiz/impacto
+    02-plano.md               E2 — sprints, fases, tasks e orquestrador
+    03-fix.md                 E3 — TDD estrito, portões e paralelismo
+    04-qa.md                  E4 — validação independente
+    05-relatorio.md           E5 — relatórios e fechamento
+  assets/
+    TEMPLATE-*.md             12 templates preenchíveis
+commands/                     os 6 comandos, válidos nos dois harnesses
+install.sh                    instalador para Claude Code + OpenCode
 ```
 
 O `SKILL.md` é a porta de entrada e fica abaixo de 200 linhas. O detalhe operacional de cada estágio mora no `reference` correspondente, lido **só quando o estágio chega** — mantendo o contexto enxuto.

@@ -1,6 +1,7 @@
 ---
+name: runx-relatar
 description: runx E5 — relatórios técnico e de uso, atualização do índice e fechamento da ocorrência
-argument-hint: [ocorrência: texto do chamado, id do ticket ou caminho de arquivo]
+argument-hint: "[ocorrência: texto do chamado, id do ticket ou caminho de arquivo]"
 ---
 
 Invoque a skill `runx` e execute o E5 RELATÓRIO E FECHAMENTO seguindo `references/05-relatorio.md`.

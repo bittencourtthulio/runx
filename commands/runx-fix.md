@@ -1,6 +1,7 @@
 ---
-description: runx E3 — fix: implementa o plano sob TDD estrito, de forma autônoma
-argument-hint: [ocorrência: texto do chamado, id do ticket ou caminho de arquivo]
+name: runx-fix
+description: "runx E3 — fix: implementa o plano sob TDD estrito, de forma autônoma"
+argument-hint: "[ocorrência: texto do chamado, id do ticket ou caminho de arquivo]"
 ---
 
 Invoque a skill `runx` e execute o E3 FIX seguindo `references/03-fix.md`.

@@ -1,6 +1,7 @@
 ---
-description: runx E4 — QA: valida a entrega contra o plano e o escopo, sem corrigir nada
-argument-hint: [ocorrência: texto do chamado, id do ticket ou caminho de arquivo]
+name: runx-qa
+description: "runx E4 — QA: valida a entrega contra o plano e o escopo, sem corrigir nada"
+argument-hint: "[ocorrência: texto do chamado, id do ticket ou caminho de arquivo]"
 ---
 
 Invoque a skill `runx` e execute o E4 QA seguindo `references/04-qa.md`.

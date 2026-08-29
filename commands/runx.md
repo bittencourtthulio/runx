@@ -1,6 +1,7 @@
 ---
+name: runx
 description: runx — detecta o estágio atual da ocorrência e continua de onde parou
-argument-hint: [ocorrência: texto do chamado, id do ticket ou caminho de arquivo]
+argument-hint: "[ocorrência: texto do chamado, id do ticket ou caminho de arquivo]"
 ---
 
 Invoque a skill `runx` e siga-a integralmente.

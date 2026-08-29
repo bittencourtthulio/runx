@@ -1,6 +1,7 @@
 ---
-description: runx E2 — plano: converte a investigação em sprints, fases e tasks, e escreve o ORQUESTRADOR
-argument-hint: [ocorrência: texto do chamado, id do ticket ou caminho de arquivo]
+name: runx-plano
+description: "runx E2 — plano: converte a investigação em sprints, fases e tasks, e escreve o ORQUESTRADOR"
+argument-hint: "[ocorrência: texto do chamado, id do ticket ou caminho de arquivo]"
 ---
 
 Invoque a skill `runx` e execute o E2 PLANO seguindo `references/02-plano.md`.
