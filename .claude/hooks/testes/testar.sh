@@ -259,9 +259,16 @@ if [ -f "$W/docs/eventos/OC-2026-0142.jsonl" ]; then
 import json,sys,collections
 linhas=[json.loads(l) for l in open(sys.argv[1]) if l.strip()]
 print(f"  {len(linhas)} eventos:", dict(collections.Counter(e["evento"] for e in linhas)))
+# O contrato exige que as 12 chaves ESTEJAM na linha, nao que sejam as unicas:
+# chaves extras declaradas (`hook` na mergex e na legadox, `faixa` na legadox)
+# sao legitimas. Um `set(e)!=chaves` reprovaria toda linha dessas duas skills.
 chaves={"ts","expx_eventos","trabalho_id","ferramenta","origem","evento","fase","task","agente","resultado","detalhe","arquivos"}
-ruins=[e for e in linhas if set(e)!=chaves]
+extras_ok={"hook","faixa"}
+ruins=[e for e in linhas if not chaves <= set(e)]
+desconhecidas=sorted({k for e in linhas for k in set(e)-chaves-extras_ok})
 print("  todas as linhas com as 12 chaves do contrato:", not ruins)
+if desconhecidas:
+    print("  AVISO chaves fora do contrato:", ", ".join(desconhecidas))
 print("  exemplo:", json.dumps(linhas[0], ensure_ascii=False)[:150])
 PY
 else
