@@ -242,6 +242,7 @@ O rastro é ignorado pelo versionador por padrão: é local da máquina de quem 
 |---|---|---|
 | **todos** | **`references/00-schema.md`** — contrato do frontmatter; **leitura obrigatória em qualquer estágio que grave arquivo** | — |
 | **todos** | `references/06-estado.md` — contrato do `.expx/estado.json` lido pela barra de status; leia no estágio que for gravá-lo | — |
+| **todos** | `references/07-diagrama.md` — regras dos diagramas Mermaid derivados (grafo de tasks e cadeia da causa); leia no estágio que for gerá-los ou atualizá-los (E1.b, E2, E3) | — |
 | E1 INVESTIGAÇÃO | `references/01-investigacao.md` | `assets/TEMPLATE-ocorrencia.md`, `assets/TEMPLATE-base-area.md`, `assets/TEMPLATE-causa-raiz.md`, `assets/TEMPLATE-analise-impacto.md` |
 | E2 PLANO | `references/02-plano.md` | `assets/TEMPLATE-sprint.md`, `assets/TEMPLATE-fases.md`, `assets/TEMPLATE-tasks.md`, `assets/TEMPLATE-ORQUESTRADOR.md` |
 | E3 FIX | `references/03-fix.md` | — |

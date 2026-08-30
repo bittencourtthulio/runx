@@ -77,6 +77,20 @@ Convenções:
 - `arquivos` lista caminhos relativos à raiz do repositório, separados em `cria:` e `altera:`, e **não pode conter arquivo fora da lista de impactados do `01-CAUSA-RAIZ.md`**.
 - Nada no plano pode contradizer a base sem uma decisão `D-NN` que justifique.
 
+### O grafo de tasks dentro de `fases.md`
+
+Com as tasks escritas, gere o **bloco Mermaid do grafo de tasks** dentro de `sprint-NN/fases.md`, abaixo do frontmatter e antes da prosa. As regras de geração, o formato exato e os exemplos correto e incorreto estão em `references/07-diagrama.md` — leia-o antes de escrever o bloco.
+
+O plano já declara paralelismo e dependência em `depende_de` e `paralelizavel`, mas os declara em texto. O bloco converte esse texto em imagem, que VS Code e GitHub renderizam sozinhos — e é assim que quem revisa o pull request e quem faz o QA, que não participaram do planejamento, enxergam em segundos o que muda e em que ordem.
+
+Em uma linha: cada task vira um nó com id e título curto, cada `depende_de` vira uma aresta, cada fase vira um `subgraph`, o caminho crítico vai na classe `critico`, o status vai por cor, e **a task do teste de regressão é marcada de forma distinta** — ela é a primeira e é a que prova que o problema foi entendido. Paralelismo é ausência de aresta: `paralelizavel` não desenha traço nenhum.
+
+Três pontos de atenção deste estágio:
+
+- **Contradição entre campos não gera diagrama, gera erro de plano reportado.** Uma task com `paralelizavel: true` e `depende_de` não vazio, uma seta para id inexistente, um ciclo de dependência: nesses casos o bloco não é escrito, a contradição é anunciada ao usuário, e **você corrige o plano aqui mesmo** — o E2 é o lugar de mexer no plano — e então regera. Essa detecção é a mesma coisa que a checklist do Passo 5 já verifica; o diagrama apenas a torna visível.
+- **Limite de tamanho, regra dura:** acima de 25 tasks na sprint, uma visão geral das fases mais um diagrama por fase. Nunca um diagrama que não caiba numa tela.
+- **O diagrama é derivado e nunca bloqueia.** Ele não entra no critério de saída deste estágio; falha ao gerá-lo é registrada no rastro e ignorada.
+
 ## Passo 4 — Escrever o ORQUESTRADOR.md
 
 Crie `docs/manutencao/<OC-ID>-<slug>/ORQUESTRADOR.md` de `assets/TEMPLATE-ORQUESTRADOR.md`, com o frontmatter `kind: orquestrador` de `references/00-schema.md`. Ao criá-lo no E2, `estagio: e2`, `status: em_andamento` e `concluido_em: null`; `sprints:` e `caminho_critico:` espelham a rota da seção 3. É o arquivo-mapa desta ocorrência, escrito **para quem abriu o repositório agora e não sabe nada**. Seções obrigatórias:

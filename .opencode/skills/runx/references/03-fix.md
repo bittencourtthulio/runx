@@ -62,6 +62,21 @@ Para CADA task, exatamente nesta ordem, sem inverter nenhum passo:
 
 Critério de aceite não atendido, ou qualquer teste não passando: a task **NÃO** é concluída. **Não existe "concluído com ressalva".**
 
+### A cor do nó no grafo de tasks
+
+O `fases.md` da sprint carrega um bloco Mermaid com o grafo de tasks, gerado no E2. Ao mudar o `status` de uma task, **atualize a cor do nó daquela task** — e só dela: reescreva apenas a linha `class` correspondente. Nós, arestas, `subgraph`, `classDef` e a linha do `critico` permanecem como o E2 os escreveu. Não recalcule o caminho crítico e não reescreva o bloco: a estrutura do grafo não muda durante a execução, só a cor muda. O mapa de status para classe está em `references/07-diagrama.md`.
+
+Isso vale nas duas transições da task: ao marcá-la `em_andamento` no passo 1, e ao marcá-la `concluida` (ou `bloqueada`) no passo 8. A gravação vai junto da gravação do `tasks.md` que você já está fazendo — é a mesma passada no disco, não uma segunda.
+
+**Falha na atualização é registrada e ignorada.** Se o bloco não estiver lá, se o nó não for encontrado, se o arquivo tiver outra forma: a task continua concluída, a suíte continua verde e o estágio continua avançando. O diagrama é derivado e **nunca bloqueia o trabalho**:
+
+```
+python3 .claude/runx-hooks/comum/rastro.py --evento diagrama_nao_atualizado --fase e3 \
+  --task <T-NN.MM> --resultado falha --detalhe "<o motivo, uma linha>"
+```
+
+Se este for um retorno do E4 e o E2 tiver replanejado, o bloco inteiro já foi regerado pelo E2 — o E3 nunca remenda um grafo cujo conjunto de tasks mudou. E se o `fases.md` não tiver bloco Mermaid nenhum (plano gerado por uma versão anterior da skill), o E3 **não o cria**: gerar diagrama é papel do E2. Siga sem avisar.
+
 ## Quando o teste de regressão passa antes do fix
 
 Se o teste de regressão passa **antes** de qualquer implementação, ele não está reproduzindo o problema. Isso significa uma de duas coisas, e as duas invalidam o plano:

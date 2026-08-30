@@ -197,6 +197,16 @@ Registre também, no mesmo momento, as `palavras_chave` da ocorrência: até 8 t
 
 Se nem o `memox` nem o versionador estiverem disponíveis (repositório sem histórico, por exemplo), grave os três campos como `null`/`[]` conforme o caso, registre a limitação em uma linha em `base/00-LACUNAS.md` e siga. **A verificação nunca bloqueia o estágio.**
 
+## Cadeia da causa — o diagrama do arquivo
+
+Com a causa estabelecida (ou o impacto mapeado) e a verificação de regressão feita, gere o **bloco Mermaid da cadeia da causa** dentro do próprio `01-CAUSA-RAIZ.md`, abaixo do frontmatter e antes da prosa. As regras de geração, o formato exato dos nós e os exemplos correto e incorreto estão em `references/07-diagrama.md` — leia-o antes de escrever o bloco.
+
+Em uma linha: o diagrama mostra o caminho do sintoma relatado até a causa, com os pontos percorridos na investigação, a causa em destaque e os arquivos impactados como folhas; em `modo: analise_impacto` ele mostra o comportamento atual, o que muda e o que pode quebrar junto. Quando `regressao_de` estiver preenchido, o trabalho anterior entra ligado por seta.
+
+**Derivação, nunca invenção.** Só entra no diagrama o que está escrito neste arquivo: nenhum ponto intermediário "que faria sentido", nenhum chamador que a investigação não listou. Se a causa não foi comprovada (`STATUS: NÃO COMPROVADO`), o nó da causa aparece **marcado como não comprovado** — hipótese com forma de hipótese, nunca com forma de fato.
+
+O diagrama é **derivado e nunca bloqueia**: ele não entra no critério de saída deste estágio, e falha ao gerá-lo é registrada no rastro e ignorada. A única situação em que o bloco não é escrito é a contradição entre campos, que vira erro de plano reportado ao usuário, conforme a regra 2 de `references/07-diagrama.md`.
+
 ## Fechamento comum aos dois modos
 
 Em ambos os modos o arquivo termina com:

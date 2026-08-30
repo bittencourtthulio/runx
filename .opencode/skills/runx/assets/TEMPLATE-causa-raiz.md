@@ -22,6 +22,31 @@ atualizado_em: {{AAAA-MM-DD}}
 
 > Frontmatter obrigatorio (expx-schema v1). Formato completo em `references/00-schema.md`. Substitua os marcadores; NUNCA omita uma chave — ausente e `null`, lista vazia e `[]`. Sem acento em chave nem em valor de enum. `atualizado_em` e reescrito a cada gravacao.
 
+## Cadeia da causa
+
+> SUBSTITUA o bloco abaixo pela cadeia desta ocorrencia, gerada no E1.b pelas regras de `references/07-diagrama.md`. Do sintoma relatado ate a causa: `S1` o sintoma, `P1..Pn` os pontos percorridos na investigacao, `C1` a causa em destaque, `A1..An` os arquivos impactados como folhas. Identificador sem acento; o rotulo entre aspas pode ter acento.
+>
+> `R1` so existe quando `regressao_de` esta preenchido: `R1 -.->|"introduziu"| C1`. Coincidencia de arquivo nao e regressao (regra 15) e nao vira no.
+>
+> Causa NAO comprovada (`STATUS: NAO COMPROVADO`): `C1` leva `?` no rotulo, a classe `suposta` no lugar de `causa`, e a seta que chega nele e tracejada. Hipotese nunca aparece com forma de fato.
+>
+> Acima de 12 nos: os pontos intermediarios `P1..Pn` colapsam em um no `P0["N pontos percorridos"]` — sintoma, causa, arquivos e trabalho anterior nunca sao resumidos.
+>
+> Derivacao, nunca invencao: so entra no diagrama o que esta escrito neste arquivo. Diagrama e derivado e nunca bloqueia o estagio.
+
+```mermaid
+flowchart LR
+  S1[["{{sintoma relatado, ate 32 caracteres}}"]]
+  P1["{{ponto do sistema percorrido}}"]
+  C1{{"{{a causa}}"}}
+  A1[/"{{caminho/relativo/arquivo.ext}}"/]
+  S1 --> P1
+  P1 --> C1
+  C1 --> A1
+  classDef causa fill:#f8d7da,stroke:#dc3545,color:#721c24,stroke-width:3px
+  class C1 causa
+```
+
 # Causa raiz — {{OC-ID}} {{título da ocorrência}}
 
 > Usado quando `tipo: bug`. Obrigatório PROVAR a causa, não supor. Hipótese sem prova não passa do E1.
