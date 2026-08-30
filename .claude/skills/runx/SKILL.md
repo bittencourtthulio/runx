@@ -89,6 +89,8 @@ Antes de agir, descubra em que estágio está inspecionando o disco em `docs/man
 
 Há um único retorno que o disco não revela sozinho: se durante o E3 o teste de regressão passar **antes** do fix, a causa raiz ou o teste está errado — a execução para e volta ao E1, mesmo que o disco continue indicando E3. O E3 registra isso em `01-CAUSA-RAIZ.md` ao voltar.
 
+**Toda transição de estágio atualiza o `.expx/estado.json`**, o arquivo que a barra de status do terminal lê — inclusive a volta do E4 para o E3 quando o QA reprova. É gravação derivada e somente de exibição: nenhuma decisão desta skill lê esse arquivo, e a sua ausência não quebra nada. O procedimento está em `references/06-estado.md`.
+
 Se o usuário pedir um estágio adiantado, explique o que falta e execute o estágio pendente em vez de obedecer fora de ordem. Se houver mais de uma ocorrência aberta e o usuário não disser qual, liste as abertas com o estágio de cada uma e peça que escolha.
 
 Ao entrar em um estágio, leia o arquivo dele em `references/` (tabela abaixo) antes de qualquer ação — e somente o do estágio atual.
@@ -239,6 +241,7 @@ O rastro é ignorado pelo versionador por padrão: é local da máquina de quem 
 | Estágio | Roteiro operacional | Templates usados |
 |---|---|---|
 | **todos** | **`references/00-schema.md`** — contrato do frontmatter; **leitura obrigatória em qualquer estágio que grave arquivo** | — |
+| **todos** | `references/06-estado.md` — contrato do `.expx/estado.json` lido pela barra de status; leia no estágio que for gravá-lo | — |
 | E1 INVESTIGAÇÃO | `references/01-investigacao.md` | `assets/TEMPLATE-ocorrencia.md`, `assets/TEMPLATE-base-area.md`, `assets/TEMPLATE-causa-raiz.md`, `assets/TEMPLATE-analise-impacto.md` |
 | E2 PLANO | `references/02-plano.md` | `assets/TEMPLATE-sprint.md`, `assets/TEMPLATE-fases.md`, `assets/TEMPLATE-tasks.md`, `assets/TEMPLATE-ORQUESTRADOR.md` |
 | E3 FIX | `references/03-fix.md` | — |

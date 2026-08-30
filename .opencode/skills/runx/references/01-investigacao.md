@@ -56,6 +56,8 @@ Preencha `00-OCORRENCIA.md` pelo contrato de entrada do SKILL.md. O relato do cl
 
 **Portão único de pergunta deste estágio:** se `tipo: bug` e não houver passos de reprodução nem evidência suficiente para investigar (nenhum log, nenhuma mensagem de erro, nenhum dado concreto), PARE e pergunte isso — e apenas isso. Investigar bug sem reprodução é chute. Para os demais tipos, siga com o que houver.
 
+**Grave o estado da barra.** Com o `00-OCORRENCIA.md` no disco, atualize `.expx/estado.json` pelo procedimento de `references/06-estado.md`: `trabalho` com o `<OC-ID>`, `ferramenta: runx`, `titulo_curto` com o **título** da ocorrência (o comando corta em 30 caracteres), `fase: e1`, `task: null` e as contagens em zero. Sem `.expx/` no projeto, siga sem gravar, sem erro e sem aviso. Se a gravação falhar, registre no rastro e siga — a barra de status nunca interrompe o trabalho.
+
 ---
 
 # E1.a — BASE DE CONHECIMENTO
@@ -231,3 +233,5 @@ Continue investigando até atender. Se a prova de um bug não aparece, encerre c
 ## Ao terminar
 
 Anuncie: "E1 concluído. Base em `docs/manutencao/<OC-ID>-<slug>/base/` (N arquivos, M lacunas). Causa raiz COMPROVADA / impacto mapeado. Próximo estágio: E2 PLANO." Em seguida, se a sessão continuar, entre no E2 lendo `references/02-plano.md`.
+
+Ao fazer a transição, grave `fase: e2` em `.expx/estado.json` (`references/06-estado.md`) — toda transição de estágio atualiza a barra.

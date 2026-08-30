@@ -115,6 +115,12 @@ Nunca escreva o valor de um segredo; declare o nome da variável e onde ela vive
 
 Corrija o plano você mesmo, neste estágio, antes de encerrar — o E2 é o lugar de mexer no plano. Não deixe para o E4 achar o que você já sabe que está errado.
 
+## Passo 6 — Gravar o estado da barra
+
+Com o plano no disco, atualize `.expx/estado.json` pelo procedimento de `references/06-estado.md`: `tasks_total` com o número total de tasks do plano, somando todas as sprints. Sem `.expx/` no projeto, siga sem gravar, sem erro e sem aviso; se a gravação falhar, registre no rastro e siga.
+
 ## Ao terminar
 
 Anuncie: "E2 concluído. Plano em `docs/manutencao/<OC-ID>-<slug>/sprint-*/` (N sprints, M fases, K tasks) e `ORQUESTRADOR.md` escrito. Próximo estágio: E3 FIX." Siga para o E3 lendo `references/03-fix.md`.
+
+Ao fazer a transição, grave `fase: e3` em `.expx/estado.json` — toda transição de estágio atualiza a barra.

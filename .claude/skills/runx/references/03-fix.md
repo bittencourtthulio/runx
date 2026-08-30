@@ -32,13 +32,15 @@ Ao fechar uma fase ou uma sprint, atualize o `status` correspondente no frontmat
 
 **O `estagio` do `ORQUESTRADOR.md` é atualizado a cada transição de estágio da máquina de estados** — ao entrar no E3, `estagio: e3`; ao entregar para o E4, `estagio: e4`. Reescreva também `atualizado_em`. O campo `concluido_em` do orquestrador só é preenchido no E5.
 
+Na mesma transição, grave `fase` em `.expx/estado.json` pelo procedimento de `references/06-estado.md` — `fase: e3` ao entrar, `fase: e4` ao entregar. É um arquivo derivado: sem `.expx/` no projeto, siga sem gravar, sem erro e sem aviso; se a gravação falhar, registre no rastro e siga.
+
 ## Passo 2 — A ordem do TDD, task a task
 
 Ordem de execução: sprints em ordem numérica estrita; dentro da sprint, a rota do ORQUESTRADOR. Só execute em paralelo o que o plano declarou `paralelizavel: true`. Uma task só começa quando todas em `depende_de` estão `concluida`.
 
 Para CADA task, exatamente nesta ordem, sem inverter nenhum passo:
 
-1. Marque `status: em_andamento` em `tasks.md`.
+1. Marque `status: em_andamento` em `tasks.md`, e grave `task` com o id dela em `.expx/estado.json` (`references/06-estado.md`).
 2. **Escreva o teste. Rode. Ele TEM que falhar.** Nenhuma linha de implementação antes de ver o vermelho. Na primeira task da primeira fase, este é o `teste_regressao`: o teste que reproduz o problema.
 3. **Implemente o mínimo para o teste passar.** Mínimo é literal: só o que faz o vermelho virar verde. Nada de refactor de brinde, nada de "já que estou aqui" — escopo travado é a regra 8 do SKILL.md.
 4. **Escreva os dois testes da task** — `teste_integracao` e `teste_funcional` — exatamente como a task os descreve, e faça-os passar.
@@ -56,7 +58,7 @@ Para CADA task, exatamente nesta ordem, sem inverter nenhum passo:
      --fase e3 --task <T-NN.MM> --resultado <discriminam|nao_discriminam> --detalhe "N achados"
    ```
 7. Verifique **de fato** o `criterio_aceite` da task — não presuma que ele decorre do teste verde.
-8. Só então marque `status: concluida` em `tasks.md` — **no frontmatter e na prosa** — acrescentando na linha da task: data (obtenha com `date +%Y-%m-%d` do sistema, nunca de memória) e resultado da suíte. No YAML, isso significa `status: concluida`, `concluida_em` com a data e `suite: verde`, mais `atualizado_em` reescrito.
+8. Só então marque `status: concluida` em `tasks.md` — **no frontmatter e na prosa** — acrescentando na linha da task: data (obtenha com `date +%Y-%m-%d` do sistema, nunca de memória) e resultado da suíte. No YAML, isso significa `status: concluida`, `concluida_em` com a data e `suite: verde`, mais `atualizado_em` reescrito. Em seguida grave em `.expx/estado.json` (`references/06-estado.md`) o novo `tasks_concluidas` e o `task` da próxima task a ser aberta — `null` quando não houver próxima.
 
 Critério de aceite não atendido, ou qualquer teste não passando: a task **NÃO** é concluída. **Não existe "concluído com ressalva".**
 
@@ -75,8 +77,9 @@ Surgiu dúvida nova, decisão não coberta pelo plano, pré-requisito faltando (
 
 1. Registre em `docs/manutencao/<OC-ID>-<slug>/BLOQUEIOS.md`: `B-NN | task | descrição do bloqueio | o que destravaria`.
 2. Marque a task como `status: bloqueada` em `tasks.md`.
-3. Pule para a próxima task paralelizável cujas dependências estão satisfeitas.
-4. **NUNCA pare para esperar resposta humana.** Se não resta nenhuma task executável, encerre com o relatório final — os bloqueios são a pauta do usuário, não uma conversa sua.
+3. Grave `bloqueios` em `.expx/estado.json` (`references/06-estado.md`) com a contagem de bloqueios **em aberto**. Ao resolver um bloqueio depois, grave a contagem nova.
+4. Pule para a próxima task paralelizável cujas dependências estão satisfeitas.
+5. **NUNCA pare para esperar resposta humana.** Se não resta nenhuma task executável, encerre com o relatório final — os bloqueios são a pauta do usuário, não uma conversa sua.
 
 ## Portões de fase e de sprint
 
@@ -108,3 +111,5 @@ Este relatório é para o usuário na conversa; ele **não** substitui os relat�
 ## Ao terminar
 
 Anuncie: "E3 concluído. N tasks concluídas, M bloqueadas. Próximo estágio: E4 QA." Siga para o E4 lendo `references/04-qa.md`.
+
+Ao fazer a transição, grave `fase: e4` em `.expx/estado.json` — toda transição de estágio atualiza a barra.

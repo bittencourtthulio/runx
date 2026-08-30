@@ -96,6 +96,8 @@ A reindexação acontece **depois** de `tecnico.md`, `uso.md` e `INDICE.md` esta
 
 ## Passo 6 — Encerrar
 
+**Grave o fechamento na barra.** Com os relatórios e o `INDICE.md` no disco, atualize `.expx/estado.json` pelo procedimento de `references/06-estado.md`: `trabalho`, `fase` e `task` viram `null`. **O arquivo continua existindo** — não o apague; as contagens e `bloqueios` ficam como estavam. Sem `.expx/` no projeto, siga sem gravar, sem erro e sem aviso; se a gravação falhar, registre no rastro e siga. A ocorrência fecha do mesmo jeito: o `estado.json` é derivado e a sua ausência é inofensiva.
+
 O deploy é externo: runx **registra** que a correção está liberada, não executa o deploy. Se o usuário informar que o deploy foi feito, registre isso em uma linha no `tecnico.md`, seção "O que observar em produção".
 
 ## Critério de saída do estágio
@@ -107,6 +109,7 @@ O deploy é externo: runx **registra** que a correção está liberada, não exe
 - [ ] `ORQUESTRADOR.md` com `estagio: e5`, `status: concluido` e `concluido_em` preenchido com a data de fechamento.
 - [ ] `palavras_chave` e `regressao_de` do `tecnico.md` são cópia fiel do `01-CAUSA-RAIZ.md`; nenhum vínculo de regressão novo foi inventado no fechamento.
 - [ ] A reindexação do `memox` foi disparada, ou o passo foi pulado por ela não estar instalada.
+- [ ] `.expx/estado.json` gravado com `trabalho`, `fase` e `task` em `null`, e o arquivo continua existindo — ou o projeto não tem `.expx/` e nada foi criado.
 - [ ] Nada em `docs/manutencao/` foi apagado ou movido.
 
 ## Quando o critério não é atendido
