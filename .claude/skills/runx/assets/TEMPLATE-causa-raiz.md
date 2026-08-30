@@ -7,6 +7,9 @@ modo: causa_raiz
 comprovada: {{true | false}}
 evidencia: {{teste_falho | log | codigo | null}}
 arquivos_impactados: [{{caminho/relativo/arquivo.ext}}]
+palavras_chave: [{{ate 8 termos, minuscula, sem acento}}]
+regressao_de: {{OC-ID do trabalho anterior | null}}
+evidencia_regressao: {{uma linha com o vinculo causal | null}}
 decisoes:
   - id: D-01
     decisao: {{decisao tomada, uma linha}}
@@ -14,6 +17,8 @@ decisoes:
     motivo: {{motivo, uma linha}}
 atualizado_em: {{AAAA-MM-DD}}
 ---
+
+> `regressao_de` so e preenchido com EVIDENCIA de que o codigo causador deste problema foi introduzido ou alterado por aquele trabalho. Coincidencia de arquivo NAO e regressao: sem vinculo causal comprovado, `regressao_de: null` e `evidencia_regressao: null`, e a suspeita vai na prosa (regra 15). Preenchido um, preenchido o outro.
 
 > Frontmatter obrigatorio (expx-schema v1). Formato completo em `references/00-schema.md`. Substitua os marcadores; NUNCA omita uma chave — ausente e `null`, lista vazia e `[]`. Sem acento em chave nem em valor de enum. `atualizado_em` e reescrito a cada gravacao.
 
@@ -52,6 +57,18 @@ STATUS: {{COMPROVADO | NÃO COMPROVADO}}
 `{{caminho/relativo/arquivo.ext}}:{{linha}}` — {{o mecanismo: qual entrada leva a qual desvio, e por que produz a saída errada}}
 
 {{Se STATUS = NÃO COMPROVADO: escreva aqui a hipótese mais forte e, abaixo, exatamente o que falta para comprovar — acesso, log, ambiente, dado de produção. O E2 fica bloqueado enquanto este marcador existir.}}
+
+## Regressão
+
+> Preencha depois de estabelecida a causa, consultando o histórico dos arquivos impactados — pelo `memox` quando instalado, pelo versionador (`git log -L`, `git blame`) quando não.
+
+{{Uma das três formas, apague as outras duas:}}
+
+**É regressão:** o trecho responsável foi introduzido/alterado por `{{trabalho_id}}`. {{Qual trecho, em qual arquivo, e o que naquele trabalho o alterou — a mesma linha que vai em `evidencia_regressao`.}}
+
+**Não é regressão:** {{o que o histórico mostrou e por que não fecha como vínculo causal. Se outro trabalho tocou o mesmo arquivo sem relação com este trecho, registre a suspeita AQUI — coincidência de arquivo não é regressão, e o campo `regressao_de` fica `null`.}}
+
+**Histórico indisponível:** {{nem `memox` nem versionador com histórico; a limitação está registrada em `base/00-LACUNAS.md`. Campos como `null`.}}
 
 ## Arquivos e módulos impactados
 

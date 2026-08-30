@@ -8,8 +8,12 @@ tipo_ocorrencia: {{bug | melhoria-ui | melhoria-ux | novo-relatorio | regra-de-c
 fechado_em: {{AAAA-MM-DD}}
 modulo_afetado: [{{modulo}}]
 arquivos_alterados: [{{caminho/relativo/arquivo.ext}}]
+palavras_chave: [{{copiado de 01-CAUSA-RAIZ.md}}]
+regressao_de: {{copiado de 01-CAUSA-RAIZ.md | null}}
 testes_adicionados: {{numero de testes criados, incluindo o de regressao}}
 ---
+
+> `palavras_chave` e `regressao_de` sao COPIADOS de `01-CAUSA-RAIZ.md`, sem recalcular: `null` la e `null` aqui. Nunca invente um vinculo de regressao no fechamento (regra 15). `evidencia_regressao` nao entra neste YAML — a linha de evidencia vai na secao 4.
 
 > Frontmatter obrigatorio (expx-schema v1). Formato completo em `references/00-schema.md`. Substitua os marcadores; NUNCA omita uma chave — ausente e `null`, lista vazia e `[]`. Sem acento em chave nem em valor de enum. `atualizado_em` e reescrito a cada gravacao.
 
@@ -34,6 +38,8 @@ testes_adicionados: {{numero de testes criados, incluindo o de regressao}}
 ## 4. Causa raiz ou análise de impacto
 
 {{De `01-CAUSA-RAIZ.md`: a causa comprovada com a prova (teste, log ou trecho com linha), ou o impacto mapeado.}}
+
+**Regressão:** {{quando `regressao_de` estiver preenchido — de qual trabalho é a regressão e a linha de `evidencia_regressao` que sustenta o vínculo. Quando for `null`, escreva "Não é regressão de trabalho anterior registrado." e, se houve suspeita descartada, uma linha dizendo qual e por que foi descartada.}}
 
 ## 5. Solução aplicada
 

@@ -26,12 +26,14 @@ O `<slug>` é **o mesmo** usado em `docs/manutencao/` — as duas árvores compa
 
 **Frontmatter:** grave com `kind: relatorio_tecnico`, no formato de `references/00-schema.md` — leia-o antes de gravar. `fechado_em` é a data de fechamento (a mesma do nome da pasta), `arquivos_alterados` espelha a seção 8 e `testes_adicionados` é a contagem de testes criados, incluindo o de regressão.
 
+`palavras_chave` e `regressao_de` são **copiados de `01-CAUSA-RAIZ.md`**, sem recalcular e sem reinterpretar: o E5 transcreve o que o E1.b apurou. Se lá `regressao_de` é `null`, aqui também é `null` — o fechamento não é o momento de descobrir um vínculo de regressão, porque é o momento em que ninguém mais vai revisar a evidência (regra 15). Se o `01-CAUSA-RAIZ.md` for anterior ao contrato e não tiver os campos, copie `palavras_chave: []` e `regressao_de: null`. `evidencia_regressao` não vai para o YAML deste arquivo: a linha de evidência entra na seção 4, junto da causa.
+
 Leitor: **o próximo desenvolvedor que abrir este código.** Pode usar nome de arquivo, função, tabela e jargão à vontade — é para isso que ele existe. Use `assets/TEMPLATE-relatorio-tecnico.md`, com estas seções:
 
 1. **Ocorrência e tipo**
 2. **Sintoma relatado**
 3. **Base do que foi mapeado, em resumo** — destilada de `base/`, com os caminhos
-4. **Causa raiz ou análise de impacto** — de `01-CAUSA-RAIZ.md`, com a prova
+4. **Causa raiz ou análise de impacto** — de `01-CAUSA-RAIZ.md`, com a prova; quando `regressao_de` estiver preenchido, registre aqui também de qual trabalho é a regressão e a linha de `evidencia_regressao` que sustenta o vínculo
 5. **Solução aplicada**
 6. **Decisão técnica e alternativas descartadas** — as linhas `D-NN`
 7. **Sprints, fases e tasks executadas**
@@ -84,7 +86,15 @@ Leitor: **o suporte copia este texto e devolve ao cliente.** Use `assets/TEMPLAT
 - `resumo em uma linha` — o que mudou, sem jargão pesado; esta coluna é lida por quem varre o histórico.
 - `link` — caminho relativo para a pasta do relatório.
 
-## Passo 5 — Encerrar
+## Passo 5 — Reindexar o histórico
+
+**Quando a skill `memox` estiver instalada, dispare a reindexação dela ao fechar a ocorrência.** Os relatórios recém-gravados só passam a responder "quem já mexeu neste arquivo e por quê" depois de indexados: uma ocorrência fechada e não indexada é uma ocorrência que a próxima investigação não vai encontrar.
+
+A reindexação acontece **depois** de `tecnico.md`, `uso.md` e `INDICE.md` estarem gravados — nunca antes, para que o índice leia a versão final.
+
+**A ausência do `memox` nunca bloqueia o fechamento.** Sem ela instalada, pule este passo e siga: os relatórios já estão no disco e o `INDICE.md` já foi atualizado. Não instale nada, não pergunte por ela, não pare. Se a reindexação falhar, registre a falha em uma linha no `tecnico.md`, seção "Risco residual", e siga — a ocorrência fecha do mesmo jeito.
+
+## Passo 6 — Encerrar
 
 O deploy é externo: runx **registra** que a correção está liberada, não executa o deploy. Se o usuário informar que o deploy foi feito, registre isso em uma linha no `tecnico.md`, seção "O que observar em produção".
 
@@ -95,6 +105,8 @@ O deploy é externo: runx **registra** que a correção está liberada, não exe
 - [ ] `docs/relatorios/INDICE.md` tem a nova entrada no topo da lista `entradas:` do frontmatter E a nova linha no topo da tabela em prosa, com as 6 colunas, e nenhuma entrada anterior foi alterada.
 - [ ] `tecnico.md`, `uso.md` e `INDICE.md` gravados com o frontmatter de `references/00-schema.md`; o de `uso.md` sem nome de arquivo, função ou tabela.
 - [ ] `ORQUESTRADOR.md` com `estagio: e5`, `status: concluido` e `concluido_em` preenchido com a data de fechamento.
+- [ ] `palavras_chave` e `regressao_de` do `tecnico.md` são cópia fiel do `01-CAUSA-RAIZ.md`; nenhum vínculo de regressão novo foi inventado no fechamento.
+- [ ] A reindexação do `memox` foi disparada, ou o passo foi pulado por ela não estar instalada.
 - [ ] Nada em `docs/manutencao/` foi apagado ou movido.
 
 ## Quando o critério não é atendido

@@ -62,6 +62,14 @@ Preencha `00-OCORRENCIA.md` pelo contrato de entrada do SKILL.md. O relato do cl
 
 Antes de opinar sobre a causa, mapeie o pedaço do sistema que a ocorrência toca. Leia o código **de verdade** — nunca descreva de memória nem por suposição.
 
+## Passo prévio — o que o histórico já sabe sobre estes arquivos
+
+**Quando a skill `memox` estiver instalada, consulte-a sobre os arquivos e módulos suspeitos ANTES de investigar.** Saber que um arquivo já apareceu em quatro ocorrências anteriores muda o ponto de partida: a investigação começa por ele, e não por onde o relato calhou de apontar. O histórico não substitui a leitura do código — ele diz por onde começar a ler.
+
+Consulte com o que você já tem em mãos no Passo 0: os termos do relato, o módulo aparente e, quando já houver, os caminhos suspeitos. Registre em `base/00-INDICE.md`, em uma linha, o que o histórico devolveu — quantas ocorrências anteriores tocaram cada arquivo e quais foram. Nada disso é conclusão: é ponto de partida, e continua valendo a regra de que toda afirmação de comportamento aponta para arquivo e linha.
+
+**A ausência do `memox` nunca bloqueia o estágio.** Sem ela instalada, siga direto para a busca pelos termos do relato — o método é idêntico, você apenas começa sem a dica de onde os problemas se concentram. Não instale nada, não pergunte por ela, não pare.
+
 ## Por onde começar a busca, a partir do relato
 
 Extraia do relato os termos concretos: nome de tela, rótulo de campo, nome de botão, mensagem de erro, nome de relatório, valor numérico divergente, nome de entidade de negócio. Esses termos são as âncoras da busca.
@@ -140,7 +148,7 @@ Feche com os dois arquivos:
 
 Mesmo arquivo, mesma posição no fluxo, conteúdo determinado pelo tipo. Escreva em `docs/manutencao/<OC-ID>-<slug>/01-CAUSA-RAIZ.md`.
 
-**Frontmatter:** grave com `kind: causa_raiz`, no formato de `references/00-schema.md`. `modo: causa_raiz` quando `tipo_ocorrencia: bug`; `modo: analise_impacto` nos demais tipos — e então `comprovada` e `evidencia` vão como `null`, com as chaves presentes. As decisões `D-NN` da prosa entram também na lista `decisoes:` do YAML.
+**Frontmatter:** grave com `kind: causa_raiz`, no formato de `references/00-schema.md`. `modo: causa_raiz` quando `tipo_ocorrencia: bug`; `modo: analise_impacto` nos demais tipos — e então `comprovada` e `evidencia` vão como `null`, com as chaves presentes. As decisões `D-NN` da prosa entram também na lista `decisoes:` do YAML. Os campos `palavras_chave`, `regressao_de` e `evidencia_regressao` vêm da verificação de regressão descrita abaixo; as chaves existem sempre, mesmo que os valores sejam `[]` e `null`.
 
 ## Se `tipo: bug` → CAUSA RAIZ
 
@@ -170,6 +178,23 @@ Use `assets/TEMPLATE-analise-impacto.md`. Não force uma causa raiz que não exi
 
 Marque a linha literal `STATUS: IMPACTO MAPEADO`.
 
+## Verificação de regressão — depois de estabelecida a causa
+
+Vale nos dois modos, e só depois de a causa estar comprovada (ou o impacto mapeado): você já sabe qual é o trecho responsável.
+
+**Consulte o histórico dos arquivos impactados** — pela skill `memox` quando ela estiver instalada, pelo histórico do versionador quando não (`git log -L`, `git log --follow` ou `git blame` sobre as linhas do trecho responsável). A verificação é barata: a investigação já está com aquele arquivo aberto e já sabe qual linha importa.
+
+A pergunta é uma só: **o trecho que causa este problema foi introduzido ou alterado por um trabalho anterior já registrado?**
+
+- **Sim, com evidência** — o commit, a linha ou o relatório anterior mostram que aquele trabalho introduziu ou alterou justamente o trecho responsável: preencha `regressao_de` com o `trabalho_id` daquele trabalho (o `OC-...` de uma ocorrência, ou o slug de uma feature da `sprintx`) e `evidencia_regressao` com UMA linha dizendo qual é o vínculo — qual trecho, em qual arquivo, alterado por qual trabalho.
+- **Não, ou evidência ambígua** — `regressao_de: null` e `evidencia_regressao: null`, e a suspeita vai para a **prosa** do arquivo, em uma linha, dizendo o que foi visto e por que não fecha como vínculo.
+
+**Coincidência de arquivo NÃO é regressão.** Dois trabalhos que tocaram o mesmo arquivo sem vínculo causal comprovado deixam `regressao_de` como `null` — inclusive quando o arquivo é o mesmo e a data é próxima. Preencher o campo por proximidade é pior que deixá-lo vazio: um índice que chama coincidência de regressão para de conseguir apontar o arquivo que sempre volta, que é exatamente o sinal que ele existe para dar. Suspeita é prosa; campo é evidência.
+
+Registre também, no mesmo momento, as `palavras_chave` da ocorrência: até 8 termos, em minúscula e sem acento, que descrevem o problema — o que alguém digitaria daqui a um ano procurando por esta ocorrência. Mais que 8 deixa de discriminar.
+
+Se nem o `memox` nem o versionador estiverem disponíveis (repositório sem histórico, por exemplo), grave os três campos como `null`/`[]` conforme o caso, registre a limitação em uma linha em `base/00-LACUNAS.md` e siga. **A verificação nunca bloqueia o estágio.**
+
 ## Fechamento comum aos dois modos
 
 Em ambos os modos o arquivo termina com:
@@ -194,6 +219,8 @@ Esta lista é o registro de decisão da ocorrência — o equivalente ao `00-DEC
 - [ ] `base/00-LACUNAS.md` registra tudo que ficou `NÃO DETERMINADO`, com impacto e marcação de bloqueante.
 - [ ] `01-CAUSA-RAIZ.md` existe com `STATUS: COMPROVADO` (bug) ou `STATUS: IMPACTO MAPEADO` (demais tipos).
 - [ ] O arquivo lista arquivos impactados, opções, decisões D-NN e estratégia de teste.
+- [ ] A verificação de regressão foi feita (pelo `memox` ou pelo versionador), e `regressao_de` está preenchido **só** com evidência de vínculo causal — coincidência de arquivo é `null`, com a suspeita na prosa.
+- [ ] `palavras_chave` tem até 8 termos, em minúscula e sem acento.
 - [ ] Nenhum campo inventado; toda afirmação de comportamento aponta para arquivo e linha.
 - [ ] `00-OCORRENCIA.md`, `base/00-INDICE.md`, `BLOQUEIOS.md` e `01-CAUSA-RAIZ.md` gravados com o frontmatter de `references/00-schema.md`, validado pela checklist daquele arquivo.
 

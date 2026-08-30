@@ -177,6 +177,7 @@ Ambos são sempre ancorados na raiz do repositório Git mais próxima do diretó
 12. A skill nunca apaga nem move nada em `docs/manutencao/`.
 13. Durante E3 a skill não pergunta nada. Dúvida nova vira registro em `BLOQUEIOS.md` e a task é pulada.
 14. Todo arquivo de estado é gravado com o frontmatter do contrato expx-schema v1, descrito em `references/00-schema.md`. Arquivo de estado sem frontmatter válido é considerado não entregue.
+15. Coincidência de arquivo não é regressão. O campo `regressao_de` só é preenchido com evidência de vínculo causal.
 
 Regra transversal: use sempre caminhos relativos; nunca escreva caminhos absolutos em nenhum artefato.
 

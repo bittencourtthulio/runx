@@ -7,6 +7,9 @@ modo: analise_impacto
 comprovada: null
 evidencia: null
 arquivos_impactados: [{{caminho/relativo/arquivo.ext}}]
+palavras_chave: [{{ate 8 termos, minuscula, sem acento}}]
+regressao_de: {{OC-ID do trabalho anterior | null}}
+evidencia_regressao: {{uma linha com o vinculo causal | null}}
 decisoes:
   - id: D-01
     decisao: {{decisao tomada, uma linha}}
@@ -16,6 +19,8 @@ atualizado_em: {{AAAA-MM-DD}}
 ---
 
 > Atencao: `modo: analise_impacto` exige `comprovada: null` e `evidencia: null`, com as chaves presentes. Nao ha causa a comprovar quando nao ha defeito.
+
+> `regressao_de` e `evidencia_regressao` ficam `null` a menos que a verificacao de historico encontre vinculo causal comprovado. Coincidencia de arquivo NAO e regressao (regra 15). `palavras_chave` e preenchido normalmente.
 
 > Frontmatter obrigatorio (expx-schema v1). Formato completo em `references/00-schema.md`. Substitua os marcadores; NUNCA omita uma chave — ausente e `null`, lista vazia e `[]`. Sem acento em chave nem em valor de enum. `atualizado_em` e reescrito a cada gravacao.
 
@@ -48,6 +53,18 @@ STATUS: IMPACTO MAPEADO
 > Obrigatório para `melhoria-ui` e `melhoria-ux`; apague esta seção nos demais tipos.
 
 {{Qual é o critério que define "certo", já que não há teste automático que julgue estética. Precisa ser observável e binário: uma condição que qualquer pessoa verifica olhando a tela, com a condição de observação declarada — viewport, estado, papel de usuário. Este critério é a matéria-prima do `criterio_aceite` das tasks do E2.}}
+
+## Regressão
+
+> Preencha depois de mapeado o impacto, consultando o histórico dos arquivos impactados — pelo `memox` quando instalado, pelo versionador (`git log -L`, `git blame`) quando não.
+
+{{Uma das três formas, apague as outras duas:}}
+
+**É regressão:** o trecho que motiva esta mudança foi introduzido/alterado por `{{trabalho_id}}`. {{Qual trecho, em qual arquivo — a mesma linha que vai em `evidencia_regressao`.}}
+
+**Não é regressão:** {{o que o histórico mostrou e por que não fecha como vínculo causal. Coincidência de arquivo fica registrada aqui, na prosa, com `regressao_de: null`.}}
+
+**Histórico indisponível:** {{nem `memox` nem versionador com histórico; a limitação está registrada em `base/00-LACUNAS.md`. Campos como `null`.}}
 
 ## Arquivos e módulos impactados
 
