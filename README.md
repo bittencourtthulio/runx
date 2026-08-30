@@ -51,6 +51,7 @@ O método Expx é um conjunto de skills que se compõem, instaladas e mantidas p
 | **[mergex](https://github.com/bittencourtthulio/mergex)** | entrega: branch, commit por task, PR e pacote de QA | abre a branch no início do E3 e entrega entre o E4 e o E5 |
 | **[memox](https://github.com/bittencourtthulio/MemoX)** | **camada** de memória do projeto | consultada no E1 sobre os arquivos impactados; a `runx` dispara a reindexação no E5 |
 | **[prodx](https://github.com/bittencourtthulio/prodx)** | **camada** de produto: decide **se** há trabalho | roda antes do E1: o `BRIEFING.md` assinado vira o `00-OCORRENCIA.md` |
+| **[buildx](https://github.com/bittencourtthulio/buildx)** | orquestra um projeto inteiro, da descrição ao sistema pronto | a `runx` não participa dela — a `buildx` constrói, não corrige; mas o projeto que ela entrega já vem com a `runx` instalada, para quem receber o sistema tratar defeito |
 
 **Camadas** (`legadox`, `stackx`, `memox`, `prodx`) sozinhas não fazem nada — elas modificam o comportamento da `sprintx` e da `runx`. A `prodx` é a única que roda **antes** de tudo: ela decide *se* há trabalho, e só depois a `runx` decide *como* fazê-lo. A ausência de qualquer irmã nunca quebra o fluxo desta skill: insumo que não existe vira aviso do que falta, nunca invenção.
 
@@ -489,6 +490,7 @@ MIT
 <div align="center">
 <sub>Parte do método <strong>Expx</strong> ·
 <a href="https://github.com/bittencourtthulio/expxdev">expxdev</a> ·
+<a href="https://github.com/bittencourtthulio/buildx">buildx</a> ·
 <a href="https://github.com/bittencourtthulio/sprintx">sprintx</a> ·
 runx ·
 <a href="https://github.com/bittencourtthulio/legadox">legadox</a> ·
