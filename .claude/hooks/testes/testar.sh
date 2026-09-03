@@ -178,6 +178,16 @@ caso "em_andamento passa"       0 "$H/runx/task-so-fecha-verde.py" "$J"
 mkdir -p "$W/.expx"; echo '{"hooks":{"task-so-fecha-verde":"bloqueio"}}' > "$W/.expx/hooks.json"
 J=$(mk concluida vermelha "Chama endpoint"); J=${J/\"file_path\": \"\"/\"file_path\": \"$W/$T\"}
 caso "bloqueio barra vermelha"  2 "$H/runx/task-so-fecha-verde.py" "$J"
+# Regra 9 nova: o E3 roda o subconjunto afetado e grava `suite: parcial`; a suite
+# inteira e exigida uma vez no E4. Em modo BLOQUEIO — onde vermelha barra — parcial
+# tem que passar, senao o hook barraria toda conclusao de task.
+J=$(mk concluida parcial "Chama endpoint"); J=${J/\"file_path\": \"\"/\"file_path\": \"$W/$T\"}
+caso "bloqueio aceita parcial"  0 "$H/runx/task-so-fecha-verde.py" "$J"
+J=$(mk concluida nao_executada "Chama endpoint"); J=${J/\"file_path\": \"\"/\"file_path\": \"$W/$T\"}
+caso "bloqueio barra nao_executada" 2 "$H/runx/task-so-fecha-verde.py" "$J"
+# parcial nao dispensa os dois testes: a regra 4 continua valendo.
+J=$(mk concluida parcial "null"); J=${J/\"file_path\": \"\"/\"file_path\": \"$W/$T\"}
+caso "parcial sem teste barra"  2 "$H/runx/task-so-fecha-verde.py" "$J"
 rm -f "$W/.expx/hooks.json"
 
 echo "== escopo-da-ocorrencia =="

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Barra `status: concluida` sem suite verde e sem os dois testes preenchidos.
+"""Barra `status: concluida` sem suite verde ou parcial, e sem os dois testes.
 
 `PreToolUse` em Write|Edit sobre `tasks.md`. Le a escrita PROPOSTA — nao o
 arquivo em disco — porque o que interessa e o que esta prestes a ser gravado.
@@ -95,8 +95,12 @@ def main():
             continue
         tid = t.get("id") or "?"
         faltas = []
-        if t.get("suite") != "verde":
-            faltas.append(f"`suite: {t.get('suite')}` (esperado `verde`)")
+        # Regra 9: o E3 roda o subconjunto afetado pela task e grava `parcial`; a
+        # suite inteira e exigida uma vez no E4, antes do veredito. Os dois valores
+        # significam "o que rodou passou" — o que nao passa e `vermelha` (falhou) e
+        # `nao_executada` (ninguem rodou nada).
+        if t.get("suite") not in ("verde", "parcial"):
+            faltas.append(f"`suite: {t.get('suite')}` (esperado `verde` ou `parcial`)")
         if vazio(t.get("teste_integracao")):
             faltas.append("`teste_integracao` vazio")
         if vazio(t.get("teste_funcional")):
@@ -112,9 +116,10 @@ def main():
         "Task marcada `concluida` sem cumprir a definicao de pronto — "
         + "; ".join(problemas) + ".\n"
         "Toda task tem teste de integracao e teste funcional (regra 4), e a "
-        "suite inteira roda antes de concluir (regra 9). Nao existe "
+        "subconjunto afetado roda antes de concluir e a suite inteira no E4 "
+        "(regra 9). Nao existe "
         "\"concluido com ressalva\": ou vira `bloqueada` com registro em "
-        "BLOQUEIOS.md, ou fica `em_andamento` ate ficar verde.",
+        "BLOQUEIOS.md, ou fica `em_andamento` ate os testes passarem.",
         trabalho=R.trabalho_id(os.path.join(raiz, "docs", "manutencao", m.group(1))),
         fase="e3", task=problemas[0].split(":")[0], arquivos=[caminho], raiz=raiz,
     )
