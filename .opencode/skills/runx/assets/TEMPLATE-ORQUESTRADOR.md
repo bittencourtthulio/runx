@@ -52,6 +52,7 @@ caminho_critico: [T-01.01]
 - **Typecheck:** `{{comando exato, ou "NÃO EXISTE NO PROJETO"}}`
 - **MCPs / SDKs:** {{quais e para quê, ou "nenhum além do padrão"}}
 - **Segredos:** {{NOME_DA_VARIAVEL}} — fica em {{onde: .env local, secret manager, CI}}. NUNCA escreva o valor.
+- **Área de trabalho:** {{../<repo>--<OC-ID>-<slug> | checkout principal (sem worktree)}}
 
 ## 5. Papéis dentro de cada task
 
@@ -83,7 +84,8 @@ caminho_critico: [T-01.01]
 
 ## 8. Como retomar uma sessão interrompida
 
-1. Leia este arquivo inteiro.
-2. Leia o `status` de cada task em cada `sprint-NN/tasks.md`.
-3. Leia `BLOQUEIOS.md`.
-4. Continue da primeira task `pendente` ou `em_andamento` cujas dependências (`depende_de`) estão todas `concluida`. Ignore as `bloqueada` até que o bloqueio registrado seja resolvido.
+1. Abra a sessão de dentro da área de trabalho da seção 4.
+2. Leia este arquivo inteiro.
+3. Leia o `status` de cada task em cada `sprint-NN/tasks.md`.
+4. Leia `BLOQUEIOS.md`.
+5. Continue da primeira task `pendente` ou `em_andamento` cujas dependências (`depende_de`) estão todas `concluida`. Ignore as `bloqueada` até que o bloqueio registrado seja resolvido.

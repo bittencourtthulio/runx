@@ -8,6 +8,9 @@
     "regressao-antes-do-fix": "aviso",
     "task-so-fecha-verde": "aviso",
     "escopo-da-ocorrencia": "aviso",
-    "sem-jargao-no-uso": "aviso"
+    "sem-jargao-no-uso": "aviso",
+    "uma-ocorrencia-por-arvore": "aviso",
+    "task-reivindicada": "aviso",
+    "arvore-limpa-antes-da-suite": "aviso"
   }
 }

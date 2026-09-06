@@ -184,6 +184,7 @@ Ambos são sempre ancorados na raiz do repositório Git mais próxima do diretó
 13. Durante E3 a skill não pergunta nada. Dúvida nova vira registro em `BLOQUEIOS.md` e a task é pulada.
 14. Todo arquivo de estado é gravado com o frontmatter do contrato expx-schema v1, descrito em `references/00-schema.md`. Arquivo de estado sem frontmatter válido é considerado não entregue.
 15. Coincidência de arquivo não é regressão. O campo `regressao_de` só é preenchido com evidência de vínculo causal.
+16. Uma ocorrência aberta por árvore de trabalho. Com git, a ocorrência nasce em worktree próprio no E1, e toda sessão que a toca trabalha de dentro dele — ver "Sessões paralelas".
 
 Regra transversal: use sempre caminhos relativos; nunca escreva caminhos absolutos em nenhum artefato.
 
@@ -205,6 +206,19 @@ Ambos são **opcionais**: sem eles a skill funciona igual, apenas sem a rede de 
 
 O `qa` ainda é o mesmo modelo lendo o mesmo repositório — o que muda é que ele não viu a justificativa que o implementador deu a si mesmo, e isso já pega uma classe real de erro. Independência de verdade pediria rodá-lo em modelo diferente; vale testar depois que o básico estiver rodando, e medir se pega coisa a mais. Antes disso, é opinião.
 
+## Sessões paralelas
+
+O mesmo projeto pode ter várias sessões trabalhando ao mesmo tempo, em harnesses diferentes (Claude Code, OpenCode, MimoCode) ou no mesmo. Sem isolamento, três coisas dão errado: um `stash` ou uma troca de branch de uma sessão leva junto o trabalho não salvo de outra; uma suíte de testes rodada por uma sessão reprova por causa do código que outra sessão está no meio de mudar; e o hook de escopo de uma sessão passa a cobrar o escopo da ocorrência que a outra sessão está tocando.
+
+**O que resolve isso:**
+
+- **Regra 16 — worktree por ocorrência.** Com git, o E1 abre a ocorrência num `git worktree` próprio, num diretório irmão do checkout principal, na branch que a `mergex` usaria. Cada ocorrência vive isolada: `stash` e troca de branch de uma sessão não alcançam a árvore de outra (prova de bancada em `references/01-investigacao.md`). Sem git, ou com o pedido explícito de "sem worktree", o comportamento é o de sempre — a regra não se aplica.
+- **Reivindicação de task pelo rastro.** O E3 grava `task_iniciada` ao abrir uma task e `task_concluida`/`task_bloqueada` ao fechar. O hook `task-reivindicada` avisa quando uma sessão tenta abrir uma task que o rastro mostra aberta por outra sessão sem fechamento.
+- **Árvore limpa antes da suíte completa.** O E4 só roda a suíte inteira e emite veredito depois de confirmar que a árvore não tem trabalho de outra sessão no meio. Uma árvore contaminada nunca produz `REPROVADO` — ela simplesmente adia o E4, para não confundir "código quebrado" com "sessão alheia no caminho".
+- **Identidade no rastro.** Toda linha do rastro passa a trazer `sessao` (`<harness>@<id-da-sessão>`) e `harness`, para que dê para saber depois quem fez o quê.
+
+**O que vale em cada harness:** o texto do método — a regra 16, os passos do E1/E3/E4 — vale nos três harnesses, porque os três leem o mesmo `SKILL.md`. Os hooks Python rodam nativamente no Claude Code; no OpenCode e no MimoCode, uma ponte JS (`.claude/hooks/ponte/runx-ponte.js`, instalada em `.opencode/plugins/` e `.mimocode/hooks/`) traduz os eventos desses harnesses para o mesmo payload e despacha para os mesmos hooks — o motor é um só.
+
 ### Os hooks
 
 Hook de método **nasce em modo aviso**: registra no rastro e deixa passar. Hook de segurança nasce em bloqueio, porque segredo commitado não tem volta e o falso positivo ali é raro.
@@ -217,6 +231,9 @@ Hook de método **nasce em modo aviso**: registra no rastro e deixa passar. Hook
 | `task-so-fecha-verde` | `PreToolUse` em `tasks.md` | aviso | Barra `status: concluida` sem `suite: verde` ou `parcial`, e sem os dois testes (regras 4 e 9) |
 | `escopo-da-ocorrencia` | `PreToolUse` escrita | aviso | Avisa ao escrever fora de `arquivos_impactados` e do `arquivos` das tasks (regra 8) |
 | `sem-jargao-no-uso` | `PostToolUse` em `uso.md` | aviso | Aponta caminho de arquivo, nome de função, tabela, stack trace e termo técnico no relatório do cliente |
+| `uma-ocorrencia-por-arvore` | `PreToolUse` em `00-OCORRENCIA.md` | aviso | Avisa quando outra ocorrência já está aberta na mesma árvore de trabalho (regra 16) |
+| `task-reivindicada` | `PreToolUse` em `tasks.md` | aviso | Avisa ao marcar `em_andamento` uma task que o rastro mostra aberta por outra sessão (regras 7 e 13) |
+| `arvore-limpa-antes-da-suite` | `PreToolUse` em `Bash` | aviso | Avisa, antes de rodar a suíte, se há arquivo sujo fora do escopo ou task de outra sessão em andamento |
 
 O modo de cada hook vive em `.expx/hooks.json`, e `doctor` mostra em que modo cada um está:
 
@@ -231,6 +248,8 @@ Um hook de método que quebra nunca trava o trabalho: registra o erro e sai com 
 ### O rastro
 
 Os hooks e a skill gravam eventos em `docs/eventos/<trabalho_id>.jsonl`, uma linha JSON por evento, no formato do contrato `expx-eventos` v1. Ninguém edita à mão; o painel lê. É de lá que sai a linha do tempo da ocorrência, o que cada agente tocou, e **quantas voltas ao E3 o QA causou** — a contagem que revela qualidade de plano, porque plano ruim gera volta.
+
+Além das doze chaves do contrato, cada linha traz `sessao` (`<harness>@<id-da-sessão>`) e `harness` logo depois de `arquivos` — extras que identificam quem gravou o evento, essenciais para a reivindicação de task em sessões paralelas. São chaves adicionais, não uma redefinição do contrato: um parser que só conhece as doze continua lendo a linha normalmente.
 
 Nas transições de estágio e ao receber veredito de agente, grave com:
 

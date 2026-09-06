@@ -4,9 +4,22 @@
 set -uo pipefail
 
 H="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-W="$(mktemp -d)"; trap 'rm -rf "$W"' EXIT
+W="$(mktemp -d)"
+# $W e um repositorio git de verdade (nao so um diretorio .git vazio): alguns
+# hooks precisam de raiz_repo() funcionando de verdade, e a suite de arvore
+# limpa precisa de `git status` de verdade. WT e um worktree derivado de $W,
+# usado pelo caso que prova o comportamento de raiz_repo() dentro dele.
+git -C "$W" init -q -b main
+git -C "$W" config user.email "t@t.local"; git -C "$W" config user.name "teste"
+printf '.expx/\ndocs/eventos/\n' > "$W/.gitignore"
+git -C "$W" add -A -- .gitignore >/dev/null 2>&1 || true
+git -C "$W" -c commit.gpgsign=false commit -q -m init --allow-empty >/dev/null 2>&1
+WT="${W}--worktree"
+git -C "$W" worktree add -q -b fix/OC-2026-0142 "$WT" main >/dev/null 2>&1
+trap 'git -C "$W" worktree remove --force "$WT" >/dev/null 2>&1; rm -rf "$W" "$WT"' EXIT
 OC="$W/docs/manutencao/OC-2026-0142-calculo-frete"
-mkdir -p "$OC/sprint-01" "$OC/base" "$W/.git" "$W/src/frete" "$W/docs/relatorios/2026-08-29-OC-2026-0142-calculo-frete"
+mkdir -p "$OC/sprint-01" "$OC/base" "$W/src/frete" "$W/docs/relatorios/2026-08-29-OC-2026-0142-calculo-frete"
+mkdir -p "$WT/src"
 
 ok=0; falhou=0
 caso() { # caso <nome> <esperado> <hook> <json>
@@ -20,6 +33,41 @@ caso() { # caso <nome> <esperado> <hook> <json>
   fi
 }
 w() { printf '{"tool_name":"Write","tool_input":{"file_path":"%s","content":%s}}' "$W/$1" "$2"; }
+# caso_py <nome> <cwd> <expressao-esperada> <expressao-python> — compara a saida
+# de uma expressao python (biblioteca comum, sem passar por um hook) contra o
+# valor esperado, com sys.path apontando para comum/.
+caso_py() {
+  local nome="$1" cwd="$2" esperado="$3" expr="$4" real esperado_real
+  real=$(cd "$cwd" && python3 -c "
+import sys; sys.path.insert(0, '$H/comum')
+import expx_rastro as R
+print($expr)
+" 2>&1)
+  # raiz_repo() resolve symlink (os.path.realpath); no macOS /var -> /private/var,
+  # entao o esperado tambem precisa ser resolvido antes de comparar.
+  esperado_real=$(python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$esperado" 2>/dev/null || printf '%s' "$esperado")
+  if [ "$real" = "$esperado_real" ]; then
+    ok=$((ok+1)); printf '  ok   %-46s => %s\n' "$nome" "$real"
+  else
+    falhou=$((falhou+1)); printf '  FALHA %-45s esperado=%s real=%s\n' "$nome" "$esperado" "$real"
+  fi
+}
+# script_py <nome> <script-python> — como `caso_py`, mas o script e um bloco
+# multi-linha (heredoc) em vez de uma expressao unica; o script IMPRIME
+# "True" ou "False" na ultima linha, comparado como string.
+script_py() {
+  local nome="$1" script="$2" real
+  real=$(cd "$W" && python3 -c "
+import sys; sys.path.insert(0, '$H/comum')
+import expx_rastro as R
+$script
+" 2>&1)
+  if [ "$real" = "True" ]; then
+    ok=$((ok+1)); printf '  ok   %-46s => %s\n' "$nome" "$real"
+  else
+    falhou=$((falhou+1)); printf '  FALHA %-45s esperado=True real=%s\n' "$nome" "$real"
+  fi
+}
 
 escreve_causa() { cat > "$OC/01-CAUSA-RAIZ.md" <<EOF
 ---
@@ -190,6 +238,77 @@ J=$(mk concluida parcial "null"); J=${J/\"file_path\": \"\"/\"file_path\": \"$W/
 caso "parcial sem teste barra"  2 "$H/runx/task-so-fecha-verde.py" "$J"
 rm -f "$W/.expx/hooks.json"
 
+echo "== task-reivindicada =="
+# trabalho_id() le 01-CAUSA-RAIZ.md/tasks.md, ja gravados nesta fixture pelas
+# secoes anteriores (escreve_causa/escreve_tasks) com trabalho_id: OC-2026-0142
+# explicito — e por isso, nao pelo nome da pasta, que o rastro tem esse nome.
+RASTRO="$W/docs/eventos/OC-2026-0142.jsonl"
+mkdir -p "$(dirname "$RASTRO")"
+mk_em_andamento() { # mk_em_andamento <sessao no json, para o campo tool_input.session_id, ou omita>
+  python3 - "$1" <<'PY'
+import json, sys
+sid = sys.argv[1] if len(sys.argv) > 1 and sys.argv[1] != "-" else None
+c = """---
+kind: tasks
+trabalho_id: OC-2026-0142
+tasks:
+  - id: T-01.01
+    status: em_andamento
+    teste_integracao: Chama endpoint
+    teste_funcional: Dado 60kg retorna 120
+    suite: nao_executada
+---
+"""
+entrada = {"file_path": "PLACEHOLDER", "content": c}
+evento = {"tool_name": "Write", "tool_input": entrada}
+if sid:
+    evento["session_id"] = sid
+print(json.dumps(evento))
+PY
+}
+grava_evento() { # grava_evento <evento> <sessao|->
+  python3 -c "
+import json, sys
+sys.path.insert(0, '$H/comum')
+import expx_rastro as R
+kw = {}
+if sys.argv[2] != '-':
+    kw['sessao_id'] = sys.argv[2]
+R.grava(sys.argv[1], trabalho='OC-2026-0142', task='T-01.01', fase='e3', raiz='$W', **kw)
+" "$1" "$2"
+}
+: > "$RASTRO"
+J=$(mk_em_andamento -); J=${J/\"file_path\": \"PLACEHOLDER\"/\"file_path\": \"$W/$T\"}
+caso "sem rastro nunca avisa"          0 "$H/runx/task-reivindicada.py" "$J"
+
+: > "$RASTRO"; grava_evento task_iniciada "opencode@abc"
+J=$(mk_em_andamento -); J=${J/\"file_path\": \"PLACEHOLDER\"/\"file_path\": \"$W/$T\"}
+caso "reivindicada por outra sessao avisa" 0 "$H/runx/task-reivindicada.py" "$J"
+
+: > "$RASTRO"; grava_evento task_iniciada "opencode@abc"
+J=$(mk_em_andamento "opencode@abc"); J=${J/\"file_path\": \"PLACEHOLDER\"/\"file_path\": \"$W/$T\"}
+caso "mesma sessao nao avisa"          0 "$H/runx/task-reivindicada.py" "$J"
+
+: > "$RASTRO"; grava_evento task_iniciada "opencode@abc"; grava_evento task_concluida "opencode@abc"
+J=$(mk_em_andamento "claude-code@xyz"); J=${J/\"file_path\": \"PLACEHOLDER\"/\"file_path\": \"$W/$T\"}
+caso "fechada por task_concluida nao avisa" 0 "$H/runx/task-reivindicada.py" "$J"
+
+: > "$RASTRO"
+python3 -c "
+import json
+linha = {'ts':'2026-08-29T00:00:00Z','expx_eventos':1,'trabalho_id':'OC-2026-0142','ferramenta':'runx','origem':'hook','evento':'task_iniciada','fase':'e3','task':'T-01.01','agente':'principal','resultado':'ok','detalhe':None,'arquivos':[]}
+open('$RASTRO','a').write(json.dumps(linha)+'\n')
+"
+J=$(mk_em_andamento "claude-code@xyz"); J=${J/\"file_path\": \"PLACEHOLDER\"/\"file_path\": \"$W/$T\"}
+caso "rastro sem sessao (legado) nunca avisa" 0 "$H/runx/task-reivindicada.py" "$J"
+
+: > "$RASTRO"; grava_evento task_iniciada "opencode@abc"
+mkdir -p "$W/.expx"; echo '{"hooks":{"task-reivindicada":"bloqueio"}}' > "$W/.expx/hooks.json"
+J=$(mk_em_andamento -); J=${J/\"file_path\": \"PLACEHOLDER\"/\"file_path\": \"$W/$T\"}
+caso "bloqueio barra reivindicada"     2 "$H/runx/task-reivindicada.py" "$J"
+rm -f "$W/.expx/hooks.json"
+: > "$RASTRO"
+
 echo "== escopo-da-ocorrencia =="
 escreve_tasks "Pedido de 60kg cobra 120"
 caso "arquivo no escopo passa"  0 "$H/runx/escopo-da-ocorrencia.py" "$(w src/frete/calculo.ts '"x"')"
@@ -199,6 +318,49 @@ caso "docs/manutencao livre"    0 "$H/runx/escopo-da-ocorrencia.py" "$(w docs/ma
 mkdir -p "$W/.expx"; echo '{"hooks":{"escopo-da-ocorrencia":"bloqueio"}}' > "$W/.expx/hooks.json"
 caso "bloqueio barra fora"      2 "$H/runx/escopo-da-ocorrencia.py" "$(w src/pedido/outro.ts '"x"')"
 rm -f "$W/.expx/hooks.json"
+
+echo "== uma-ocorrencia-por-arvore =="
+OC2="$W/docs/manutencao/OC-2026-0200-outra-ocorrencia"
+mkdir -p "$OC2"
+cat > "$OC2/00-OCORRENCIA.md" <<'EOF'
+---
+expx_schema: 1
+expx_tool: runx
+kind: ocorrencia
+trabalho_id: OC-2026-0200
+titulo: Outra ocorrencia aberta
+tipo_ocorrencia: bug
+recebido_em: 2026-08-29
+tem_reproducao: true
+modulo_afetado: []
+worktree: null
+---
+EOF
+caso "outra ocorrencia aberta avisa" 0 "$H/runx/uma-ocorrencia-por-arvore.py" \
+  "$(w docs/manutencao/OC-2026-0300-terceira/00-OCORRENCIA.md '"---\nkind: ocorrencia\ntrabalho_id: OC-2026-0300\n---\n"')"
+caso "escrever na propria ocorrencia passa" 0 "$H/runx/uma-ocorrencia-por-arvore.py" \
+  "$(w docs/manutencao/OC-2026-0200-outra-ocorrencia/00-OCORRENCIA.md '"---\nkind: ocorrencia\ntrabalho_id: OC-2026-0200\n---\n"')"
+cat > "$OC2/ORQUESTRADOR.md" <<'EOF'
+---
+expx_schema: 1
+expx_tool: runx
+kind: orquestrador
+trabalho_id: OC-2026-0200
+estagio: e5
+status: concluido
+concluido_em: 2026-08-30
+sprints: [sprint-01]
+caminho_critico: [F-01.1]
+---
+EOF
+caso "ocorrencia encerrada nao conta" 0 "$H/runx/uma-ocorrencia-por-arvore.py" \
+  "$(w docs/manutencao/OC-2026-0300-terceira/00-OCORRENCIA.md '"---\nkind: ocorrencia\ntrabalho_id: OC-2026-0300\n---\n"')"
+sed -i.bak 's/^status: concluido$/status: em_andamento/; s/^concluido_em: .*/concluido_em: null/' "$OC2/ORQUESTRADOR.md"; rm -f "$OC2/ORQUESTRADOR.md.bak"
+mkdir -p "$W/.expx"; echo '{"hooks":{"uma-ocorrencia-por-arvore":"bloqueio"}}' > "$W/.expx/hooks.json"
+caso "bloqueio barra outra aberta"    2 "$H/runx/uma-ocorrencia-por-arvore.py" \
+  "$(w docs/manutencao/OC-2026-0300-terceira/00-OCORRENCIA.md '"---\nkind: ocorrencia\ntrabalho_id: OC-2026-0300\n---\n"')"
+rm -f "$W/.expx/hooks.json"
+rm -rf "$OC2"
 
 echo "== sem-jargao-no-uso (PostToolUse) =="
 U="docs/relatorios/2026-08-29-OC-2026-0142-calculo-frete/uso.md"
@@ -236,6 +398,92 @@ caso "rastro-arquivo grava"     0 "$H/comum/rastro-arquivo.py" "$(w src/frete/ca
 caso "rastro-suite verde"       0 "$H/comum/rastro-suite.py" '{"tool_name":"Bash","tool_input":{"command":"npm test"},"tool_response":{"exit_code":0}}'
 caso "rastro-suite vermelha"    0 "$H/comum/rastro-suite.py" '{"tool_name":"Bash","tool_input":{"command":"npx vitest run"},"tool_response":{"exit_code":1}}'
 caso "comando comum ignorado"   0 "$H/comum/rastro-suite.py" '{"tool_name":"Bash","tool_input":{"command":"ls -la"},"tool_response":{"exit_code":0}}'
+script_py "rastro-suite grava HEAD e sujos_fora_escopo" '
+import subprocess, json
+subprocess.run(["python3", "'"$H"'/comum/rastro-suite.py"],
+                input=json.dumps({"tool_name":"Bash","tool_input":{"command":"npm test"},"tool_response":{"exit_code":0}}),
+                text=True, cwd="'"$W"'")
+linhas = open("'"$W"'/docs/eventos/OC-2026-0142.jsonl").readlines()
+d = json.loads(linhas[-1])
+print("@" in d["detalhe"] and "sujos_fora_escopo=" in d["detalhe"])
+'
+
+echo "== identidade de sessao (sessoes paralelas) =="
+
+script_py "sessao-por-env" '
+import os
+for k in ("EXPX_SESSAO", "EXPX_HARNESS", "CLAUDECODE", "CLAUDE_CODE_SESSION_ID"):
+    os.environ.pop(k, None)
+os.environ["EXPX_SESSAO"] = "opencode@abc"
+print(R.sessao() == "opencode@abc")
+'
+
+script_py "sessao-por-payload" '
+import os
+for k in ("EXPX_SESSAO", "CLAUDECODE", "CLAUDE_CODE_SESSION_ID"):
+    os.environ.pop(k, None)
+os.environ["EXPX_HARNESS"] = "mimocode"
+print(R.sessao({"session_id": "xyz"}) == "mimocode@xyz")
+'
+
+script_py "sessao-por-ancestral" '
+import os
+from unittest import mock
+for k in ("EXPX_SESSAO", "EXPX_HARNESS", "CLAUDECODE", "CLAUDE_CODE_SESSION_ID"):
+    os.environ.pop(k, None)
+with mock.patch.object(R, "_ancestral_harness_pid", return_value=(None, None)):
+    print(R.sessao() == "desconhecido@sem-id")
+'
+
+script_py "extras-depois-das-doze" '
+import os, json
+os.environ["EXPX_SESSAO"] = "claude-code@teste"
+os.environ["EXPX_HARNESS"] = "claude-code"
+R.grava("arquivo_alterado", trabalho="OC-TESTE-EXTRAS", arquivos=["a.ts"], raiz="'"$W"'")
+linha = open("'"$W"'/docs/eventos/OC-TESTE-EXTRAS.jsonl").readlines()[-1]
+d = json.loads(linha)
+chaves = list(d.keys())
+doze = chaves[:12] == ["ts","expx_eventos","trabalho_id","ferramenta","origem","evento",
+                        "fase","task","agente","resultado","detalhe","arquivos"]
+extras = chaves[12:14] == ["sessao", "harness"]
+print(doze and extras and d["sessao"] == "claude-code@teste" and d["harness"] == "claude-code")
+'
+
+echo "== arvore-limpa-antes-da-suite =="
+# Precisa de escopo declarado (causa raiz com arquivos_impactados) e de um
+# arquivo de verdade sujo no git para $W, que ja e repositorio real. Limpeza
+# cirurgica dos arquivos desta secao apenas — nunca `git clean -fdx`, que
+# apagaria docs/manutencao/ inteiro e quebraria as secoes seguintes do script.
+escreve_causa true; escreve_tasks "Pedido de 60kg cobra 120"
+bash_ev() { printf '{"tool_name":"Bash","tool_input":{"command":"%s"}}' "$1"; }
+limpa_sujeira() { rm -rf "$W/src/pedido" "$W/tests" "$W/src/frete/calculo.ts"; }
+limpa_sujeira
+touch "$W/src/frete/calculo.ts"  # no escopo (arquivos_impactados)
+caso "sujo no escopo nao avisa"   0 "$H/runx/arvore-limpa-antes-da-suite.py" "$(bash_ev 'npm test')"
+limpa_sujeira
+mkdir -p "$W/src/pedido"; touch "$W/src/pedido/fora.ts"  # fora do escopo
+caso "sujo fora do escopo avisa" 0 "$H/runx/arvore-limpa-antes-da-suite.py" "$(bash_ev 'npm test')"
+limpa_sujeira
+mkdir -p "$W/tests"; touch "$W/tests/frete_test.py"  # teste, sempre livre
+caso "sujo de teste nao avisa"    0 "$H/runx/arvore-limpa-antes-da-suite.py" "$(bash_ev 'npm test')"
+limpa_sujeira
+caso "comando comum nao dispara"  0 "$H/runx/arvore-limpa-antes-da-suite.py" "$(bash_ev 'ls -la')"
+mkdir -p "$W/src/pedido"; touch "$W/src/pedido/fora.ts"
+mkdir -p "$W/.expx"; echo '{"hooks":{"arvore-limpa-antes-da-suite":"bloqueio"}}' > "$W/.expx/hooks.json"
+caso "bloqueio barra sujo fora"   2 "$H/runx/arvore-limpa-antes-da-suite.py" "$(bash_ev 'npm test')"
+rm -f "$W/.expx/hooks.json"
+limpa_sujeira
+SEMGIT="$(mktemp -d)"
+saida=$(printf '{"tool_name":"Bash","tool_input":{"command":"npm test"}}' | (cd "$SEMGIT" && python3 "$H/runx/arvore-limpa-antes-da-suite.py") 2>&1); real=$?
+if [ "$real" -eq 0 ]; then ok=$((ok+1)); printf '  ok   %-46s exit=%s\n' "sem git nunca avisa" "$real"
+else falhou=$((falhou+1)); printf '  FALHA %-45s esperado=0 real=%s\n     %s\n' "sem git nunca avisa" "$real" "$saida"; fi
+rm -rf "$SEMGIT"
+
+echo "== raiz_repo em worktree =="
+# .git dentro de um worktree e ARQUIVO (gitdir: <principal>/.git/worktrees/<nome>),
+# nao diretorio. raiz_repo() hoje so testa os.path.isdir(".git") e, chamada de um
+# subdiretorio do worktree, cai no fallback (devolve o proprio subdiretorio).
+caso_py "raiz-em-worktree" "$WT/src" "$WT" "R.raiz_repo()"
 
 echo "== robustez: entrada invalida nunca trava =="
 for hk in comum/rastro-arquivo comum/rastro-suite runx/causa-antes-do-plano \
@@ -247,9 +495,9 @@ done
 
 echo "== despachante: um processo, mesma semantica =="
 DESP="$H/comum/despachante.py"
-PRE5="comum/segredo-no-commit runx/causa-antes-do-plano runx/regressao-antes-do-fix runx/task-so-fecha-verde runx/escopo-da-ocorrencia"
+PRE7="comum/segredo-no-commit runx/causa-antes-do-plano runx/regressao-antes-do-fix runx/task-so-fecha-verde runx/escopo-da-ocorrencia runx/uma-ocorrencia-por-arvore runx/task-reivindicada"
 dcaso(){ local esp="$1" desc="$2" ev="$3" c
-  printf '%s' "$ev" | (cd "$W" && python3 "$DESP" $PRE5) >/dev/null 2>&1; c=$?
+  printf '%s' "$ev" | (cd "$W" && python3 "$DESP" $PRE7) >/dev/null 2>&1; c=$?
   if [ "$c" -eq "$esp" ]; then ok=$((ok+1)); printf '  ok   %-46s exit=%s\n' "$desc" "$c"
   else falhou=$((falhou+1)); printf '  FALHA %-45s esperado=%s real=%s\n' "$desc" "$esp" "$c"; fi; }
 escreve_causa true; escreve_tasks "Pedido de 60kg cobra 120"
@@ -261,6 +509,37 @@ dcaso 2 "modo bloqueio propaga"        "$(w src/pedido/outro.ts '"x"')"
 rm -f "$W/.expx/hooks.json"
 dcaso 0 "stdin vazio"                  ''
 dcaso 0 "json quebrado"                '{quebrado'
+
+echo "== despachante: grupo PreToolUse/Bash com o hook novo =="
+dcaso_bash(){ local esp="$1" desc="$2" ev="$3" c
+  printf '%s' "$ev" | (cd "$W" && python3 "$DESP" runx/arvore-limpa-antes-da-suite) >/dev/null 2>&1; c=$?
+  if [ "$c" -eq "$esp" ]; then ok=$((ok+1)); printf '  ok   %-46s exit=%s\n' "$desc" "$c"
+  else falhou=$((falhou+1)); printf '  FALHA %-45s esperado=%s real=%s\n' "$desc" "$esp" "$c"; fi; }
+dcaso_bash 0 "comando de suite via despachante passa" '{"tool_name":"Bash","tool_input":{"command":"npm test"}}'
+
+echo "== hooks.json e hooks.exemplo.json validos, doctor lista nove hooks =="
+script_py "hooks.json e json valido" '
+import json
+print(bool(json.load(open("'"$H"'/hooks.json"))))
+'
+script_py "hooks.exemplo.json e json valido" '
+import json
+print(bool(json.load(open("'"$H"'/hooks.exemplo.json"))))
+'
+script_py "hooks.json tem o grupo PreToolUse/Bash" '
+import json
+d = json.load(open("'"$H"'/hooks.json"))
+print(any(g.get("matcher") == "Bash" for g in d["hooks"]["PreToolUse"]))
+'
+script_py "doctor.py lista nove hooks" '
+import subprocess, re
+r = subprocess.run(["python3", "'"$H"'/comum/doctor.py"], capture_output=True, text=True, cwd="'"$W"'")
+nomes = {"segredo-no-commit","causa-antes-do-plano","regressao-antes-do-fix","task-so-fecha-verde","escopo-da-ocorrencia","sem-jargao-no-uso","uma-ocorrencia-por-arvore","task-reivindicada","arvore-limpa-antes-da-suite"}
+# so a linha da TABELA (nome seguido de espacos e depois "seguranca"/"metodo")
+achados = {m.group(1) for l in r.stdout.splitlines()
+           if (m := re.match(r"\s*([a-z-]+)\s+(seguranca|metodo)\s", l))}
+print(achados == nomes)
+'
 
 echo
 echo "== rastro gravado =="

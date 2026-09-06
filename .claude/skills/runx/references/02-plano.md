@@ -134,7 +134,7 @@ Crie `docs/manutencao/<OC-ID>-<slug>/ORQUESTRADOR.md` de `assets/TEMPLATE-ORQUES
 1. **Objetivo** em no máximo 5 linhas.
 2. **Mapa dos arquivos e ordem de leitura.**
 3. **Rota de execução** com paralelismo e caminho crítico, derivada de `fases.md` e dos `depende_de`.
-4. **Ferramentas:** comando de teste, comando de lint, comando de type check — os comandos exatos do projeto, tirados da base; `NÃO EXISTE NO PROJETO` quando não houver.
+4. **Ferramentas:** comando de teste, comando de lint, comando de type check — os comandos exatos do projeto, tirados da base; `NÃO EXISTE NO PROJETO` quando não houver. A linha **Área de trabalho** copia o `worktree` de `00-OCORRENCIA.md` — o caminho do worktree, ou "checkout principal (sem worktree)" quando `worktree: null`.
 5. **Regras de autonomia.**
 6. **Definição de pronto da ocorrência.**
 7. **Como retomar uma sessão interrompida.**

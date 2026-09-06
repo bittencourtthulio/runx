@@ -130,11 +130,71 @@ afirma qa-e-revisor-sempre \
   bash -c 'grep -q "agente .qa." "'"$S"'/references/04-qa.md" \
     && grep -q "revisor-testes" "'"$S"'/references/03-fix.md"'
 
-echo "== invariantes do metodo =="
+echo "== sessoes paralelas =="
 
-afirma regras-continuam-15 \
-  "as regras inviolaveis continuam sendo 15" \
-  bash -c '[ "$(awk "/^## Regras inviol/,/^Regra transversal/" "'"$S"'/SKILL.md" | grep -cE "^[0-9]+\. ")" -eq 15 ]'
+afirma regras-continuam-16 \
+  "as regras inviolaveis agora sao 16" \
+  bash -c '[ "$(awk "/^## Regras inviol/,/^Regra transversal/" "'"$S"'/SKILL.md" | grep -cE "^[0-9]+\. ")" -eq 16 ]'
+
+afirma regra-16-cita-worktree \
+  "a regra 16 cita worktree" \
+  bash -c 'awk "/^## Regras inviol/,/^Regra transversal/" "'"$S"'/SKILL.md" | grep -E "^16\. " | grep -qi worktree'
+
+afirma skill-secao-sessoes-paralelas \
+  "SKILL.md tem a secao Sessoes paralelas" \
+  tem "$S/SKILL.md" '^## Sessões paralelas'
+
+afirma skill-tabela-hooks-novos \
+  "a tabela de hooks lista os tres hooks novos" \
+  bash -c 'f="'"$S"'/SKILL.md"; grep -q "uma-ocorrencia-por-arvore" "$f" \
+    && grep -q "task-reivindicada" "$f" && grep -q "arvore-limpa-antes-da-suite" "$f"'
+
+afirma skill-rastro-sessao-harness \
+  "a secao O rastro cita sessao e harness como chaves extras" \
+  bash -c 'awk "/^### O rastro/,/^## /" "'"$S"'/SKILL.md" | grep -q "sessao" \
+    && awk "/^### O rastro/,/^## /" "'"$S"'/SKILL.md" | grep -q "harness"'
+
+afirma schema-ocorrencia-worktree \
+  "o kind ocorrencia tem a chave worktree" \
+  bash -c 'awk "/kind: ocorrencia/,/^### /" "'"$S"'/references/00-schema.md" | grep -q "^worktree:"'
+
+afirma template-ocorrencia-worktree \
+  "TEMPLATE-ocorrencia.md tem a chave worktree" \
+  tem "$S/assets/TEMPLATE-ocorrencia.md" '^worktree:'
+
+afirma e1-passo-worktree \
+  "01-investigacao.md manda abrir worktree com git worktree add -b" \
+  bash -c 'f="'"$S"'/references/01-investigacao.md"; grep -q "git worktree add -b" "$f" \
+    && grep -q "package-lock.json" "$f" && grep -q "pnpm-lock.yaml" "$f" && grep -q "requirements.txt" "$f"'
+
+afirma e1-uma-por-arvore \
+  "01-investigacao.md declara uma ocorrencia aberta por arvore, com opt-out" \
+  bash -c 'f="'"$S"'/references/01-investigacao.md"; grep -qi "uma ocorrência aberta por árvore" "$f" \
+    && grep -qi "sem worktree" "$f"'
+
+afirma e3-task-iniciada \
+  "03-fix.md grava task_iniciada, task_concluida e task_bloqueada com --task" \
+  bash -c 'f="'"$S"'/references/03-fix.md"; grep -q -- "--evento task_iniciada" "$f" \
+    && grep -q -- "--evento task_concluida" "$f" && grep -q -- "--evento task_bloqueada" "$f" \
+    && grep -q -- "--task" "$f"'
+
+afirma e3-reivindicacao \
+  "03-fix.md trata task reivindicada por outra sessao" \
+  bash -c 'grep -qi "reivindicad" "'"$S"'/references/03-fix.md" && grep -qi "outra sessão" "'"$S"'/references/03-fix.md"'
+
+afirma e4-portao-arvore \
+  "04-qa.md tem um passo que exige arvore limpa antes da suite completa" \
+  bash -c 'f="'"$S"'/references/04-qa.md"; grep -q "git status --porcelain" "$f" && grep -qi "não grave" "$f"'
+
+afirma e2-orq-area-de-trabalho \
+  "TEMPLATE-ORQUESTRADOR.md tem a linha Area de trabalho" \
+  tem "$S/assets/TEMPLATE-ORQUESTRADOR.md" 'Área de trabalho:'
+
+afirma readme-mimocode \
+  "README documenta a coluna MimoCode e a flag --mimocode" \
+  bash -c 'f="'"$R"'/README.md"; grep -q "MimoCode" "$f" && grep -q -- "--mimocode" "$f"'
+
+echo "== invariantes do metodo =="
 
 # DR-53: o 07-diagrama.md cita {{ }} como sintaxe de no hexagonal do Mermaid, dentro de
 # aspas. E legitimo e esta documentado; os demais arquivos de instrucao nao podem ter.

@@ -7,9 +7,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/despachante.py\" comum/segredo-no-commit runx/causa-antes-do-plano runx/regressao-antes-do-fix runx/task-so-fecha-verde runx/escopo-da-ocorrencia",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/despachante.py\" comum/segredo-no-commit runx/causa-antes-do-plano runx/regressao-antes-do-fix runx/task-so-fecha-verde runx/escopo-da-ocorrencia runx/uma-ocorrencia-por-arvore runx/task-reivindicada",
             "timeout": 15,
-            "statusMessage": "conferindo segredo, causa, regressao e escopo"
+            "statusMessage": "conferindo segredo, causa, regressao, escopo e sessoes paralelas"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/despachante.py\" runx/arvore-limpa-antes-da-suite",
+            "timeout": 15,
+            "statusMessage": "conferindo arvore antes da suite"
           }
         ]
       }

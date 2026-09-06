@@ -41,6 +41,7 @@ def main():
     p.add_argument("--resultado", default="ok")
     p.add_argument("--detalhe", default=None)
     p.add_argument("--arquivos", nargs="*", default=None)
+    p.add_argument("--sessao", default=None, help="<harness>@<id>; descoberto se omitido")
     args = p.parse_args()
 
     raiz = R.raiz_repo()
@@ -56,6 +57,7 @@ def main():
         args.evento, trabalho=trabalho, fase=args.fase, task=args.task,
         agente=args.agente, resultado=args.resultado, detalhe=args.detalhe,
         arquivos=[R.rel(a, raiz) or a for a in (args.arquivos or [])], raiz=raiz,
+        sessao_id=args.sessao,
     )
     return 0
 

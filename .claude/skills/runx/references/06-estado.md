@@ -30,6 +30,8 @@ O caminho é relativo à raiz do repositório — a mesma raiz que ancora `docs/
 
 Nesse caso: **siga sem gravar, sem erro e sem aviso.** Não crie o diretório, não avise o usuário, não registre nada. O estágio segue normalmente, como se esta página não existisse.
 
+**Exceção — worktree aberto pelo E1 (regra 16).** Num worktree recém-criado, `.expx/` não existe porque é ignorado pelo git, não porque o CLI não instalou: o checkout principal já tem o diretório. Nesse caso o E1 **copia** `.expx/hooks.json` do checkout principal para o worktree e grava `estado.json` a partir do objeto padrão desta página — isso é herança de uma instalação que já existe, não a criação vedada acima. Sem `.expx/` no checkout principal também, a exceção não se aplica e vale a regra normal: não crie.
+
 ## Formato
 
 ```json

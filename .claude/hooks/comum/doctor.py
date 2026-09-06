@@ -24,6 +24,9 @@ HOOKS = [
     ("task-so-fecha-verde", "metodo", "aviso", "task concluida sem suite verde e sem os dois testes"),
     ("escopo-da-ocorrencia", "metodo", "aviso", "escrita fora do escopo declarado"),
     ("sem-jargao-no-uso", "metodo", "aviso", "jargao tecnico no relatorio do cliente"),
+    ("uma-ocorrencia-por-arvore", "metodo", "aviso", "outra ocorrencia ja aberta nesta arvore de trabalho"),
+    ("task-reivindicada", "metodo", "aviso", "task em_andamento reivindicada por outra sessao"),
+    ("arvore-limpa-antes-da-suite", "metodo", "aviso", "suite rodando com arvore contaminada por outra sessao"),
 ]
 
 

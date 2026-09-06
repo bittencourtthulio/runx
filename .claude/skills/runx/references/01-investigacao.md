@@ -73,6 +73,43 @@ Preencha `00-OCORRENCIA.md` pelo contrato de entrada do SKILL.md. O relato do cl
 
 ---
 
+## Passo 0.a — Uma ocorrência aberta por árvore (regra 16)
+
+Antes de criar a pasta: verifique se `docs/manutencao/` desta raiz já tem outra ocorrência aberta (um `ORQUESTRADOR.md` sem `status: concluido`, ou — antes do E2 — um `00-OCORRENCIA.md` sem ocorrência fechada correspondente em `docs/relatorios/`).
+
+- **Com git:** siga para o Passo 0.b — o worktree resolve a colisão isolando esta ocorrência em árvore própria; nenhuma pergunta é necessária.
+- **Sem git:** a raiz está genuinamente ocupada. Anuncie qual ocorrência está aberta e o estágio dela, e pergunte se é para continuar nela ou encerrá-la antes de abrir esta. É uma pergunta legítima aqui, porque sem worktree não há como isolar as duas.
+
+## Passo 0.b — Abrir a área de trabalho (worktree)
+
+Só se aplica com git (`git rev-parse --is-inside-work-tree` responde `true`). Sem git, ou com "sem worktree" explícito no pedido, `worktree: null` no `00-OCORRENCIA.md` e nada muda no restante do estágio.
+
+1. **Nome da branch e base — copiados da mergex, nunca recalculados do zero:** `fix/<OC-ID>-<slug>` para `tipo: bug`, `chore/<OC-ID>-<slug>` para os demais tipos. Base, nesta ordem, parando na primeira que responder: `docs/stack/CONVENCOES.md` da stackx (seção de versionamento, se marcada e não `PROPOSTA`) → `git symbolic-ref refs/remotes/origin/HEAD` → a branch atual, se for `main`, `master`, `develop` ou equivalente detectada.
+2. **Criar ou retomar.** `git worktree list` já lista um worktree nessa branch → retome nele (não crie outro). Senão: `git worktree add -b <branch> ../<repo>--<OC-ID>-<slug> <base>`, onde `<repo>` é o nome do diretório do checkout principal. Se a branch já existe mas sem worktree associado: `git worktree add ../<repo>--<OC-ID>-<slug> <branch>`.
+3. **Herdar o local do checkout principal** — lista fechada, copiando só o que existir lá, nunca lendo o conteúdo: `.expx/hooks.json` (mais `estado.json` do objeto padrão de `references/06-estado.md`), `.claude/settings.local.json`, `.env`, `.env.local`, `.env.*.local`.
+4. **Instalar dependências**, para o E1 conseguir rodar teste no worktree novo. Comando do `CONVENCOES.md` da stackx quando existir; senão pelo lockfile encontrado, na primeira ordem que casar:
+
+   | Lockfile | Comando |
+   |---|---|
+   | `package-lock.json` | `npm ci` |
+   | `pnpm-lock.yaml` | `pnpm install --frozen-lockfile` |
+   | `yarn.lock` | `yarn install --frozen-lockfile` |
+   | `bun.lock` / `bun.lockb` | `bun install` |
+   | `requirements.txt` | `pip install -r requirements.txt` |
+   | `poetry.lock` | `poetry install` |
+   | `go.mod` | `go mod download` |
+   | `Cargo.lock` | `cargo fetch` |
+   | `Gemfile.lock` | `bundle install` |
+   | `composer.lock` | `composer install` |
+
+   Nenhum lockfile reconhecido: registre a lacuna em `base/00-LACUNAS.md` e siga — não inventa comando.
+5. **Gravar** `worktree: ../<repo>--<OC-ID>-<slug>` no `00-OCORRENCIA.md` (que já é gravado **dentro** do worktree, não no checkout principal) e registrar no rastro: `fase_iniciada --fase e1 --detalhe "worktree ../<repo>--<OC-ID>-<slug>"`.
+6. **Entrar na área de trabalho.** No Claude Code, use `EnterWorktree` com `path` apontando para o diretório criado — a sessão passa a trabalhar de lá. No OpenCode e no MimoCode, anuncie: "Área de trabalho: `../<repo>--<OC-ID>-<slug>`. Abra o harness nesse diretório para continuar" e encerre o E1 aqui; o comando seguinte, rodado de dentro do worktree, retoma pela máquina de estados normalmente.
+
+Toda a pasta `docs/manutencao/<OC-ID>-<slug>/` desta ocorrência vive dentro do worktree a partir daqui; nada dela é gravado no checkout principal.
+
+---
+
 # E1.a — BASE DE CONHECIMENTO
 
 Antes de opinar sobre a causa, mapeie o pedaço do sistema que a ocorrência toca. Leia o código **de verdade** — nunca descreva de memória nem por suposição.

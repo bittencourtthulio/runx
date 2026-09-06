@@ -153,5 +153,29 @@ conf 0 ".expx/hooks.json nunca e cobrado por escopo" esc .expx/hooks.json
 conf 0 ".github/workflows nao e cobrado"             esc .github/workflows/ci.yml
 
 echo
+echo "== uma-ocorrencia-por-arvore: nao acusa a si mesma, nem a que ja fechou =="
+W2="$(mktemp -d)"; trap 'rm -rf "$W2"' EXIT
+OCA="$W2/docs/manutencao/OC-2026-0100-primeira"; mkdir -p "$OCA"
+printf -- '---\nkind: ocorrencia\ntrabalho_id: OC-2026-0100\n---\n' > "$OCA/00-OCORRENCIA.md"
+printf -- '---\nkind: orquestrador\ntrabalho_id: OC-2026-0100\nestagio: e5\nstatus: concluido\nconcluido_em: 2026-08-20\n---\n' > "$OCA/ORQUESTRADOR.md"
+arv() { printf '{"tool_name":"Write","tool_input":{"file_path":"%s/%s","content":"---\\nkind: ocorrencia\\ntrabalho_id: OC-2026-0999\\n---\\n"}}' "$W2" "$1" \
+  | (cd "$W2" && python3 "$H/runx/uma-ocorrencia-por-arvore.py"); }
+conf 0 "unica pasta (a propria) nao acusa" arv docs/manutencao/OC-2026-0999-unica/00-OCORRENCIA.md
+conf 0 "so ocorrencia ja fechada existe: passa" arv docs/manutencao/OC-2026-0999-nova/00-OCORRENCIA.md
+conf 0 "arquivo fora de 00-OCORRENCIA.md nao dispara" \
+  bash -c "printf '{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$W2/docs/manutencao/OC-2026-0999-nova/BLOQUEIOS.md\",\"content\":\"x\"}}' | (cd '$W2' && python3 '$H/runx/uma-ocorrencia-por-arvore.py')"
+rm -rf "$W2"
+
+echo
+echo "== arvore-limpa-antes-da-suite: nao dispara sem git, nunca barra sozinho o comando =="
+W3="$(mktemp -d)"
+conf 0 "sem repositorio git, comando de suite passa liso" \
+  bash -c "printf '{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"npm test\"}}' | (cd '$W3' && python3 '$H/runx/arvore-limpa-antes-da-suite.py')"
+git -C "$W3" init -q -b main >/dev/null 2>&1
+conf 0 "repositorio git limpo, sem ocorrencia, comando de suite passa liso" \
+  bash -c "printf '{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"npm test\"}}' | (cd '$W3' && python3 '$H/runx/arvore-limpa-antes-da-suite.py')"
+rm -rf "$W3"
+
+echo
 echo "  $ok ok, $falhou falhas"
 [ "$falhou" -eq 0 ]

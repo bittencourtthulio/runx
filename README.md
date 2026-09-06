@@ -84,20 +84,32 @@ As duas compartilham **exatamente** os mesmos contratos: base de conhecimento an
 
 ## Compatibilidade
 
-`runx` funciona em **Claude Code** e em **OpenCode**, a partir da mesma fonte. Os arquivos da skill são idênticos nos dois — o que muda é apenas onde eles ficam:
+`runx` funciona em **Claude Code**, **OpenCode** e **MimoCode**, a partir da mesma fonte. Os arquivos da skill são idênticos nos três — o que muda é apenas onde eles ficam:
 
-| | Claude Code | OpenCode |
-|---|---|---|
-| Skill (projeto) | `.claude/skills/runx/` | `.opencode/skills/runx/` |
-| Comandos (projeto) | `.claude/commands/` | `.opencode/command/` |
-| Skill (global) | `~/.claude/skills/runx/` | `~/.config/opencode/skills/runx/` |
-| Comandos (global) | `~/.claude/commands/` | `~/.config/opencode/command/` |
-| Agentes | `.claude/agents/` | — |
-| Hooks | `.claude/runx-hooks/` + `settings.json` | — |
+| | Claude Code | OpenCode | MimoCode |
+|---|---|---|---|
+| Skill (projeto) | `.claude/skills/runx/` | `.opencode/skills/runx/` | lê `.claude/skills/runx/` |
+| Comandos (projeto) | `.claude/commands/` | `.opencode/command/` | lê `.claude/commands/` |
+| Skill (global) | `~/.claude/skills/runx/` | `~/.config/opencode/skills/runx/` | lê `~/.claude/skills/runx/` |
+| Comandos (global) | `~/.claude/commands/` | `~/.config/opencode/command/` | lê `~/.claude/commands/` |
+| Agentes | `.claude/agents/` | lê `.claude/agents/` | lê `.claude/agents/` |
+| Hooks | `.claude/runx-hooks/` + `settings.json` | ponte JS em `.opencode/plugins/runx-ponte.js` | ponte JS em `.mimocode/hooks/runx-ponte.js` |
 
-Hooks e agentes hoje só existem no Claude Code: o OpenCode tem sistema próprio, com formato diferente. **A skill funciona igual nos dois** — hooks e agentes são a rede de proteção, não o método.
+**MimoCode é um fork do OpenCode** e lê `.claude/skills/`, `.claude/commands/` e `.claude/agents/` nativamente — por isso essas três colunas nunca precisam de cópia, só o Claude Code recebe a skill de fato instalada num diretório próprio, e OpenCode ganha a sua por espelhamento em `.opencode/`.
 
-Os dois harnesses descobrem a skill do mesmo jeito — pelo `name` e pela `description` do frontmatter, carregando o corpo sob demanda — e os dois aceitam `$ARGUMENTS` nos comandos. Por isso um único conjunto de arquivos atende aos dois sem fork e sem condicional.
+**Hooks** rodam nativamente no Claude Code via `settings.json`. No OpenCode e no MimoCode, uma única ponte JS (`.claude/hooks/ponte/runx-ponte.js`, instalada em cada um) traduz os eventos de plugin desses harnesses (`tool.execute.before`, `tool.execute.after`, `shell.env`) para o mesmo payload que os hooks Python já entendem, e despacha para os mesmos scripts — o motor é um só, escrito uma vez.
+
+Os três harnesses descobrem a skill do mesmo jeito — pelo `name` e pela `description` do frontmatter, carregando o corpo sob demanda — e os três aceitam `$ARGUMENTS` nos comandos. Por isso um único conjunto de arquivos atende aos três sem fork e sem condicional.
+
+### Sessões paralelas
+
+Várias sessões — do mesmo harness ou de harnesses diferentes — podem trabalhar ao mesmo tempo no mesmo projeto. Sem isolamento, um `stash` de uma sessão levaria o trabalho não salvo de outra, e uma suíte de testes rodada por uma sessão reprovaria por causa do código que outra está no meio de mudar.
+
+`runx` resolve isso com três mecanismos, todos descritos na seção "Sessões paralelas" do `SKILL.md`:
+
+- **Worktree por ocorrência** (regra 16): com git, cada ocorrência nasce num `git worktree` próprio, isolado do checkout principal.
+- **Reivindicação de task pelo rastro**: uma sessão não reabre uma task que o rastro mostra em andamento por outra sessão.
+- **Árvore limpa antes da suíte**: a suíte completa e o veredito do QA só rodam depois de confirmar que a árvore não tem trabalho de outra sessão no meio.
 
 ---
 
@@ -121,13 +133,14 @@ Isso cria `.claude/` **e** `.opencode/` no projeto atual. Para deixar disponíve
 
 | Flag | Efeito |
 |---|---|
-| *(nenhuma)* | instala nos dois harnesses, no projeto atual |
+| *(nenhuma)* | instala nos três harnesses, no projeto atual |
 | `--global` | instala no diretório global do usuário, não no projeto |
 | `--claude` | só Claude Code |
 | `--opencode` | só OpenCode |
+| `--mimocode` | só MimoCode |
 | `--force` | sobrescreve instalação existente sem perguntar |
 | `--dry-run` | mostra o que faria, sem escrever nada |
-| `--sem-hooks` | instala só a skill, sem hooks nem agentes |
+| `--sem-hooks` | instala só a skill, sem hooks nem agentes nem a ponte JS |
 
 As flags combinam: `./install.sh --global --opencode` instala só o OpenCode, só no global.
 
@@ -408,14 +421,17 @@ Toda regra inviolável acima é, sozinha, uma instrução que o modelo pode esqu
 | `runx/task-so-fecha-verde.py` | antes de escrever | barra `status: concluida` sem `suite: verde` e sem os dois testes |
 | `runx/escopo-da-ocorrencia.py` | antes de escrever | avisa quando a escrita sai dos arquivos que a investigação autorizou (regra 8) |
 | `runx/sem-jargao-no-uso.py` | depois de escrever | detecta jargão técnico no `uso.md`, que é o texto que vai ao cliente |
+| `runx/uma-ocorrencia-por-arvore.py` | antes de escrever | avisa quando outra ocorrência já está aberta na mesma árvore de trabalho (regra 16) |
+| `runx/task-reivindicada.py` | antes de escrever | avisa ao marcar `em_andamento` uma task que o rastro mostra aberta por outra sessão |
+| `runx/arvore-limpa-antes-da-suite.py` | antes de rodar `Bash` | avisa, antes da suíte, se há arquivo sujo fora do escopo ou task de outra sessão em andamento |
 | `comum/rastro-arquivo.py` | depois de escrever | registra `arquivo_alterado` no rastro |
-| `comum/rastro-suite.py` | depois de rodar `Bash` | registra `suite_executada`, verde ou vermelha pelo código de saída |
+| `comum/rastro-suite.py` | depois de rodar `Bash` | registra `suite_executada`, verde ou vermelha pelo código de saída, com HEAD e sujos fora do escopo |
 
 **Todo hook nasce em modo `aviso`** — registra e deixa passar. A promoção para `bloqueio` é decisão sua, tomada depois de semanas sem falso positivo, e o modo de cada um vive em `.expx/hooks.json`. A exceção é a segurança: `segredo-no-commit` nasce em `bloqueio` e falha fechada, porque segredo commitado não tem volta.
 
 Rode `python3 .claude/runx-hooks/comum/doctor.py` para ver em que modo cada hook está e quantas vezes cada regra foi violada — é o dado que diz qual já pode ser promovido.
 
-Os cinco hooks de escrita rodam por um **despachante único**, não como cinco processos: cada `python3` custa cerca de 30 ms só para subir, e cinco deles estourariam o orçamento de 200 ms por chamada de ferramenta. Um processo lê o evento uma vez e roda as cinco verificações em sequência.
+Os oito hooks de escrita e o de `Bash` no grupo `PreToolUse` rodam por um **despachante único**, não como processos separados: cada `python3` custa cerca de 30 ms só para subir, e vários deles estourariam o orçamento de 200 ms por chamada de ferramenta. Um processo lê o evento uma vez e roda as verificações em sequência.
 
 ## Agentes
 

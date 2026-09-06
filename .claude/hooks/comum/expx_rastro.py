@@ -33,7 +33,12 @@ def raiz_repo(inicio=None):
     base = os.path.realpath(inicio or os.getcwd())
     atual = base
     while True:
-        if os.path.isdir(os.path.join(atual, ".git")):
+        alvo = os.path.join(atual, ".git")
+        # Num `git worktree`, `.git` e ARQUIVO (contem "gitdir: <principal>/.git/
+        # worktrees/<nome>"), nao diretorio. `isdir` sozinho faz a busca pular a
+        # raiz do worktree e continuar subindo — de um subdiretorio dele, isso
+        # devolve o subdiretorio errado (fallback) em vez da raiz do worktree.
+        if os.path.isdir(alvo) or os.path.isfile(alvo):
             return atual
         pai = os.path.dirname(atual)
         if pai == atual:
@@ -62,20 +67,109 @@ def rel(caminho, raiz=None):
 
 # ------------------------------------------------------------------ entrada
 
+# `ler_evento()` guarda aqui o `session_id` do payload, para que `grava()` o
+# use sem mudar a assinatura de nenhum hook (regra 16, sessoes paralelas).
+_ULTIMO_SESSION_ID = None
+
 
 def ler_evento():
     """Le o evento JSON do stdin. Devolve {} se vier vazio ou invalido."""
+    global _ULTIMO_SESSION_ID
     try:
         bruto = sys.stdin.read()
-        return json.loads(bruto) if bruto.strip() else {}
+        evento = json.loads(bruto) if bruto.strip() else {}
     except (json.JSONDecodeError, OSError):
-        return {}
+        evento = {}
+    sid = evento.get("session_id") if isinstance(evento, dict) else None
+    if sid:
+        _ULTIMO_SESSION_ID = str(sid)
+    return evento
 
 
 def caminho_da_ferramenta(evento):
     """O `file_path` de Write/Edit, relativo a raiz. None quando nao houver."""
     entrada = evento.get("tool_input") or {}
     return rel(entrada.get("file_path"))
+
+
+# ------------------------------------------------------------- identidade
+
+
+def _ancestral_harness_pid():
+    """(nome do executavel do avo do processo, pid dele), ou (None, None).
+
+    O shell que roda o hook e filho direto do processo do harness (medido:
+    zsh -> claude -> Code Helper). `ps` sozinho, sem libs externas — os hooks
+    ja evitam dependencia alem da biblioteca padrao.
+    """
+    try:
+        import subprocess
+
+        pid = os.getppid()
+        for _ in range(4):  # sobe ate 4 niveis; para no primeiro nome reconhecido
+            saida = subprocess.run(
+                ["ps", "-o", "ppid=,comm=", "-p", str(pid)],
+                capture_output=True, text=True, timeout=2,
+            )
+            linha = saida.stdout.strip()
+            if not linha:
+                return None, None
+            partes = linha.split(None, 1)
+            if len(partes) < 2:
+                return None, None
+            ppid, comm = partes[0], partes[1].strip()
+            nome = os.path.basename(comm)
+            if nome in ("claude", "opencode", "mimo", "node"):
+                return nome, pid
+            try:
+                pid = int(ppid)
+            except ValueError:
+                return None, None
+        return None, None
+    except Exception:
+        return None, None
+
+
+_NOME_HARNESS = {"claude": "claude-code", "opencode": "opencode", "mimo": "mimocode"}
+
+
+def harness():
+    """`claude-code`, `opencode`, `mimocode` ou `desconhecido`.
+
+    Ordem: `EXPX_HARNESS` (a ponte JS injeta isso via `shell.env`) ->
+    `CLAUDECODE` (o Claude Code exporta essa variavel) -> nome do ancestral
+    do processo -> `desconhecido`. Nunca lanca excecao.
+    """
+    if os.environ.get("EXPX_HARNESS"):
+        return os.environ["EXPX_HARNESS"]
+    if os.environ.get("CLAUDECODE"):
+        return "claude-code"
+    nome, _ = _ancestral_harness_pid()
+    return _NOME_HARNESS.get(nome, "desconhecido")
+
+
+def sessao(evento=None):
+    """`<harness>@<id-da-sessao>`.
+
+    Ordem: `EXPX_SESSAO` (a ponte JS injeta isso) -> `session_id` do payload
+    do evento (ou do ultimo lido por `ler_evento()`) -> `CLAUDE_CODE_SESSION_ID`
+    -> `<harness>@<pid-do-ancestral>` -> `<harness>@sem-id`. Nunca lanca excecao.
+    """
+    if os.environ.get("EXPX_SESSAO"):
+        return os.environ["EXPX_SESSAO"]
+
+    h = harness()
+    sid = None
+    if evento and isinstance(evento, dict):
+        sid = evento.get("session_id")
+    if not sid:
+        sid = _ULTIMO_SESSION_ID
+    if not sid:
+        sid = os.environ.get("CLAUDE_CODE_SESSION_ID")
+    if not sid:
+        _, pid = _ancestral_harness_pid()
+        sid = str(pid) if pid else None
+    return f"{h}@{sid or 'sem-id'}"
 
 
 # --------------------------------------------------------- yaml (parcial)
@@ -387,10 +481,14 @@ def _rotaciona(caminho):
 
 
 def grava(evento, *, trabalho, fase=None, task=None, agente="principal",
-          resultado="ok", detalhe=None, arquivos=None, raiz=None):
+          resultado="ok", detalhe=None, arquivos=None, raiz=None, sessao_id=None):
     """Acrescenta uma linha ao rastro. Nunca levanta excecao.
 
     Regra 7 do contrato: sempre grava, inclusive quando o hook permite.
+    `sessao` e `harness` sao extras do contrato expx-eventos (D-10, sessoes
+    paralelas): identificam quem gravou, sem redefinir as doze chaves. Um
+    parser que so conhece as doze continua lendo a linha normalmente
+    (contrato e' `passthrough`, ver base/hooks-e-rastro.md).
     """
     try:
         raiz = raiz or raiz_repo()
@@ -414,6 +512,8 @@ def grava(evento, *, trabalho, fase=None, task=None, agente="principal",
             "resultado": resultado,
             "detalhe": detalhe,
             "arquivos": arquivos if arquivos is not None else [],
+            "sessao": sessao_id or sessao(),
+            "harness": harness(),
         }
         with open(caminho, "a", encoding="utf-8") as fh:
             fh.write(json.dumps(linha, ensure_ascii=False) + "\n")

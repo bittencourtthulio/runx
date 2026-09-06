@@ -15,6 +15,8 @@ Leia `ORQUESTRADOR.md` inteiro e siga a ordem de leitura que ele define. Ele é 
 
 Se está retomando uma sessão interrompida, siga a seção "Como retomar" do ORQUESTRADOR: o `status` de cada task em `tasks.md` mais `BLOQUEIOS.md` dizem onde você parou.
 
+Se esta ocorrência nasceu em worktree (regra 16), a mergex — ao ser acionada no início deste estágio — encontra a branch já criada pelo E1 e **retoma** nela em vez de criar outra, porque o nome e a base já batem com a regra dela.
+
 ## Frontmatter: o YAML e a prosa andam juntos
 
 Leia `references/00-schema.md` antes da primeira gravação. Neste estágio a skill escreve em arquivos que já têm frontmatter, e **toda atualização de status acontece nos dois lugares: no frontmatter E na prosa**. Nunca atualize um sem o outro — prosa e YAML divergentes quebram o painel e a retomada de sessão.
@@ -38,9 +40,17 @@ Na mesma transição, grave `fase` em `.expx/estado.json` pelo procedimento de `
 
 Ordem de execução: sprints em ordem numérica estrita; dentro da sprint, a rota do ORQUESTRADOR. Só execute em paralelo o que o plano declarou `paralelizavel: true`. Uma task só começa quando todas em `depende_de` estão `concluida`.
 
+### Task reivindicada por outra sessão
+
+Antes do passo 1, quando houver mais de uma sessão trabalhando na mesma ocorrência (regra 16, "Sessões paralelas" do `SKILL.md`): leia `docs/eventos/<trabalho_id>.jsonl` e procure, para a task que você está prestes a abrir, o `task_iniciada` mais recente. Se ele foi gravado por outra `sessao` e não há `task_concluida` nem `task_bloqueada` dela depois, a task está reivindicada — não a abra. Pule para a próxima task paralelizável cujas dependências estão satisfeitas; se não houver nenhuma, registre em `BLOQUEIOS.md` (`B-NN | task | reivindicada pela sessão S | aguardar liberação`) e siga a "Regra de bloqueio" abaixo. Rastro sem `sessao` (linha antiga) conta como a mesma sessão: nunca avisa por falta de dado.
+
 Para CADA task, exatamente nesta ordem, sem inverter nenhum passo:
 
-1. Marque `status: em_andamento` em `tasks.md`, e grave `task` com o id dela em `.expx/estado.json` (`references/06-estado.md`).
+1. Marque `status: em_andamento` em `tasks.md`, e grave `task` com o id dela em `.expx/estado.json` (`references/06-estado.md`). Registre no rastro:
+
+   ```
+   python3 .claude/runx-hooks/comum/rastro.py --evento task_iniciada --fase e3 --task <T-NN.MM>
+   ```
 2. **Escreva o teste. Rode. Ele TEM que falhar.** Nenhuma linha de implementação antes de ver o vermelho. Na primeira task da primeira fase, este é o `teste_regressao`: o teste que reproduz o problema.
 3. **Implemente o mínimo para o teste passar.** Mínimo é literal: só o que faz o vermelho virar verde. Nada de refactor de brinde, nada de "já que estou aqui" — escopo travado é a regra 8 do SKILL.md.
 4. **Escreva os dois testes da task** — `teste_integracao` e `teste_funcional` — exatamente como a task os descreve, e faça-os passar.
@@ -62,7 +72,11 @@ Para CADA task, exatamente nesta ordem, sem inverter nenhum passo:
      --fase e3 --task <T-NN.MM> --resultado <discriminam|nao_discriminam> --detalhe "N achados"
    ```
 7. Verifique **de fato** o `criterio_aceite` da task — não presuma que ele decorre do teste verde.
-8. Só então marque `status: concluida` em `tasks.md` — **no frontmatter e na prosa** — acrescentando na linha da task: data (obtenha com `date +%Y-%m-%d` do sistema, nunca de memória) e resultado da suíte. No YAML, isso significa `status: concluida`, `concluida_em` com a data e `suite: parcial` (ou `verde`, se você rodou a suíte inteira), mais `atualizado_em` reescrito. Em seguida grave em `.expx/estado.json` (`references/06-estado.md`) o novo `tasks_concluidas` e o `task` da próxima task a ser aberta — `null` quando não houver próxima.
+8. Só então marque `status: concluida` em `tasks.md` — **no frontmatter e na prosa** — acrescentando na linha da task: data (obtenha com `date +%Y-%m-%d` do sistema, nunca de memória) e resultado da suíte. No YAML, isso significa `status: concluida`, `concluida_em` com a data e `suite: parcial` (ou `verde`, se você rodou a suíte inteira), mais `atualizado_em` reescrito. Em seguida grave em `.expx/estado.json` (`references/06-estado.md`) o novo `tasks_concluidas` e o `task` da próxima task a ser aberta — `null` quando não houver próxima. Registre no rastro:
+
+   ```
+   python3 .claude/runx-hooks/comum/rastro.py --evento task_concluida --fase e3 --task <T-NN.MM>
+   ```
 
 Critério de aceite não atendido, ou qualquer teste não passando: a task **NÃO** é concluída. **Não existe "concluído com ressalva".**
 
@@ -95,7 +109,7 @@ Nos dois casos: **PARE a execução, volte ao E1** e registre isso. Escreva no `
 Surgiu dúvida nova, decisão não coberta pelo plano, pré-requisito faltando (segredo inexistente, serviço fora do ar, dependência quebrada, dado de produção indisponível):
 
 1. Registre em `docs/manutencao/<OC-ID>-<slug>/BLOQUEIOS.md`: `B-NN | task | descrição do bloqueio | o que destravaria`.
-2. Marque a task como `status: bloqueada` em `tasks.md`.
+2. Marque a task como `status: bloqueada` em `tasks.md`. Registre no rastro: `python3 .claude/runx-hooks/comum/rastro.py --evento task_bloqueada --fase e3 --task <T-NN.MM> --detalhe "<motivo, uma linha>"`.
 3. Grave `bloqueios` em `.expx/estado.json` (`references/06-estado.md`) com a contagem de bloqueios **em aberto**. Ao resolver um bloqueio depois, grave a contagem nova.
 4. Pule para a próxima task paralelizável cujas dependências estão satisfeitas.
 5. **NUNCA pare para esperar resposta humana.** Se não resta nenhuma task executável, encerre com o relatório final — os bloqueios são a pauta do usuário, não uma conversa sua.
@@ -124,6 +138,7 @@ Este relatório é para o usuário na conversa; ele **não** substitui os relat�
 - [ ] `tasks.md` atualizado com data e resultado da suíte em cada task concluída.
 - [ ] Toda task concluída tem `suite: parcial` ou `suite: verde` — nenhuma com `vermelha` ou `nao_executada`. A suíte inteira é exigida no E4, não aqui.
 - [ ] Nenhum arquivo fora da lista de impactados do `01-CAUSA-RAIZ.md` e de `tasks.md` foi alterado.
+- [ ] Toda task `concluida` tem `task_iniciada` e `task_concluida` gravados no rastro.
 - [ ] Relatório de encerramento entregue com as 4 seções.
 - [ ] Frontmatter e prosa consistentes em todo arquivo tocado: `tasks.md`, `fases.md`, `sprint.md`, `BLOQUEIOS.md` e o `estagio` do `ORQUESTRADOR.md`.
 

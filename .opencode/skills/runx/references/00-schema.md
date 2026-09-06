@@ -127,6 +127,7 @@ recebido_em: 2026-08-28
 origem: ticket-4471
 tem_reproducao: true
 modulo_afetado: [frete, checkout]
+worktree: ../leadiq--OC-2026-0142-calculo-frete
 atualizado_em: 2026-08-29
 ---
 ```
@@ -134,6 +135,10 @@ atualizado_em: 2026-08-29
 - `origem` identifica de onde veio o chamado (ticket, canal, arquivo); `null` se não houver.
 - `tem_reproducao` reflete o portão do E1: `false` quando não há passos de reprodução.
 - `modulo_afetado` é a lista de módulos em linguagem do sistema; `[]` se ainda não determinado.
+- `worktree` é o caminho relativo à raiz do checkout principal para o `git worktree` desta
+  ocorrência (regra 16, `references/01-investigacao.md`). `null` quando não há git, ou quando
+  o pedido foi explicitamente "sem worktree" — a chave existe sempre, mesmo quando não se
+  aplica. Nunca um caminho absoluto.
 
 ### `01-CAUSA-RAIZ.md` → `kind: causa_raiz`
 
