@@ -127,7 +127,7 @@ recebido_em: 2026-08-28
 origem: ticket-4471
 tem_reproducao: true
 modulo_afetado: [frete, checkout]
-worktree: ../nome-do-projeto--OC-2026-0142-calculo-frete
+worktree: null
 atualizado_em: 2026-08-29
 ---
 ```
