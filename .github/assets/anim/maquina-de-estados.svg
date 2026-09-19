@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="392" viewBox="0 0 1000 392" role="img" aria-label="A skill descobre em que estágio está inspecionando o disco, nunca perguntando.">
+<title>Máquina de estados da runx: o estágio é descoberto inspecionando o disco</title>
+<style>
+.ms-sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+.ms-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}
+.ms-h{font-size:20px;font-weight:600;fill:#e6edf3}
+.ms-sub{font-size:13px;fill:#8b949e}
+.ms-file{font-size:13px;fill:#8b949e}
+.ms-path{font-size:12px;fill:#6e7681}
+.ms-q{font-size:13px;fill:#8b949e}
+.ms-v{font-size:15px;font-weight:700;fill:#f0883e}
+.ms-vs{font-size:12px;fill:#8b949e}
+.ms-pill{font-size:12px;font-weight:600;fill:#8b949e}
+.s1{animation:ms1 12s linear infinite}.s2{animation:ms2 12s linear infinite}.s3{animation:ms3 12s linear infinite}
+@keyframes ms1{0%{opacity:1}31%{opacity:1}33.33%{opacity:0}97.9%{opacity:0}100%{opacity:1}}
+@keyframes ms2{0%{opacity:0}31%{opacity:0}33.33%{opacity:1}64.3%{opacity:1}66.67%{opacity:0}100%{opacity:0}}
+@keyframes ms3{0%{opacity:0}64.3%{opacity:0}66.67%{opacity:1}97.9%{opacity:1}100%{opacity:0}}
+@keyframes ms-scan{0%{transform:translateY(0);opacity:0}6%{opacity:.9}62%{opacity:.9}72%{transform:translateY(148px);opacity:0}100%{transform:translateY(148px);opacity:0}}
+</style>
+<defs>
+<g id="ms-ok"><circle r="8" fill="#3fb950" fill-opacity="0.16" stroke="#3fb950" stroke-opacity="0.5"/><path d="M-3.2 0.2 L-0.9 2.5 L3.4 -2.1" fill="none" stroke="#3fb950" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g id="ms-no"><circle r="8" fill="#161b22" stroke="#30363d"/><path d="M-3.4 0 H3.4" stroke="#6e7681" stroke-width="1.9" stroke-linecap="round"/></g>
+<linearGradient id="ms-beam" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#f0883e" stop-opacity="0"/><stop offset="0.5" stop-color="#f0883e" stop-opacity="0.20"/><stop offset="1" stop-color="#f0883e" stop-opacity="0"/>
+</linearGradient>
+<clipPath id="ms-panel"><rect x="36" y="100" width="452" height="190" rx="10"/></clipPath>
+</defs>
+
+<rect x="0.5" y="0.5" width="999" height="391" rx="16" fill="#0d1117" stroke="#30363d"/>
+<text class="ms-sans ms-h" x="36" y="44">O estágio é descoberto, não perguntado</text>
+<text class="ms-sans ms-sub" x="36" y="66">a skill inspeciona o disco e retoma exatamente de onde a ocorrência parou</text>
+
+<!-- painel do disco -->
+<rect x="36.5" y="100.5" width="451" height="189" rx="10" fill="#161b22" stroke="#30363d"/>
+<text class="ms-mono ms-path" x="56" y="124">docs/manutencao/OC-2026-0142-frete-acima-50kg/</text>
+<line x1="36" y1="134" x2="488" y2="134" stroke="#30363d"/>
+<g clip-path="url(#ms-panel)"><rect x="36" y="140" width="452" height="26" fill="url(#ms-beam)" style="animation:ms-scan 4s ease-in-out infinite"/></g>
+
+<text class="ms-mono ms-file" x="80" y="163">00-OCORRENCIA.md</text>
+<text class="ms-mono ms-file" x="80" y="193">base/00-INDICE.md</text>
+<text class="ms-mono ms-file" x="80" y="223">01-CAUSA-RAIZ.md</text>
+<text class="ms-mono ms-file" x="80" y="253">sprint-01/tasks.md</text>
+<text class="ms-mono ms-file" x="80" y="283">QA.md</text>
+
+<g transform="translate(60,158)"><use href="#ms-ok"/></g>
+<g transform="translate(60,188)"><g class="s1"><use href="#ms-no"/></g><g class="s2" opacity="0"><use href="#ms-ok"/></g><g class="s3" opacity="0"><use href="#ms-ok"/></g></g>
+<g transform="translate(60,218)"><g class="s1"><use href="#ms-no"/></g><g class="s2" opacity="0"><use href="#ms-ok"/></g><g class="s3" opacity="0"><use href="#ms-ok"/></g></g>
+<g transform="translate(60,248)"><g class="s1"><use href="#ms-no"/></g><g class="s2" opacity="0"><use href="#ms-ok"/></g><g class="s3" opacity="0"><use href="#ms-ok"/></g></g>
+<g transform="translate(60,278)"><g class="s1"><use href="#ms-no"/></g><g class="s2" opacity="0"><use href="#ms-no"/></g><g class="s3" opacity="0"><use href="#ms-ok"/></g></g>
+
+<g class="s1"><text class="ms-mono ms-path" x="290" y="193" style="fill:#6e7681">ausente</text><text class="ms-mono ms-path" x="290" y="223" style="fill:#6e7681">ausente</text><text class="ms-mono ms-path" x="290" y="253" style="fill:#6e7681">ausente</text><text class="ms-mono ms-path" x="290" y="283" style="fill:#6e7681">ausente</text></g>
+<g class="s2" opacity="0"><text class="ms-mono ms-path" x="290" y="193" style="fill:#8b949e">4 áreas</text><text class="ms-mono ms-path" x="290" y="223" style="fill:#3fb950">provada</text><text class="ms-mono ms-path" x="290" y="253" style="fill:#d29922">3 pendentes</text><text class="ms-mono ms-path" x="290" y="283" style="fill:#6e7681">ausente</text></g>
+<g class="s3" opacity="0"><text class="ms-mono ms-path" x="290" y="193" style="fill:#8b949e">4 áreas</text><text class="ms-mono ms-path" x="290" y="223" style="fill:#3fb950">provada</text><text class="ms-mono ms-path" x="290" y="253" style="fill:#3fb950">todas concluídas</text><text class="ms-mono ms-path" x="290" y="283" style="fill:#3fb950">APROVADO</text></g>
+
+<!-- seta -->
+<path d="M512 195 H556" stroke="#30363d" stroke-width="2"/>
+<path d="M550 189 L557 195 L550 201" fill="none" stroke="#30363d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+<!-- veredito -->
+<rect x="580.5" y="100.5" width="383" height="189" rx="10" fill="#161b22" stroke="#30363d"/>
+<text class="ms-sans ms-q" x="604" y="130">a skill lê o disco e conclui:</text>
+<line x1="580" y1="144" x2="964" y2="144" stroke="#30363d"/>
+
+<g class="s1">
+<text class="ms-sans ms-vs" x="604" y="176">não existe <tspan class="ms-mono" fill="#e6edf3">base/</tspan></text>
+<text class="ms-sans ms-v" x="604" y="208">começa pelo E1</text>
+<text class="ms-sans ms-vs" x="604" y="232">mapear antes de opinar sobre a causa</text>
+<rect x="604" y="248" width="196" height="24" rx="12" fill="#f0883e" fill-opacity="0.12" stroke="#f0883e" stroke-opacity="0.45"/>
+<text class="ms-sans ms-pill" x="702" y="264" text-anchor="middle" style="fill:#f0883e">ocorrência recém-aberta</text>
+</g>
+<g class="s2" opacity="0">
+<text class="ms-sans ms-vs" x="604" y="176">causa provada, <tspan class="ms-mono" fill="#e6edf3">tasks.md</tspan> com pendentes</text>
+<text class="ms-sans ms-v" x="604" y="208">retoma o E3</text>
+<text class="ms-sans ms-vs" x="604" y="232">segue da próxima task paralelizável</text>
+<rect x="604" y="248" width="176" height="24" rx="12" fill="#d29922" fill-opacity="0.12" stroke="#d29922" stroke-opacity="0.45"/>
+<text class="ms-sans ms-pill" x="692" y="264" text-anchor="middle" style="fill:#d29922">trabalho em andamento</text>
+</g>
+<g class="s3" opacity="0">
+<text class="ms-sans ms-vs" x="604" y="176">suíte verde e QA <tspan fill="#3fb950" font-weight="700">APROVADO</tspan></text>
+<text class="ms-sans ms-v" x="604" y="208">fecha no E5</text>
+<text class="ms-sans ms-vs" x="604" y="232">grava os dois relatórios e atualiza o índice</text>
+<rect x="604" y="248" width="156" height="24" rx="12" fill="#3fb950" fill-opacity="0.12" stroke="#3fb950" stroke-opacity="0.45"/>
+<text class="ms-sans ms-pill" x="682" y="264" text-anchor="middle" style="fill:#3fb950">pronta para encerrar</text>
+</g>
+
+<!-- esteira de estágios -->
+<g>
+<rect x="36" y="312" width="122" height="26" rx="13" fill="#21262d" stroke="#30363d"/>
+<text class="ms-sans ms-pill" x="97" y="329" text-anchor="middle"><tspan class="ms-mono" font-weight="700">E1</tspan> investigação</text>
+<g class="s1"><rect x="36" y="312" width="122" height="26" rx="13" fill="#f0883e" fill-opacity="0.16" stroke="#f0883e"/><text class="ms-sans ms-pill" x="97" y="329" text-anchor="middle" style="fill:#f0883e"><tspan class="ms-mono" font-weight="700">E1</tspan> investigação</text></g>
+</g>
+<g>
+<rect x="174" y="312" width="86" height="26" rx="13" fill="#21262d" stroke="#30363d"/>
+<text class="ms-sans ms-pill" x="217" y="329" text-anchor="middle"><tspan class="ms-mono" font-weight="700">E2</tspan> plano</text>
+</g>
+<g>
+<rect x="276" y="312" width="70" height="26" rx="13" fill="#21262d" stroke="#30363d"/>
+<text class="ms-sans ms-pill" x="311" y="329" text-anchor="middle"><tspan class="ms-mono" font-weight="700">E3</tspan> fix</text>
+<g class="s2" opacity="0"><rect x="276" y="312" width="70" height="26" rx="13" fill="#d29922" fill-opacity="0.16" stroke="#d29922"/><text class="ms-sans ms-pill" x="311" y="329" text-anchor="middle" style="fill:#d29922"><tspan class="ms-mono" font-weight="700">E3</tspan> fix</text></g>
+</g>
+<g>
+<rect x="362" y="312" width="72" height="26" rx="13" fill="#21262d" stroke="#30363d"/>
+<text class="ms-sans ms-pill" x="398" y="329" text-anchor="middle"><tspan class="ms-mono" font-weight="700">E4</tspan> QA</text>
+</g>
+<g>
+<rect x="450" y="312" width="104" height="26" rx="13" fill="#21262d" stroke="#30363d"/>
+<text class="ms-sans ms-pill" x="502" y="329" text-anchor="middle"><tspan class="ms-mono" font-weight="700">E5</tspan> relatório</text>
+<g class="s3" opacity="0"><rect x="450" y="312" width="104" height="26" rx="13" fill="#3fb950" fill-opacity="0.16" stroke="#3fb950"/><text class="ms-sans ms-pill" x="502" y="329" text-anchor="middle" style="fill:#3fb950"><tspan class="ms-mono" font-weight="700">E5</tspan> relatório</text></g>
+</g>
+<text class="ms-sans" x="36" y="368" font-size="13" font-weight="600" fill="#e6edf3">Comando fora de ordem é recusado<tspan font-weight="400" fill="#8b949e"> — peça o fix sem base mapeada e a skill diz o que falta e executa o estágio pendente.</tspan></text>
+</svg>

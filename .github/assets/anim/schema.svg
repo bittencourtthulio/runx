@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="410" viewBox="0 0 1000 410" role="img" aria-label="expx-schema v1: a máquina lê o YAML do frontmatter, a pessoa lê a prosa. Só a skill escreve.">
+<title>expx-schema v1 na runx: a máquina lê o YAML, a pessoa lê a prosa</title>
+<style>
+.sc-sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+.sc-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:12.5px}
+.sc-h{font-size:20px;font-weight:600;fill:#e6edf3}
+.sc-sub{font-size:13px;fill:#8b949e}
+.sc-cap{font-size:12px;font-weight:700}
+.sc-k{fill:#8b949e}.sc-v{fill:#e6edf3}.sc-d{fill:#6e7681}
+.sc-foot{font-size:13px;fill:#8b949e}
+@keyframes scBeam{0%{transform:translateY(0);opacity:0}5%{opacity:.85}68%{opacity:.85}78%{transform:translateY(212px);opacity:0}100%{transform:translateY(212px);opacity:0}}
+@keyframes scC1{0%,14%{opacity:0;transform:translateX(-8px)}19%,92%{opacity:1;transform:none}97%,100%{opacity:0;transform:none}}
+@keyframes scC2{0%,28%{opacity:0;transform:translateX(-8px)}33%,92%{opacity:1;transform:none}97%,100%{opacity:0;transform:none}}
+@keyframes scC3{0%,42%{opacity:0;transform:translateX(-8px)}47%,92%{opacity:1;transform:none}97%,100%{opacity:0;transform:none}}
+@keyframes scC4{0%,56%{opacity:0;transform:translateX(-8px)}61%,92%{opacity:1;transform:none}97%,100%{opacity:0;transform:none}}
+@keyframes scProsa{0%,72%{opacity:.35}78%,92%{opacity:1}97%,100%{opacity:.35}}
+</style>
+<defs>
+<linearGradient id="sc-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0883e" stop-opacity="0"/><stop offset="0.5" stop-color="#f0883e" stop-opacity="0.18"/><stop offset="1" stop-color="#f0883e" stop-opacity="0"/></linearGradient>
+<clipPath id="sc-clip"><rect x="36" y="130" width="470" height="230"/></clipPath>
+</defs>
+<rect x="0.5" y="0.5" width="999" height="409" rx="16" fill="#0d1117" stroke="#30363d"/>
+<text class="sc-sans sc-h" x="36" y="44">A máquina lê o YAML, a pessoa lê a prosa</text>
+<text class="sc-sans sc-sub" x="36" y="66">todo arquivo de estado nasce com o frontmatter do <tspan class="sc-mono" style="fill:#e6edf3">expx-schema v1</tspan> — sem ele, o arquivo é considerado não entregue</text>
+
+<rect x="36.5" y="92.5" width="470" height="268" rx="10" fill="#161b22" stroke="#30363d"/>
+<rect x="36.5" y="92.5" width="470" height="38" rx="10" fill="#21262d"/><rect x="36.5" y="120" width="470" height="11" fill="#21262d"/>
+<line x1="36" y1="130.5" x2="506" y2="130.5" stroke="#30363d"/>
+<text class="sc-mono" x="60" y="116" style="fill:#f0883e;font-weight:700">sprint-01/tasks.md</text>
+<text class="sc-sans" x="482" y="116" text-anchor="end" font-size="11.5" style="fill:#6e7681">kind: tasks</text>
+<g clip-path="url(#sc-clip)"><rect x="36" y="140" width="470" height="24" fill="url(#sc-beam)" style="animation:scBeam 14s ease-in-out infinite"/></g>
+
+<text class="sc-mono sc-d" x="60" y="156">---</text>
+<text class="sc-mono" x="60" y="174"><tspan class="sc-k">expx_schema: </tspan><tspan class="sc-v">1</tspan></text>
+<text class="sc-mono" x="60" y="192"><tspan class="sc-k">expx_tool: </tspan><tspan style="fill:#f0883e">runx</tspan></text>
+<text class="sc-mono" x="60" y="210"><tspan class="sc-k">kind: </tspan><tspan class="sc-v">tasks</tspan></text>
+<text class="sc-mono" x="60" y="228"><tspan class="sc-k">trabalho_id: </tspan><tspan class="sc-v">OC-2026-0142</tspan></text>
+<text class="sc-mono" x="60" y="246" xml:space="preserve"><tspan class="sc-k">tasks:</tspan></text>
+<text class="sc-mono" x="60" y="264" xml:space="preserve"><tspan class="sc-k">  - id: </tspan><tspan class="sc-v">T-01.01</tspan></text>
+<text class="sc-mono" x="60" y="282" xml:space="preserve"><tspan class="sc-k">    status: </tspan><tspan style="fill:#3fb950">concluida</tspan></text>
+<text class="sc-mono" x="60" y="300" xml:space="preserve"><tspan class="sc-k">    teste_regressao: </tspan><tspan class="sc-d">51 kg deve dar 42.90</tspan></text>
+<text class="sc-mono" x="60" y="318" xml:space="preserve"><tspan class="sc-k">    criterio_aceite: </tspan><tspan class="sc-d">falha antes, passa depois</tspan></text>
+<text class="sc-mono" x="60" y="336" xml:space="preserve"><tspan class="sc-k">    suite: </tspan><tspan style="fill:#3fb950">verde</tspan></text>
+<text class="sc-mono sc-d" x="60" y="354">---</text>
+
+<!-- máquina -->
+<rect x="536.5" y="92.5" width="427" height="152" rx="10" fill="#161b22" stroke="#30363d"/>
+<circle cx="560" cy="117" r="4" style="fill:#58a6ff"/>
+<text class="sc-sans sc-cap" x="574" y="121" style="fill:#58a6ff">A MÁQUINA</text>
+<text class="sc-sans" x="940" y="121" text-anchor="end" font-size="11.5" style="fill:#6e7681">npx expxdev panel</text>
+<line x1="536" y1="134.5" x2="963" y2="134.5" stroke="#30363d"/>
+<g opacity="0" style="animation:scC1 14s linear infinite"><rect x="560" y="150" width="182" height="26" rx="6" fill="#21262d" stroke="#30363d"/><text class="sc-mono" x="572" y="167"><tspan class="sc-d">trabalho_id </tspan><tspan class="sc-v">OC-2026-0142</tspan></text></g>
+<g opacity="0" style="animation:scC2 14s linear infinite"><rect x="754" y="150" width="184" height="26" rx="6" fill="#21262d" stroke="#30363d"/><text class="sc-mono" x="766" y="167"><tspan class="sc-d">kind </tspan><tspan class="sc-v">tasks</tspan><tspan class="sc-d"> · sprint-01</tspan></text></g>
+<g opacity="0" style="animation:scC3 14s linear infinite"><rect x="560" y="186" width="182" height="26" rx="6" fill="#3fb950" fill-opacity="0.10" stroke="#3fb950" stroke-opacity="0.45"/><text class="sc-mono" x="572" y="203"><tspan class="sc-d">status </tspan><tspan style="fill:#3fb950">concluida</tspan></text></g>
+<g opacity="0" style="animation:scC4 14s linear infinite"><rect x="754" y="186" width="184" height="26" rx="6" fill="#3fb950" fill-opacity="0.10" stroke="#3fb950" stroke-opacity="0.45"/><text class="sc-mono" x="766" y="203"><tspan class="sc-d">suite </tspan><tspan style="fill:#3fb950">verde</tspan></text></g>
+<text class="sc-sans" x="560" y="232" font-size="11.5" style="fill:#6e7681">o painel apenas lê — só a skill escreve</text>
+
+<!-- pessoa -->
+<rect x="536.5" y="264.5" width="427" height="96" rx="10" fill="#161b22" stroke="#30363d"/>
+<circle cx="560" cy="289" r="4" style="fill:#f0883e"/>
+<text class="sc-sans sc-cap" x="574" y="293" style="fill:#f0883e">A PESSOA</text>
+<line x1="536" y1="304.5" x2="963" y2="304.5" stroke="#30363d"/>
+<g style="animation:scProsa 14s linear infinite">
+<rect x="560" y="318" width="330" height="5" rx="2.5" fill="#30363d"/>
+<rect x="560" y="332" width="378" height="5" rx="2.5" fill="#30363d"/>
+<rect x="560" y="346" width="256" height="5" rx="2.5" fill="#30363d"/>
+</g>
+<text class="sc-sans" x="940" y="293" text-anchor="end" font-size="11.5" style="fill:#6e7681">a prosa abaixo do frontmatter</text>
+
+<line x1="36" y1="378" x2="964" y2="378" stroke="#21262d"/>
+<text class="sc-sans sc-foot" x="36" y="400">Seis kinds — <tspan class="sc-mono">orquestrador, sprint, fases, tasks, bloqueios, base_indice</tspan> — são idênticos campo por campo na <tspan class="sc-mono" style="fill:#f0883e">runx</tspan> e na <tspan class="sc-mono" style="fill:#a371f7">sprintx</tspan>.</text>
+</svg>

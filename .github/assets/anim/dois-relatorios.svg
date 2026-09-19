@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="410" viewBox="0 0 1000 410" role="img" aria-label="E5: dois relatórios para leitores diferentes. tecnico.md para o próximo desenvolvedor, uso.md para o cliente, sem jargão.">
+<title>E5 da runx: dois relatórios, para leitores diferentes</title>
+<style>
+.dr-sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+.dr-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}
+.dr-h{font-size:20px;font-weight:600;fill:#e6edf3}
+.dr-sub{font-size:13px;fill:#8b949e}
+.dr-name{font-size:14px;font-weight:700}
+.dr-who{font-size:12px;fill:#8b949e}
+.dr-l{font-size:12.5px;fill:#8b949e}
+.dr-k{font-size:12.5px;fill:#6e7681}
+.dr-foot{font-size:13px;fill:#8b949e}
+@keyframes drJ1{0%,8%{opacity:1}14%,100%{opacity:0}}
+@keyframes drP1{0%,11%{opacity:0;transform:translateY(4px)}16%,100%{opacity:1;transform:translateY(0)}}
+@keyframes drJ2{0%,26%{opacity:1}32%,100%{opacity:0}}
+@keyframes drP2{0%,29%{opacity:0;transform:translateY(4px)}34%,100%{opacity:1;transform:translateY(0)}}
+@keyframes drJ3{0%,44%{opacity:1}50%,100%{opacity:0}}
+@keyframes drP3{0%,47%{opacity:0;transform:translateY(4px)}52%,100%{opacity:1;transform:translateY(0)}}
+@keyframes drHook{0%,4%{opacity:0;transform:scale(.6)}8%{opacity:1;transform:scale(1.1)}10%,54%{opacity:1;transform:scale(1)}60%,100%{opacity:0;transform:scale(1)}}
+@keyframes drOk{0%,60%{opacity:0;transform:scale(.6)}64%{opacity:1;transform:scale(1.12)}66%,94%{opacity:1;transform:scale(1)}98%,100%{opacity:0;transform:scale(1)}}
+@keyframes drStrike{0%,8%{transform:scaleX(0)}13%,100%{transform:scaleX(1)}}
+@keyframes drStrike2{0%,26%{transform:scaleX(0)}31%,100%{transform:scaleX(1)}}
+@keyframes drStrike3{0%,44%{transform:scaleX(0)}49%,100%{transform:scaleX(1)}}
+</style>
+<rect x="0.5" y="0.5" width="999" height="409" rx="16" fill="#0d1117" stroke="#30363d"/>
+<text class="dr-sans dr-h" x="36" y="44">Dois relatórios, para leitores diferentes</text>
+<text class="dr-sans dr-sub" x="36" y="66">o E5 só executa com o E4 aprovado — e grava os dois antes de encerrar a ocorrência</text>
+
+<!-- tecnico.md -->
+<rect x="36.5" y="92.5" width="440" height="240" rx="10" fill="#161b22" stroke="#30363d"/>
+<rect x="36.5" y="92.5" width="440" height="42" rx="10" fill="#21262d"/>
+<rect x="36.5" y="124" width="440" height="11" fill="#21262d"/>
+<line x1="36" y1="134.5" x2="476" y2="134.5" stroke="#30363d"/>
+<text class="dr-mono dr-name" x="60" y="119" fill="#f0883e">tecnico.md</text>
+<text class="dr-sans dr-who" x="452" y="119" text-anchor="end">para o próximo desenvolvedor</text>
+
+<text class="dr-mono dr-k" x="60" y="164">Causa</text><text class="dr-sans dr-l" x="164" y="164">arredondamento aplicado antes da faixa</text>
+<text class="dr-mono dr-k" x="60" y="192">Arquivos</text><text class="dr-mono dr-l" x="164" y="192" style="fill:#8b949e">src/frete/calculo.ts:88</text>
+<text class="dr-mono dr-k" x="60" y="220">Decisões</text><text class="dr-sans dr-l" x="164" y="220">faixa avaliada antes do arredondamento</text>
+<text class="dr-mono dr-k" x="60" y="248">Testes</text><text class="dr-sans dr-l" x="164" y="248">3 novos · suíte verde</text>
+<text class="dr-mono dr-k" x="60" y="276">Risco</text><text class="dr-sans dr-l" x="164" y="276">faixas acima de 100 kg não foram tocadas</text>
+<text class="dr-mono dr-k" x="60" y="304">Observar</text><text class="dr-sans dr-l" x="164" y="304">pedidos acima de 50 kg na primeira semana</text>
+
+<!-- uso.md -->
+<rect x="524.5" y="92.5" width="439" height="240" rx="10" fill="#161b22" stroke="#30363d"/>
+<rect x="524.5" y="92.5" width="439" height="42" rx="10" fill="#21262d"/>
+<rect x="524.5" y="124" width="439" height="11" fill="#21262d"/>
+<line x1="524" y1="134.5" x2="963" y2="134.5" stroke="#30363d"/>
+<text class="dr-mono dr-name" x="548" y="119" fill="#3fb950">uso.md</text>
+<text class="dr-sans dr-who" x="940" y="119" text-anchor="end">o suporte copia e devolve ao cliente</text>
+
+<g>
+<g style="animation:drJ1 12s linear infinite"><text class="dr-mono dr-l" x="548" y="172" style="fill:#f85149">calcularFrete() retornava 41.00</text>
+<rect x="546" y="167" width="214" height="1.6" fill="#f85149" style="animation:drStrike 12s linear infinite;transform-box:fill-box;transform-origin:left"/></g>
+<g opacity="0" style="animation:drP1 12s linear infinite"><text class="dr-sans dr-l" x="548" y="172" style="fill:#e6edf3">O valor do frete vinha menor que o correto</text></g>
+</g>
+<g>
+<g style="animation:drJ2 12s linear infinite"><text class="dr-mono dr-l" x="548" y="212" style="fill:#f85149">corrigido em src/frete/calculo.ts</text>
+<rect x="546" y="207" width="228" height="1.6" fill="#f85149" style="animation:drStrike2 12s linear infinite;transform-box:fill-box;transform-origin:left"/></g>
+<g opacity="0" style="animation:drP2 12s linear infinite"><text class="dr-sans dr-l" x="548" y="212" style="fill:#e6edf3">O cálculo foi ajustado e já está no ar</text></g>
+</g>
+<g>
+<g style="animation:drJ3 12s linear infinite"><text class="dr-mono dr-l" x="548" y="252" style="fill:#f85149">migration na tabela pedidos · stack trace</text>
+<rect x="546" y="247" width="282" height="1.6" fill="#f85149" style="animation:drStrike3 12s linear infinite;transform-box:fill-box;transform-origin:left"/></g>
+<g opacity="0" style="animation:drP3 12s linear infinite"><text class="dr-sans dr-l" x="548" y="252" style="fill:#e6edf3">Pedidos antigos não precisam ser refeitos</text></g>
+</g>
+
+<g transform="translate(548,286)"><g opacity="0" style="animation:drHook 12s linear infinite;transform-box:fill-box;transform-origin:left center">
+<rect width="392" height="28" rx="8" fill="#f85149" fill-opacity="0.10" stroke="#f85149" stroke-opacity="0.5"/>
+<circle cx="18" cy="14" r="7" fill="#f85149" fill-opacity="0.2" stroke="#f85149" stroke-opacity="0.7"/>
+<path d="M18 10.2 V14.6 M18 17.4 v0.2" stroke="#f85149" stroke-width="1.8" stroke-linecap="round"/>
+<text class="dr-mono" x="34" y="18.5" font-size="11.5" fill="#f85149">sem-jargao-no-uso.py · jargão técnico detectado</text>
+</g></g>
+<g transform="translate(548,286)"><g opacity="0" style="animation:drOk 12s linear infinite;transform-box:fill-box;transform-origin:left center">
+<rect width="392" height="28" rx="8" fill="#3fb950" fill-opacity="0.10" stroke="#3fb950" stroke-opacity="0.5"/>
+<g transform="translate(18,14)"><circle r="7" fill="#3fb950" fill-opacity="0.2" stroke="#3fb950" stroke-opacity="0.7"/><path d="M-2.8 0.2 L-0.8 2.2 L3 -1.8" fill="none" stroke="#3fb950" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text class="dr-mono" x="34" y="18.5" font-size="11.5" fill="#3fb950">sem jargão · pronto para o cliente</text>
+</g></g>
+
+<line x1="36" y1="356" x2="964" y2="356" stroke="#21262d"/>
+<text class="dr-sans dr-foot" x="36" y="382">No <tspan class="dr-mono" fill="#e6edf3">uso.md</tspan>: sem nome de arquivo, sem nome de função, sem nome de tabela, sem stack trace. Se um cliente não desenvolvedor não entenderia, <tspan fill="#e6edf3">está errado</tspan>.</text>
+</svg>

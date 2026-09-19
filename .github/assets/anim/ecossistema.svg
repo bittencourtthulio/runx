@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="470" viewBox="0 0 1000 470" role="img" aria-label="O ecossistema Expx: a prodx decide se há trabalho, a runx decide como, as camadas modificam o comportamento e a mergex entrega.">
+<title>O ecossistema Expx em torno da runx</title>
+<style>
+.ec-sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+.ec-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}
+.ec-h{font-size:20px;font-weight:600;fill:#e6edf3}
+.ec-sub{font-size:13px;fill:#8b949e}
+.ec-name{font-size:14px;font-weight:700}
+.ec-role{font-size:11.5px;fill:#8b949e}
+.ec-cap{font-size:11px;font-weight:700;fill:#6e7681}
+.ec-foot{font-size:13px;fill:#8b949e}
+@keyframes ecFlow{0%{stroke-dashoffset:24}100%{stroke-dashoffset:0}}
+@keyframes ecL1{0%,6%{opacity:.4}12%,26%{opacity:1}32%,100%{opacity:.4}}
+@keyframes ecL2{0%,26%{opacity:.4}32%,46%{opacity:1}52%,100%{opacity:.4}}
+@keyframes ecL3{0%,46%{opacity:.4}52%,66%{opacity:1}72%,100%{opacity:.4}}
+@keyframes ecPulse{0%,100%{opacity:.25}50%{opacity:.7}}
+</style>
+<defs><marker id="ec-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#30363d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+<rect x="0.5" y="0.5" width="999" height="469" rx="16" fill="#0d1117" stroke="#30363d"/>
+<text class="ec-sans ec-h" x="36" y="44">O ecossistema Expx</text>
+<text class="ec-sans ec-sub" x="36" y="66">skills que se compõem — a ausência de qualquer irmã nunca quebra o fluxo: insumo que não existe vira aviso do que falta, nunca invenção</text>
+
+<!-- prodx -->
+<rect x="372.5" y="92.5" width="255" height="56" rx="10" fill="#161b22" stroke="#58a6ff" stroke-opacity="0.45"/>
+<text class="ec-mono ec-name" x="396" y="118" style="fill:#58a6ff">prodx</text>
+<text class="ec-sans ec-cap" x="604" y="114" text-anchor="end">CAMADA DE PRODUTO</text>
+<text class="ec-sans ec-role" x="396" y="136">decide <tspan style="fill:#e6edf3">se</tspan> há trabalho — roda antes do E1</text>
+<path d="M500 150 V170" stroke="#58a6ff" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="6 6" style="animation:ecFlow 1.2s linear infinite"/>
+<path d="M494 164 L500 171 L506 164" fill="none" stroke="#58a6ff" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text class="ec-mono" x="512" y="166" font-size="10.5" style="fill:#6e7681">BRIEFING.md assinado</text>
+
+<!-- runx -->
+<rect x="306.5" y="174.5" width="387" height="134" rx="12" fill="#161b22" stroke="#f0883e"/>
+<rect x="306.5" y="174.5" width="387" height="134" rx="12" fill="#f0883e" fill-opacity="0.05" style="animation:ecPulse 4s ease-in-out infinite"/>
+<text class="ec-mono" x="330" y="208" font-size="22" font-weight="700" style="fill:#f0883e">runx</text>
+<rect x="404" y="190" width="42" height="22" rx="11" fill="#f0883e" fill-opacity="0.18" stroke="#f0883e" stroke-opacity="0.5"/>
+<text class="ec-sans" x="425" y="205" text-anchor="middle" font-size="11" font-weight="700" style="fill:#f0883e">Run</text>
+<text class="ec-sans ec-role" x="330" y="230">ocorrência num sistema em produção · E1…E5</text>
+<g>
+<rect x="330" y="244" width="66" height="22" rx="11" fill="#21262d" stroke="#30363d"/><text class="ec-mono" x="363" y="259" text-anchor="middle" font-size="11" style="fill:#8b949e">E1</text>
+<rect x="404" y="244" width="66" height="22" rx="11" fill="#21262d" stroke="#30363d"/><text class="ec-mono" x="437" y="259" text-anchor="middle" font-size="11" style="fill:#8b949e">E2</text>
+<rect x="478" y="244" width="66" height="22" rx="11" fill="#21262d" stroke="#30363d"/><text class="ec-mono" x="511" y="259" text-anchor="middle" font-size="11" style="fill:#8b949e">E3</text>
+<rect x="552" y="244" width="66" height="22" rx="11" fill="#21262d" stroke="#30363d"/><text class="ec-mono" x="585" y="259" text-anchor="middle" font-size="11" style="fill:#8b949e">E4</text>
+<rect x="626" y="244" width="44" height="22" rx="11" fill="#21262d" stroke="#30363d"/><text class="ec-mono" x="648" y="259" text-anchor="middle" font-size="11" style="fill:#8b949e">E5</text>
+</g>
+<text class="ec-sans" x="330" y="290" font-size="11" style="fill:#6e7681">decide <tspan style="fill:#e6edf3">como</tspan> fazer — e o escopo fica travado no que a investigação provou</text>
+
+<!-- camadas -->
+<text class="ec-sans ec-cap" x="36" y="166">CAMADAS</text>
+<g style="animation:ecL1 12s linear infinite">
+<rect x="36.5" y="176.5" width="236" height="38" rx="9" fill="#161b22" stroke="#30363d"/>
+<text class="ec-mono" x="56" y="194" font-size="12.5" font-weight="700" style="fill:#a371f7">legadox</text>
+<text class="ec-sans" x="56" y="208" font-size="10.5" style="fill:#6e7681">endurece os estágios com PERFIL.md</text>
+</g>
+<g style="animation:ecL2 12s linear infinite">
+<rect x="36.5" y="222.5" width="236" height="38" rx="9" fill="#161b22" stroke="#30363d"/>
+<text class="ec-mono" x="56" y="240" font-size="12.5" font-weight="700" style="fill:#3fb950">stackx</text>
+<text class="ec-sans" x="56" y="254" font-size="10.5" style="fill:#6e7681">lê CONVENCOES.md antes de planejar</text>
+</g>
+<g style="animation:ecL3 12s linear infinite">
+<rect x="36.5" y="268.5" width="236" height="38" rx="9" fill="#161b22" stroke="#30363d"/>
+<text class="ec-mono" x="56" y="286" font-size="12.5" font-weight="700" style="fill:#d29922">memox</text>
+<text class="ec-sans" x="56" y="300" font-size="10.5" style="fill:#6e7681">consultada no E1, reindexada no E5</text>
+</g>
+<path d="M276 195 H302" stroke="#30363d" stroke-width="1.5" marker-end="url(#ec-arr)"/>
+<path d="M276 241 H302" stroke="#30363d" stroke-width="1.5" marker-end="url(#ec-arr)"/>
+<path d="M276 287 H302" stroke="#30363d" stroke-width="1.5" marker-end="url(#ec-arr)"/>
+
+<!-- mergex -->
+<path d="M698 241 H724" stroke="#30363d" stroke-width="1.5" marker-end="url(#ec-arr)"/>
+<rect x="728.5" y="190.5" width="235" height="100" rx="10" fill="#161b22" stroke="#30363d"/>
+<text class="ec-mono" x="752" y="218" font-size="13" font-weight="700" style="fill:#3fb950">mergex</text>
+<text class="ec-sans ec-cap" x="940" y="214" text-anchor="end">ENTREGA</text>
+<text class="ec-sans" x="752" y="240" font-size="11" style="fill:#8b949e">abre a branch no início do E3</text>
+<text class="ec-sans" x="752" y="258" font-size="11" style="fill:#8b949e">entrega entre o E4 e o E5</text>
+<text class="ec-sans" x="752" y="276" font-size="11" style="fill:#8b949e">commit por task, PR e pacote de QA</text>
+
+<!-- rodapé de peças -->
+<line x1="36" y1="330" x2="964" y2="330" stroke="#21262d"/>
+<g>
+<rect x="36.5" y="348.5" width="296" height="70" rx="10" fill="#161b22" stroke="#a371f7" stroke-opacity="0.4"/>
+<text class="ec-mono" x="60" y="374" font-size="13" font-weight="700" style="fill:#a371f7">sprintx</text>
+<text class="ec-sans ec-cap" x="308" y="371" text-anchor="end">A IRMÃ · BUILD</text>
+<text class="ec-sans" x="60" y="394" font-size="11" style="fill:#8b949e">feature nova, F1…F6 — mesmos contratos,</text>
+<text class="ec-sans" x="60" y="409" font-size="11" style="fill:#8b949e">gatilho diferente</text>
+</g>
+<g>
+<rect x="352.5" y="348.5" width="296" height="70" rx="10" fill="#161b22" stroke="#30363d"/>
+<text class="ec-mono" x="376" y="374" font-size="13" font-weight="700" style="fill:#58a6ff">buildx</text>
+<text class="ec-sans ec-cap" x="624" y="371" text-anchor="end">PROJETO INTEIRO</text>
+<text class="ec-sans" x="376" y="394" font-size="11" style="fill:#8b949e">constrói, não corrige — mas o projeto que</text>
+<text class="ec-sans" x="376" y="409" font-size="11" style="fill:#8b949e">ela entrega já vem com a runx instalada</text>
+</g>
+<g>
+<rect x="668.5" y="348.5" width="295" height="70" rx="10" fill="#161b22" stroke="#30363d"/>
+<text class="ec-mono" x="692" y="374" font-size="13" font-weight="700" style="fill:#f0883e">expxdev</text>
+<text class="ec-sans ec-cap" x="940" y="371" text-anchor="end">O CLI</text>
+<text class="ec-sans" x="692" y="394" font-size="11" style="fill:#8b949e">instala, atualiza e diagnostica o ecossistema,</text>
+<text class="ec-sans" x="692" y="409" font-size="11" style="fill:#8b949e">e sobe o painel de operação</text>
+</g>
+
+<text class="ec-sans ec-foot" x="36" y="448">Camadas sozinhas não fazem nada — elas modificam o comportamento da <tspan class="ec-mono" style="fill:#f0883e">runx</tspan> e da <tspan class="ec-mono" style="fill:#a371f7">sprintx</tspan>.</text>
+</svg>

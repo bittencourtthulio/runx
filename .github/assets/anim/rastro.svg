@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="390" viewBox="0 0 1000 390" role="img" aria-label="O rastro de eventos: um arquivo append-only, uma linha JSON por evento, lido pelo painel de operação.">
+<title>O rastro de eventos da runx: append-only, lido pelo painel de operação</title>
+<style>
+.rt-sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+.rt-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:11px;fill:#6e7681}
+.rt-h{font-size:20px;font-weight:600;fill:#e6edf3}
+.rt-sub{font-size:13px;fill:#8b949e}
+.rt-cap{font-size:11.5px;font-weight:700}
+.rt-big{font-size:26px;font-weight:700;fill:#e6edf3}
+.rt-lbl{font-size:12px;fill:#8b949e}
+.rt-foot{font-size:13px;fill:#8b949e}
+.k{fill:#6e7681}.v{fill:#8b949e}
+@keyframes rtL1{0%,4%{opacity:0;transform:translateY(5px)}8%,94%{opacity:1;transform:none}99%,100%{opacity:0;transform:none}}
+@keyframes rtL2{0%,14%{opacity:0;transform:translateY(5px)}18%,94%{opacity:1;transform:none}99%,100%{opacity:0;transform:none}}
+@keyframes rtL3{0%,24%{opacity:0;transform:translateY(5px)}28%,94%{opacity:1;transform:none}99%,100%{opacity:0;transform:none}}
+@keyframes rtL4{0%,34%{opacity:0;transform:translateY(5px)}38%,94%{opacity:1;transform:none}99%,100%{opacity:0;transform:none}}
+@keyframes rtL5{0%,44%{opacity:0;transform:translateY(5px)}48%,94%{opacity:1;transform:none}99%,100%{opacity:0;transform:none}}
+@keyframes rtL6{0%,54%{opacity:0;transform:translateY(5px)}58%,94%{opacity:1;transform:none}99%,100%{opacity:0;transform:none}}
+@keyframes rtL7{0%,64%{opacity:0;transform:translateY(5px)}68%,94%{opacity:1;transform:none}99%,100%{opacity:0;transform:none}}
+@keyframes rtCur{0%,50%{opacity:1}51%,100%{opacity:0}}
+@keyframes rtM1{0%,70%{opacity:0;transform:translateY(6px)}76%,94%{opacity:1;transform:none}99%,100%{opacity:0;transform:none}}
+@keyframes rtM2{0%,78%{opacity:0;transform:translateY(6px)}84%,94%{opacity:1;transform:none}99%,100%{opacity:0;transform:none}}
+</style>
+<rect x="0.5" y="0.5" width="999" height="389" rx="16" fill="#0d1117" stroke="#30363d"/>
+<text class="rt-sans rt-h" x="36" y="44">O rastro de eventos</text>
+<text class="rt-sans rt-sub" x="36" y="66">append-only, uma linha JSON por evento, contrato <tspan class="rt-mono" style="fill:#e6edf3;font-size:13px">expx-eventos v1</tspan> — ninguém edita à mão</text>
+
+<rect x="36.5" y="92.5" width="560" height="226" rx="10" fill="#161b22" stroke="#30363d"/>
+<rect x="36.5" y="92.5" width="560" height="34" rx="10" fill="#21262d"/><rect x="36.5" y="118" width="560" height="9" fill="#21262d"/>
+<line x1="36" y1="126.5" x2="596" y2="126.5" stroke="#30363d"/>
+<text class="rt-mono" x="56" y="114" style="fill:#f0883e;font-size:12px">docs/eventos/OC-2026-0142.jsonl</text>
+<text class="rt-sans rt-cap" x="576" y="114" text-anchor="end" style="fill:#6e7681">APPEND-ONLY</text>
+
+<g style="animation:rtL1 16s linear infinite" opacity="0"><text class="rt-mono" x="56" y="150">{<tspan class="k">"evento"</tspan>:<tspan style="fill:#f0883e">"fase_iniciada"</tspan>,<tspan class="k">"id"</tspan>:<tspan class="v">"F-01.1"</tspan>,<tspan class="k">"em"</tspan>:<tspan class="v">"09:12:04"</tspan>}</text></g>
+<g style="animation:rtL2 16s linear infinite" opacity="0"><text class="rt-mono" x="56" y="172">{<tspan class="k">"evento"</tspan>:<tspan style="fill:#f0883e">"arquivo_alterado"</tspan>,<tspan class="k">"path"</tspan>:<tspan class="v">"src/frete/calculo.ts"</tspan>}</text></g>
+<g style="animation:rtL3 16s linear infinite" opacity="0"><text class="rt-mono" x="56" y="194">{<tspan class="k">"evento"</tspan>:<tspan style="fill:#f0883e">"suite_executada"</tspan>,<tspan class="k">"res"</tspan>:<tspan style="fill:#f85149">"vermelha"</tspan>,<tspan class="k">"head"</tspan>:<tspan class="v">"a91c0f2"</tspan>}</text></g>
+<g style="animation:rtL4 16s linear infinite" opacity="0"><text class="rt-mono" x="56" y="216">{<tspan class="k">"evento"</tspan>:<tspan style="fill:#f0883e">"suite_executada"</tspan>,<tspan class="k">"res"</tspan>:<tspan style="fill:#3fb950">"verde"</tspan>,<tspan class="k">"head"</tspan>:<tspan class="v">"7d4e118"</tspan>}</text></g>
+<g style="animation:rtL5 16s linear infinite" opacity="0"><text class="rt-mono" x="56" y="238">{<tspan class="k">"evento"</tspan>:<tspan style="fill:#f0883e">"task_concluida"</tspan>,<tspan class="k">"id"</tspan>:<tspan class="v">"T-01.01"</tspan>,<tspan class="k">"dur_s"</tspan>:<tspan class="v">412</tspan>}</text></g>
+<g style="animation:rtL6 16s linear infinite" opacity="0"><text class="rt-mono" x="56" y="260">{<tspan class="k">"evento"</tspan>:<tspan style="fill:#f0883e">"regra_violada"</tspan>,<tspan class="k">"hook"</tspan>:<tspan style="fill:#d29922">"escopo-da-ocorrencia"</tspan>}</text></g>
+<g style="animation:rtL7 16s linear infinite" opacity="0"><text class="rt-mono" x="56" y="282">{<tspan class="k">"evento"</tspan>:<tspan style="fill:#f0883e">"veredito_emitido"</tspan>,<tspan class="k">"res"</tspan>:<tspan style="fill:#f85149">"REPROVADO"</tspan>}</text></g>
+<rect x="56" y="292" width="7" height="14" fill="#f0883e" style="animation:rtCur 1s steps(1,end) infinite"/>
+
+<path d="M612 205 H648" stroke="#30363d" stroke-width="2"/>
+<path d="M642 199 L649 205 L642 211" fill="none" stroke="#30363d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+<rect x="660.5" y="92.5" width="303" height="226" rx="10" fill="#161b22" stroke="#30363d"/>
+<circle cx="684" cy="112" r="4" style="fill:#58a6ff"/>
+<text class="rt-sans rt-cap" x="698" y="116" style="fill:#58a6ff">PAINEL DE OPERAÇÃO</text>
+<text class="rt-mono" x="940" y="116" text-anchor="end">expxdev panel</text>
+<line x1="660" y1="128.5" x2="963" y2="128.5" stroke="#30363d"/>
+<text class="rt-sans" x="684" y="152" font-size="11.5" style="fill:#6e7681">duas coisas que só o rastro revela</text>
+
+<g style="animation:rtM1 16s linear infinite" opacity="0">
+<rect x="684" y="164" width="256" height="60" rx="8" fill="#21262d" stroke="#30363d"/>
+<text class="rt-sans rt-big" x="704" y="196" style="fill:#f85149">2</text>
+<text class="rt-sans rt-lbl" x="732" y="190">voltas ao E3 causadas pelo QA</text>
+<text class="rt-sans" x="732" y="208" font-size="11" style="fill:#6e7681">plano ruim gera volta — indicador honesto</text>
+</g>
+<g style="animation:rtM2 16s linear infinite" opacity="0">
+<rect x="684" y="236" width="256" height="60" rx="8" fill="#21262d" stroke="#30363d"/>
+<text class="rt-sans rt-big" x="704" y="268" style="fill:#3fb950">6′52″</text>
+<text class="rt-sans rt-lbl" x="784" y="262">duração real da T-01.01</text>
+<text class="rt-sans" x="784" y="280" font-size="11" style="fill:#6e7681">sem ninguém anotar nada</text>
+</g>
+
+<line x1="36" y1="340" x2="964" y2="340" stroke="#21262d"/>
+<text class="rt-sans rt-foot" x="36" y="366">Ignorado pelo versionador por padrão: é local da máquina de quem executou e cresce rápido. Acima de 5 MB rotaciona para <tspan class="rt-mono" style="fill:#e6edf3;font-size:13px">&lt;OC-ID&gt;.1.jsonl</tspan>.</text>
+</svg>

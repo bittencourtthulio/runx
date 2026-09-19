@@ -1,10 +1,6 @@
 <div align="center">
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/banner-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/banner-light.svg">
-  <img alt="runx — a metade Run do metodo Expx" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/banner-light.svg" width="100%">
-</picture>
+<img alt="runx — a metade Run do método Expx: cinco estágios, da investigação ao relatório" src=".github/assets/anim/hero.svg" width="100%">
 
 <p>
   <img alt="harness: Claude Code" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/badge-claude.svg">
@@ -35,11 +31,19 @@ de sistemas em produção para <a href="https://claude.com/claude-code">Claude C
 > **Não se corrige o que não se entendeu, e não se planeja o que não se mapeou.**
 > Primeiro a base do que será tocado, depois a causa, depois o plano, depois o código. O escopo fica travado no que a investigação provou: o que não está lá não é tocado.
 
+<picture>
+  <img alt="Demonstração: o relato do cliente entra e a runx o leva pelos cinco estágios até os dois relatórios" src=".github/assets/anim/demo-terminal.svg" width="100%">
+</picture>
+
 ---
 
 ## O ecossistema Expx
 
 O método Expx é um conjunto de skills que se compõem, instaladas e mantidas pelo CLI [`expxdev`](https://github.com/bittencourtthulio/expxdev).
+
+<picture>
+  <img alt="O ecossistema Expx: a prodx decide se há trabalho, a runx decide como, as camadas modificam o comportamento e a mergex entrega" src=".github/assets/anim/ecossistema.svg" width="100%">
+</picture>
 
 | Peça | Papel | Relação com a `runx` |
 |---|---|---|
@@ -64,9 +68,7 @@ Detalhes do ecossistema inteiro no [README do expxdev](https://github.com/bitten
 O método Expx tem duas metades, irmãs e com a mesma disciplina de engenharia:
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/buildrun-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/buildrun-light.svg">
-  <img alt="sprintx (Build) e runx (Run), as duas metades do metodo Expx" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/buildrun-light.svg" width="100%">
+  <img alt="Build e Run: runx e sprintx compartilham os mesmos contratos. Muda o gatilho e o tamanho, nunca o rigor." src=".github/assets/anim/build-run.svg" width="100%">
 </picture>
 
 | | **sprintx** (Build) | **runx** (Run) |
@@ -106,6 +108,10 @@ Os três harnesses descobrem a skill do mesmo jeito — pelo `name` e pela `desc
 Várias sessões — do mesmo harness ou de harnesses diferentes — podem trabalhar ao mesmo tempo no mesmo projeto. Sem isolamento, um `stash` de uma sessão levaria o trabalho não salvo de outra, e uma suíte de testes rodada por uma sessão reprovaria por causa do código que outra está no meio de mudar.
 
 `runx` resolve isso com três mecanismos, todos descritos na seção "Sessões paralelas" do `SKILL.md`:
+
+<picture>
+  <img alt="Sessões paralelas: worktree por ocorrência, reivindicação de task pelo rastro e árvore limpa antes da suíte" src=".github/assets/anim/sessoes-paralelas.svg" width="100%">
+</picture>
 
 - **Worktree por ocorrência** (regra 16): com git, cada ocorrência nasce num `git worktree` próprio, isolado do checkout principal.
 - **Reivindicação de task pelo rastro**: uma sessão não reabre uma task que o rastro mostra em andamento por outra sessão.
@@ -208,9 +214,7 @@ E1 INVESTIGAÇÃO → E2 PLANO → E3 FIX → E4 QA → E5 RELATÓRIO
 Estritamente sequenciais. A skill descobre onde está **inspecionando o disco**, não perguntando.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/pipeline-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/pipeline-light.svg">
-  <img alt="Os cinco estagios do runx, com os artefatos e os caminhos de retorno" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/pipeline-light.svg" width="100%">
+  <img alt="A skill descobre em que estágio está inspecionando o disco, nunca perguntando" src=".github/assets/anim/maquina-de-estados.svg" width="100%">
 </picture>
 
 ### E1 — Investigação
@@ -225,6 +229,10 @@ Regra dura: **nada de invenção**. Se o código não deixa claro, escreve `NÃO
 
 - **`bug`** → **causa raiz**, e é obrigatório *provar*, não supor. Prova aceita: um teste que reproduz e falha, um log/stack trace/query que evidencia o caminho do erro, ou o trecho de código com a linha e o porquê. **Hipótese sem prova não passa deste estágio.**
 - **demais tipos** → **análise de impacto**: como o sistema se comporta hoje, o que muda, o que pode quebrar junto, e o comportamento esperado depois.
+
+<picture>
+  <img alt="E1: hipótese sem prova não passa. Bug exige causa raiz comprovada; os demais tipos entram em análise de impacto" src=".github/assets/anim/causa-raiz.svg" width="100%">
+</picture>
 
 ### E2 — Plano
 
@@ -247,6 +255,10 @@ Percorre a árvore sob TDD estrito. Por task:
 4. Rodar a **suíte inteira**, não só os testes novos.
 5. Marcar como concluída apenas com tudo verde.
 
+<picture>
+  <img alt="O ciclo de uma task no E3: o teste de regressão antes do código, o vermelho obrigatório, e a task só fecha com a suíte inteira verde" src=".github/assets/anim/tdd-ciclo.svg" width="100%">
+</picture>
+
 Se o teste de regressão **passar antes** do fix, o teste está errado ou a causa está errada: para e volta ao E1. Durante o E3 a skill **não pergunta nada** — dúvida nova vai para `BLOQUEIOS.md`, a task é pulada e a próxima paralelizável assume.
 
 ### E4 — QA
@@ -255,12 +267,20 @@ A IA troca de papel: **valida, não implementa, e não corrige nada** do que enc
 
 Veredito de uma linha: `APROVADO` ou `REPROVADO`. Achado de severidade ALTA manda voltar para o E3. **Nunca cabe ao E4 corrigir.**
 
+<picture>
+  <img alt="E4: a IA troca de papel, valida e não corrige nada. Achado de severidade ALTA devolve ao E3" src=".github/assets/anim/qa-veredito.svg" width="100%">
+</picture>
+
 ### E5 — Relatório e fechamento
 
 Só executa com E4 aprovado. Gera **dois relatórios, para leitores diferentes**:
 
 - **`tecnico.md`** — para o próximo desenvolvedor que abrir este código. Causa, solução, decisões, testes, risco residual, o que observar em produção, e sugestões de novas ocorrências percebidas e não feitas.
 - **`uso.md`** — o suporte copia e devolve ao cliente. **Sem nome de arquivo, sem nome de função, sem nome de tabela, sem jargão técnico, sem stack trace.** Se um cliente não desenvolvedor não entenderia, está errado.
+
+<picture>
+  <img alt="E5: dois relatórios para leitores diferentes. tecnico.md para o próximo desenvolvedor, uso.md para o cliente, sem jargão" src=".github/assets/anim/dois-relatorios.svg" width="100%">
+</picture>
 
 ---
 
@@ -310,9 +330,7 @@ Toda task declara, obrigatoriamente:
 ## Estrutura em disco
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/disco-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/disco-light.svg">
-  <img alt="As duas arvores em disco: trabalho em andamento e historico permanente" src="https://raw.githubusercontent.com/bittencourtthulio/runx/main/.github/assets/disco-light.svg" width="100%">
+  <img alt="As duas árvores em disco: trabalho em andamento e histórico permanente" src=".github/assets/anim/disco.svg" width="100%">
 </picture>
 
 Duas árvores, propósitos diferentes.
@@ -353,6 +371,10 @@ A data no nome da pasta é a de fechamento, para que uma listagem simples devolv
 ## expx-schema v1
 
 Todo arquivo de estado carrega um **frontmatter YAML legível por máquina**, para que um painel de operação leia o andamento das ocorrências sem depender de prosa.
+
+<picture>
+  <img alt="expx-schema v1: a máquina lê o YAML do frontmatter, a pessoa lê a prosa. Só a skill escreve" src=".github/assets/anim/schema.svg" width="100%">
+</picture>
 
 ```yaml
 ---
@@ -413,6 +435,10 @@ Os kinds compartilhados com a `sprintx` — `orquestrador`, `sprint`, `fases`, `
 
 Toda regra inviolável acima é, sozinha, uma instrução que o modelo pode esquecer numa execução longa. Hook é script determinístico: roda sempre, porque quem executa é o harness, não o modelo.
 
+<picture>
+  <img alt="Hooks: scripts determinísticos que o harness executa. Aviso deixa passar com marca; bloqueio barra. Todo hook de método nasce em aviso" src=".github/assets/anim/hooks.svg" width="100%">
+</picture>
+
 | Hook | Quando | O que faz |
 |---|---|---|
 | `comum/segredo-no-commit.py` | antes de escrever | barra credencial real indo para arquivo versionado |
@@ -437,6 +463,10 @@ Os oito hooks de escrita e o de `Bash` no grupo `PreToolUse` rodam por um **desp
 
 Três subagentes rodam em contexto próprio, para que o julgamento não seja contaminado por quem produziu o trabalho:
 
+<picture>
+  <img alt="Três agentes de veredito, somente leitura: investigador, revisor-testes e qa. Apontam, não corrigem" src=".github/assets/anim/agentes.svg" width="100%">
+</picture>
+
 | Agente | Estágio | Papel |
 |---|---|---|
 | `investigador` | E1 | mapeia a base e comprova a causa raiz; só leitura, hipótese sem prova não passa |
@@ -450,6 +480,10 @@ Hooks e skill gravam um arquivo append-only, uma linha JSON por evento, seguindo
 ```
 docs/eventos/<OC-ID>.jsonl
 ```
+
+<picture>
+  <img alt="O rastro de eventos: um arquivo append-only, uma linha JSON por evento, lido pelo painel de operação" src=".github/assets/anim/rastro.svg" width="100%">
+</picture>
 
 É o que o **painel de operação** (`npx expxdev panel`) lê para mostrar o que aconteceu e quando — fase iniciada e concluída, task concluída ou bloqueada, suíte executada, arquivo alterado, regra violada, veredito emitido. Ninguém edita à mão.
 
@@ -489,7 +523,8 @@ A skill é **neutra de harness**: o mesmo conteúdo serve aos dois, e só o regi
 .opencode/
   skills/runx/                a mesma skill, no formato do OpenCode
   command/runx*.md            os mesmos comandos, no formato do OpenCode
-.github/assets/               banner e badges do README
+.github/assets/               banner e badges
+  anim/                       as 15 animacoes deste README
 install.sh                    instalador para Claude Code + OpenCode
 ```
 

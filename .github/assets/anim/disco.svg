@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="430" viewBox="0 0 1000 430" role="img" aria-label="Duas árvores em disco: o trabalho em andamento e o histórico permanente do sistema.">
+<title>Estrutura em disco da runx: trabalho em andamento e histórico permanente</title>
+<style>
+.dk-sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+.dk-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:12.5px}
+.dk-h{font-size:20px;font-weight:600;fill:#e6edf3}
+.dk-sub{font-size:13px;fill:#8b949e}
+.dk-cap{font-size:12px;font-weight:700}
+.dk-note{font-size:12px;fill:#8b949e}
+.dk-foot{font-size:13px;fill:#8b949e}
+.f{fill:#8b949e}.dir{fill:#e6edf3}.dim{fill:#6e7681}
+.r{opacity:0}
+</style>
+<defs>
+<g id="dk-fold"><path d="M0 2 h5.5 l1.6 2 H13 a1.4 1.4 0 0 1 1.4 1.4 v6.2 A1.4 1.4 0 0 1 13 13 H0 A1.4 1.4 0 0 1 -1.4 11.6 V3.4 A1.4 1.4 0 0 1 0 2 Z" fill="#f0883e" fill-opacity="0.22" stroke="#f0883e" stroke-opacity="0.6" stroke-width="1"/></g>
+<g id="dk-file"><path d="M1 2 h7 l4 4 v7 a1.4 1.4 0 0 1 -1.4 1.4 H1 A1.4 1.4 0 0 1 -0.4 13 V3.4 A1.4 1.4 0 0 1 1 2 Z" fill="#21262d" stroke="#30363d"/><path d="M8 2 v4 h4" fill="none" stroke="#30363d"/></g>
+</defs>
+<rect x="0.5" y="0.5" width="999" height="429" rx="16" fill="#0d1117" stroke="#30363d"/>
+<text class="dk-sans dk-h" x="36" y="44">Duas árvores, propósitos diferentes</text>
+<text class="dk-sans dk-sub" x="36" y="66">a skill nunca apaga nem move nada em <tspan class="dk-mono" style="fill:#e6edf3">docs/manutencao/</tspan> — a limpeza é decisão sua</text>
+
+<!-- painel esquerdo -->
+<rect x="36.5" y="92.5" width="460" height="278" rx="10" fill="#161b22" stroke="#30363d"/>
+<rect x="36.5" y="92.5" width="460" height="38" rx="10" fill="#21262d"/><rect x="36.5" y="120" width="460" height="11" fill="#21262d"/>
+<line x1="36" y1="130.5" x2="496" y2="130.5" stroke="#30363d"/>
+<circle cx="60" cy="111" r="4" style="fill:#f0883e"/>
+<text class="dk-sans dk-cap" x="74" y="115" style="fill:#f0883e">TRABALHO EM ANDAMENTO</text>
+<text class="dk-sans dk-note" x="472" y="115" text-anchor="end" style="fill:#6e7681">permanece no repositório</text>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.0200;0.0380;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(60,144.5)"><use href="#dk-fold"/></g><text class="dk-mono dir" x="84" y="156.0">docs/manutencao/&lt;OC-ID&gt;-&lt;slug&gt;/</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.0550;0.0730;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(82,159.9)"><use href="#dk-file"/></g><text class="dk-mono f" x="106" y="171.4">ORQUESTRADOR.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.0900;0.1080;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(82,175.3)"><use href="#dk-file"/></g><text class="dk-mono f" x="106" y="186.8">00-OCORRENCIA.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.1250;0.1430;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(82,190.7)"><use href="#dk-file"/></g><text class="dk-mono f" x="106" y="202.2">01-CAUSA-RAIZ.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.1600;0.1780;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(82,206.1)"><use href="#dk-file"/></g><text class="dk-mono f" x="106" y="217.6">BLOQUEIOS.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.1950;0.2130;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(82,221.5)"><use href="#dk-file"/></g><text class="dk-mono f" x="106" y="233.0">QA.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.2300;0.2480;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(82,236.9)"><use href="#dk-fold"/></g><text class="dk-mono dir" x="106" y="248.4">base/</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.2650;0.2830;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(104,252.3)"><use href="#dk-file"/></g><text class="dk-mono f" x="128" y="263.8">00-INDICE.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.3000;0.3180;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(104,267.7)"><use href="#dk-file"/></g><text class="dk-mono f" x="128" y="279.2">00-LACUNAS.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.3350;0.3530;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(104,283.1)"><use href="#dk-file"/></g><text class="dk-mono dim" x="128" y="294.6">&lt;uma área impactada&gt;.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.3700;0.3880;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(82,298.5)"><use href="#dk-fold"/></g><text class="dk-mono dir" x="106" y="310.0">sprint-01/</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.4050;0.4230;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(104,313.9)"><use href="#dk-file"/></g><text class="dk-mono f" x="128" y="325.4">sprint.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.4400;0.4580;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(104,329.3)"><use href="#dk-file"/></g><text class="dk-mono f" x="128" y="340.8">fases.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.4750;0.4930;0.93;0.97;1" dur="14s" repeatCount="indefinite"/><g transform="translate(104,344.7)"><use href="#dk-file"/></g><text class="dk-mono f" x="128" y="356.2">tasks.md</text></g>
+<!-- painel direito -->
+<rect x="524.5" y="92.5" width="439" height="278" rx="10" fill="#161b22" stroke="#30363d"/>
+<rect x="524.5" y="92.5" width="439" height="38" rx="10" fill="#21262d"/><rect x="524.5" y="120" width="439" height="11" fill="#21262d"/>
+<line x1="524" y1="130.5" x2="963" y2="130.5" stroke="#30363d"/>
+<circle cx="548" cy="111" r="4" style="fill:#3fb950"/>
+<text class="dk-sans dk-cap" x="562" y="115" style="fill:#3fb950">HISTÓRICO PERMANENTE</text>
+<text class="dk-sans dk-note" x="940" y="115" text-anchor="end" style="fill:#6e7681">a linha do tempo do sistema</text>
+
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.52;0.545;0.93;0.97;1" dur="14s" repeatCount="indefinite"/>
+<g transform="translate(548,144.5)"><use href="#dk-fold"/></g><text class="dk-mono dir" x="572" y="156">docs/relatorios/</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.555;0.58;0.93;0.97;1" dur="14s" repeatCount="indefinite"/>
+<g transform="translate(570,166.5)"><use href="#dk-file"/></g><text class="dk-mono f" x="594" y="178">INDICE.md</text></g>
+
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.59;0.615;0.93;0.97;1" dur="14s" repeatCount="indefinite"/>
+<g transform="translate(570,196.5)"><use href="#dk-fold"/></g>
+<text class="dk-mono" x="594" y="208"><tspan style="fill:#3fb950">2026-08-29</tspan><tspan style="fill:#8b949e">-OC-2026-0142-frete-acima-50kg/</tspan></text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.625;0.65;0.93;0.97;1" dur="14s" repeatCount="indefinite"/>
+<g transform="translate(592,218.5)"><use href="#dk-file"/></g><text class="dk-mono" x="616" y="230" style="fill:#f0883e">tecnico.md</text><text class="dk-mono dim" x="716" y="230">o próximo desenvolvedor</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.66;0.685;0.93;0.97;1" dur="14s" repeatCount="indefinite"/>
+<g transform="translate(592,240.5)"><use href="#dk-file"/></g><text class="dk-mono" x="616" y="252" style="fill:#3fb950">uso.md</text><text class="dk-mono dim" x="716" y="252">o cliente</text></g>
+
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.70;0.725;0.93;0.97;1" dur="14s" repeatCount="indefinite"/>
+<g transform="translate(570,270.5)"><use href="#dk-fold"/></g>
+<text class="dk-mono" x="594" y="282"><tspan style="fill:#3fb950">2026-07-14</tspan><tspan style="fill:#8b949e">-OC-2026-0103-filtro-de-periodo/</tspan></text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.735;0.76;0.93;0.97;1" dur="14s" repeatCount="indefinite"/>
+<g transform="translate(592,292.5)"><use href="#dk-file"/></g><text class="dk-mono dim" x="616" y="304">tecnico.md</text></g>
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.77;0.795;0.93;0.97;1" dur="14s" repeatCount="indefinite"/>
+<g transform="translate(592,314.5)"><use href="#dk-file"/></g><text class="dk-mono dim" x="616" y="326">uso.md</text></g>
+
+<g class="r"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.81;0.84;0.93;0.97;1" dur="14s" repeatCount="indefinite"/>
+<rect x="548" y="340" width="288" height="22" rx="11" fill="#3fb950" fill-opacity="0.10" stroke="#3fb950" stroke-opacity="0.4"/>
+<text class="dk-sans" x="692" y="355" text-anchor="middle" font-size="11.5" style="fill:#3fb950">ordenar por nome = ordenar por data de fechamento</text></g>
+
+<!-- seta E5 -->
+<path d="M500 231 H520" stroke="#30363d" stroke-width="2"/>
+<path d="M514 225 L521 231 L514 237" fill="none" stroke="#30363d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text class="dk-sans" x="510" y="219" text-anchor="middle" font-size="11" style="fill:#6e7681">E5</text>
+
+<line x1="36" y1="390" x2="964" y2="390" stroke="#21262d"/>
+<text class="dk-sans dk-foot" x="36" y="414">O rastro de eventos vive à parte, em <tspan class="dk-mono" style="fill:#e6edf3">docs/eventos/&lt;OC-ID&gt;.jsonl</tspan>, ignorado pelo versionador: é local da máquina de quem executou.</text>
+</svg>
