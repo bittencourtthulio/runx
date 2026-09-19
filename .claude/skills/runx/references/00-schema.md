@@ -155,6 +155,9 @@ arquivos_impactados: [src/frete/calculo.ts]
 palavras_chave: [frete, arredondamento, faixa-de-peso, checkout]
 regressao_de: OC-2026-0087
 evidencia_regressao: A faixa acima de 50kg foi introduzida em src/frete/calculo.ts pela OC-2026-0087
+modulo_consultado: null
+hipotese_do_modulo: null
+hipotese_confirmada: null
 decisoes:
   - id: D-01
     decisao: Corrigir arredondamento na faixa de peso
@@ -170,6 +173,23 @@ atualizado_em: 2026-08-29
 - Quando `modo: causa_raiz` e a prova não apareceu (`STATUS: NÃO COMPROVADO` na prosa),
   `comprovada: false` e `evidencia: null`.
 - `arquivos_impactados` é a lista que TRAVA o escopo — a mesma da prosa.
+
+Os três campos de módulo seguem a regra universal 6 — **nunca omita a chave** — e só
+são preenchidos quando a skill `modulex` foi consultada no E1:
+
+- `modulo_consultado`: o `id` do módulo injetado, ou `null`.
+- `hipotese_do_modulo`: o elo ou a armadilha que o módulo apontou e que a investigação
+  foi verificar, ou `null`. Um elo por ocorrência: é o que foi perseguido, não a lista
+  inteira que chegou.
+- `hipotese_confirmada`: `true` quando a prova confirmou a hipótese do módulo, `false`
+  quando a causa real era outra, `null` quando nenhum módulo foi consultado.
+
+O terceiro campo é o registro honesto de **quantas vezes a hipótese do módulo estava
+certa**, e é o que permite calibrar quanto confiar nele. Um catálogo cuja cadeia de falha
+acerta em quatro de cinco ocorrências merece ser o primeiro lugar a olhar; um que acerta
+em uma de cinco está descrevendo o que se imagina que quebre, não o que quebrou — e isso
+é defeito do módulo, a corrigir no E5. Registrar `false` é tão útil quanto registrar
+`true`, e é o que ninguém lembra de fazer.
 
 Os três campos de indexação deste kind — `palavras_chave`, `regressao_de` e
 `evidencia_regressao` — seguem a regra universal 6: **nunca omita a chave**; lista vazia é
@@ -538,4 +558,7 @@ Antes de dar por gravado qualquer arquivo de estado:
 - [ ] `regressao_de` só está preenchido com evidência de vínculo causal; coincidência de
       arquivo é `null`. Preenchido → `evidencia_regressao` não vazio; `null` → `null`.
 - [ ] Em `kind: relatorio_uso`, nenhum nome de arquivo, função ou tabela no YAML.
+- [ ] Em `kind: causa_raiz`, as três chaves de módulo existem. Sem módulo consultado,
+      as três são `null`. Com módulo consultado e causa comprovada,
+      `hipotese_confirmada` é `true` ou `false` — nunca `null`.
 - [ ] Nenhum caminho absoluto em nenhum valor.

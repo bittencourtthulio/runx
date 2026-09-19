@@ -122,6 +122,36 @@ Consulte com o que você já tem em mãos no Passo 0: os termos do relato, o mó
 
 **A ausência do `memox` nunca bloqueia o estágio.** Sem ela instalada, siga direto para a busca pelos termos do relato — o método é idêntico, você apenas começa sem a dica de onde os problemas se concentram. Não instale nada, não pergunte por ela, não pare.
 
+## Passo prévio — hipóteses vindas de módulo
+
+**Quando a ocorrência for sobre integração com um terceiro — WhatsApp, pagamento, storage, email transacional, nota fiscal, assinatura digital, mensageria — e a skill `modulex` estiver instalada, consulte o catálogo ANTES de investigar.** Rode `/modulex-buscar` com o problema na linguagem do relato, e havendo módulo, injete com `/modulex-injetar`.
+
+A injeção traz **somente** as seções 11 (cadeia de falha e armadilhas), 12 (catálogo de erros) e — quando o sintoma for de configuração — a 6 (dependência de stack). **O plano de fases do módulo não desce:** o E1 investiga o que está quebrado, não constrói.
+
+O material chega rotulado, e o rótulo é obrigatório em todo lugar onde ele for citado:
+
+```
+Hipoteses do modulo <id> — NAO SAO CAUSA COMPROVADA.
+O E1 exige prova. Isto e a ordem em que vale olhar.
+```
+
+**A cadeia de falha é hipótese de causa a comprovar, nunca causa declarada.** O E1 existe para comprovar a causa raiz; uma lista de suspeitos que chega com ar de diagnóstico faz o estágio pular a prova, que é a única coisa que ele faz. O resultado é o pior defeito possível numa ocorrência: a causa plausível que não era a causa, consertada, com o problema voltando duas semanas depois.
+
+O que o módulo dá é valioso e é outra coisa: **a ordem em que vale olhar.** Sete elos, e o defeito está em exatamente um. Saber por qual começar economiza a tarde; declarar qual é sem prova custa a semana.
+
+Vale aqui a mesma regra que esta metade já pratica: **isole o elo primeiro, leia o código do elo depois.** Mudar código antes de localizar a quebra é como as tardes desaparecem.
+
+O sintoma particiona a cadeia antes da primeira consulta — num módulo de mensageria, recebimento quebra nos elos de webhook para diante, e envio quebra na autenticação ou na normalização do destinatário. Metade da cadeia sai da mesa sem custo nenhum.
+
+**Duas cautelas sobre código de erro:**
+
+- **Código de erro do fornecedor não é causa.** Um 401 diz que a autenticação falhou; não diz se o cabeçalho está errado, se o segredo expirou ou se a conexão foi recriada do outro lado. O catálogo lista as três; o E1 prova qual é.
+- **Erro ausente do catálogo não é erro impossível.** É erro novo — e vira gatilho de verificação do módulo no E5.
+
+Registre em `base/00-INDICE.md`, em uma linha, qual módulo foi consultado e quais elos ficaram de pé depois do particionamento pelo sintoma. Continua valendo a regra de que toda afirmação de comportamento aponta para arquivo e linha: a hipótese do módulo não dispensa nenhuma delas.
+
+**A ausência do `modulex` nunca bloqueia o estágio.** Sem ela instalada, ou com o catálogo não alcançável, investigue como sempre investigou — o método é idêntico, você apenas começa sem a lista de suspeitos. Não instale nada, não pergunte por ela, não pare.
+
 ## Por onde começar a busca, a partir do relato
 
 Extraia do relato os termos concretos: nome de tela, rótulo de campo, nome de botão, mensagem de erro, nome de relatório, valor numérico divergente, nome de entidade de negócio. Esses termos são as âncoras da busca.
@@ -186,6 +216,7 @@ Um arquivo por área impactada em `base/`, usando `assets/TEMPLATE-base-area.md`
 - **Nada de invenção.** Se o código não deixa claro, escreva literalmente `NÃO DETERMINADO` — nunca preencha com o que "deve ser".
 - **Toda afirmação sobre comportamento aponta para arquivo e linha.**
 - **Proibido escrever código de implementação nesta metade.** Trechos citados do código existente são permitidos; código novo, não.
+- **Hipótese de módulo não é causa.** Enquanto não houver prova, ela aparece rotulada como hipótese em todo lugar onde for citada — no índice, na base e na causa raiz.
 
 ## Fechamento do E1.a
 

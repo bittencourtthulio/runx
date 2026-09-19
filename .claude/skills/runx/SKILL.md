@@ -185,6 +185,7 @@ Ambos são sempre ancorados na raiz do repositório Git mais próxima do diretó
 14. Todo arquivo de estado é gravado com o frontmatter do contrato expx-schema v1, descrito em `references/00-schema.md`. Arquivo de estado sem frontmatter válido é considerado não entregue.
 15. Coincidência de arquivo não é regressão. O campo `regressao_de` só é preenchido com evidência de vínculo causal.
 16. Uma ocorrência aberta por árvore de trabalho. Com git, a ocorrência nasce em worktree próprio no E1, e toda sessão que a toca trabalha de dentro dele — ver "Sessões paralelas".
+17. Hipótese vinda de módulo não é causa. A cadeia de falha e o catálogo de erros de um módulo do `modulex` entram no E1 como **a ordem em que vale olhar**; declarar causa continua exigindo prova, e o plano de fases do módulo não desce para cá.
 
 Regra transversal: use sempre caminhos relativos; nunca escreva caminhos absolutos em nenhum artefato.
 

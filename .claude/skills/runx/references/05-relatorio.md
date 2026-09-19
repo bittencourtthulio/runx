@@ -95,6 +95,24 @@ A reindexação acontece **depois** de `tecnico.md`, `uso.md` e `INDICE.md` esta
 
 **A ausência do `memox` nunca bloqueia o fechamento.** Sem ela instalada, pule este passo e siga: os relatórios já estão no disco e o `INDICE.md` já foi atualizado. Não instale nada, não pergunte por ela, não pare. Se a reindexação falhar, registre a falha em uma linha no `tecnico.md`, seção "Risco residual", e siga — a ocorrência fecha do mesmo jeito.
 
+## Passo 5.a — Devolver ao catálogo de módulos
+
+**Quando a investigação encontrou armadilha que o módulo não listava, ou erro fora do catálogo, dispare `/modulex-verificar` sobre AQUELE CAMPO.**
+
+Uma ocorrência real é a melhor fonte de cadeia de falha que existe: ela não descreve o que se imagina que quebre, mas **o que quebrou**. Nenhuma leitura de documentação produz isso.
+
+Três gatilhos, e só eles:
+
+| Gatilho | O que devolver |
+|---|---|
+| a causa raiz foi um elo que a cadeia do módulo não tinha | o elo novo, com o sintoma observável |
+| o erro do fornecedor não estava no catálogo de erros | o código, a causa comprovada e se cabe retry |
+| `hipotese_confirmada: false` | que aquele elo apontava para o lugar errado neste caso |
+
+**Não custe uma verificação completa a quem só quis devolver um achado.** A correção vale para **aquele campo**, com data nova só nele; o `verificado_em` do módulo não se renova. Atrito aqui mata a única fonte de correção que vem de campo — e correção vinda de campo é a mais valiosa que existe, porque é a única que veio de quem estava com a mão na massa.
+
+**A ausência do `modulex` nunca bloqueia o fechamento.** Sem ela instalada, sem módulo consultado no E1, ou com o catálogo não alcançável, pule este passo e siga. Não instale nada, não pergunte por ela, não pare.
+
 ## Passo 6 — Encerrar
 
 **Grave o fechamento na barra.** Com os relatórios e o `INDICE.md` no disco, atualize `.expx/estado.json` pelo procedimento de `references/06-estado.md`: `trabalho`, `fase` e `task` viram `null`. **O arquivo continua existindo** — não o apague; as contagens e `bloqueios` ficam como estavam. Sem `.expx/` no projeto, siga sem gravar, sem erro e sem aviso; se a gravação falhar, registre no rastro e siga. A ocorrência fecha do mesmo jeito: o `estado.json` é derivado e a sua ausência é inofensiva.
