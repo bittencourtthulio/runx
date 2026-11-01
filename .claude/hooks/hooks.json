@@ -1,5 +1,5 @@
 {
-  "description": "runx — hooks de seguranca, de rastro e de metodo. Seguranca nasce em bloqueio; metodo nasce em aviso e e promovido em .expx/hooks.json. Os hooks rodam por um despachante unico: cada python3 custa ~30 ms de partida, e cinco processos estourariam o orcamento de 200 ms por chamada de ferramenta.",
+  "description": "runx — launcher Node portatil seleciona Python 3 validado. Seguranca bloqueia em falha; hooks exclusivamente de metodo preservam falha aberta.",
   "hooks": {
     "PreToolUse": [
       {
@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/despachante.py\" comum/segredo-no-commit runx/causa-antes-do-plano runx/regressao-antes-do-fix runx/task-so-fecha-verde runx/escopo-da-ocorrencia runx/uma-ocorrencia-por-arvore runx/task-reivindicada",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/launcher.cjs\" comum/segredo-no-commit runx/causa-antes-do-plano runx/regressao-antes-do-fix runx/task-so-fecha-verde runx/escopo-da-ocorrencia runx/uma-ocorrencia-por-arvore runx/task-reivindicada",
             "timeout": 15,
             "statusMessage": "conferindo segredo, causa, regressao, escopo e sessoes paralelas"
           }
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/despachante.py\" runx/arvore-limpa-antes-da-suite",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/launcher.cjs\" runx/arvore-limpa-antes-da-suite",
             "timeout": 15,
             "statusMessage": "conferindo arvore antes da suite"
           }
@@ -31,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/despachante.py\" comum/rastro-arquivo runx/sem-jargao-no-uso",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/launcher.cjs\" comum/rastro-arquivo runx/sem-jargao-no-uso",
             "timeout": 15
           }
         ]
@@ -41,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/despachante.py\" comum/rastro-suite",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/comum/launcher.cjs\" comum/rastro-suite",
             "timeout": 15
           }
         ]

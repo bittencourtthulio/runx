@@ -121,7 +121,7 @@ Várias sessões — do mesmo harness ou de harnesses diferentes — podem traba
 
 ## Instalação
 
-O instalador monta a estrutura **dos dois harnesses de uma vez**:
+O instalador prepara **Claude Code, OpenCode e MimoCode de uma vez**. Requer Bash (Git Bash no Windows) e Node.js; os hooks precisam de Python 3, encontrado como `python3`, `py -3` ou `python`:
 
 ```bash
 git clone https://github.com/bittencourtthulio/runx.git
@@ -129,7 +129,7 @@ cd runx
 ./install.sh
 ```
 
-Isso cria `.claude/` **e** `.opencode/` no projeto atual. Para deixar disponível em todos os seus projetos:
+Isso cria `.claude/`, `.opencode/` e a ponte em `.mimocode/` no projeto atual. Para deixar disponível em todos os seus projetos:
 
 ```bash
 ./install.sh --global
@@ -152,7 +152,7 @@ As flags combinam: `./install.sh --global --opencode` instala só o OpenCode, s�
 
 Sem `--force`, o instalador **nunca sobrescreve calado**: pergunta no modo interativo e pula quando não há terminal (CI). Rodar duas vezes é seguro.
 
-Ao registrar os hooks, o instalador **mescla** com o `settings.json` que já existe — nunca o substitui — e guarda uma cópia do anterior em `settings.json.runx-backup`. Registrar de novo não duplica nada.
+Ao registrar os hooks, o instalador **mescla** com o `settings.json` que já existe — nunca o substitui — e guarda uma cópia do anterior em `settings.json.runx-backup`. Registrar de novo não duplica nada. Os comandos registrados usam o launcher Node, inclusive no Windows sem o alias `python3`. JSON inválido interrompe a instalação antes de alterar o settings.
 
 ### Instalação manual
 

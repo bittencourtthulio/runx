@@ -34,6 +34,15 @@ def task_aberta(pasta):
 
 def main():
     evento = R.ler_evento()
+    response = evento.get("tool_response")
+    if evento.get("expx_codex_patch") or evento.get("expx_require_success"):
+        # Codex nao garante sucesso so por emitir PostToolUse.
+        if not isinstance(response, dict) or response.get("success") is not True:
+            sys.exit(0)
+    elif evento.get("hook_event_name") == "PostToolUse":
+        # Claude PostToolUse e sucesso por contrato; respostas explicitas de erro vencem.
+        if isinstance(response, dict) and (response.get("success") is False or response.get("error") or response.get("isError")):
+            sys.exit(0)
     caminho = R.caminho_da_ferramenta(evento)
     if not caminho:
         sys.exit(0)

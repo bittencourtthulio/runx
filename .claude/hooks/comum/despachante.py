@@ -1,22 +1,11 @@
 #!/usr/bin/env python3
-"""Roda varios hooks do runx em UM processo.
+"""Executa hooks em um processo; adapta apply_patch antes de inspecionar arquivos.
 
-Cada `python3` custa ~30 ms de partida. Cinco hooks no `PreToolUse` seriam
-~150 ms so de interpretador, contra um orcamento de 200 ms para a chamada
-inteira — e o trabalho de verdade nao chega a 2 ms. Entao o registro em
-`settings.json` aponta para este despachante, que importa os hooks como modulo
-e os roda em sequencia, lendo o stdin uma vez so.
-
-    python3 despachante.py runx/causa-antes-do-plano runx/escopo-da-ocorrencia
-
-Semantica preservada: o primeiro hook que pedir bloqueio (exit 2) encerra o
-despachante com 2 e a mensagem dele no stderr; se nenhum pedir, sai 0.
-
-Este arquivo NAO importa nada do runx no topo: se a biblioteca comum estiver
-quebrada ou ausente, ele sai 0 em silencio em vez de despejar um traceback a
-cada escrita de arquivo — que e o mesmo que ser desinstalado.
+Scanner de seguranca falha fechado inclusive em import/main/payload.
+Hooks exclusivamente de metodo preservam falha aberta.
 """
 
+import json
 import io
 import os
 import sys
@@ -30,8 +19,10 @@ def roda(nome, evento_bruto):
     import importlib.util
 
     caminho = os.path.join(RAIZ, nome + ".py")
+    security = nome == "comum/segredo-no-commit"
+    failure = (2, "[expx] Scanner de seguranca indisponivel ou com erro. Escrita bloqueada.\n")
     if not os.path.isfile(caminho):
-        return 0, ""
+        return failure if security else (0, "")
 
     erro = io.StringIO()
     codigo = 0
@@ -49,16 +40,21 @@ def roda(nome, evento_bruto):
                 # normal de o hook responder, e precisa ser tratado AQUI, dentro
                 # do redirect, senao o codigo se perde.
                 spec.loader.exec_module(modulo)
-                if hasattr(modulo, "main"):
-                    modulo.main()
+                if not callable(getattr(modulo, "main", None)):
+                    raise ValueError("hook sem main")
+                modulo.main()
             except SystemExit as saida:
-                codigo = saida.code if isinstance(saida.code, int) else 0
+                codigo = saida.code if isinstance(saida.code, int) else (2 if security else 0)
+                if security and codigo not in (0, 2):
+                    return failure
             except Exception:
                 # Hook de metodo falha ABERTA. O de seguranca tem o proprio
                 # tratamento fail-closed dentro do `main()` dele.
+                if security:
+                    return failure
                 codigo = 0
     except Exception:
-        return 0, ""
+        return failure if security else (0, "")
     return codigo, erro.getvalue()
 
 
@@ -74,13 +70,23 @@ def main():
 
     real = sys.stdin
     try:
-        for nome in alvos:
-            codigo, texto = roda(nome, bruto)
-            if codigo == 2:  # primeiro que barra encerra
-                sys.stderr.write(texto)
+        try:
+            from eventos import events
+            adapted = events(bruto)
+        except Exception:
+            if "comum/segredo-no-commit" in alvos:
+                sys.stderr.write("[expx] Payload ou patch invalido; escrita bloqueada.\n")
                 return 2
-            if texto.strip():  # aviso: mostra e segue
-                sys.stderr.write(texto)
+            return 0
+        # Todos os arquivos passam pelo scanner antes dos hooks de metodo/rastro.
+        ordered = sorted(alvos, key=lambda name: name != "comum/segredo-no-commit")
+        for nome in ordered:
+            for event in adapted:
+                codigo, texto = roda(nome, json.dumps(event))
+                if texto.strip():
+                    sys.stderr.write(texto)
+                if codigo == 2:
+                    return 2
     finally:
         sys.stdin = real
     return 0
@@ -92,7 +98,8 @@ if __name__ == "__main__":
     except SystemExit as _saida:  # um hook que escapou do `roda`
         _codigo = _saida.code if isinstance(_saida.code, int) else 0
     except Exception:
-        _codigo = 0  # falha aberta: erro interno nunca atrapalha o trabalho
+        _codigo = 2 if "comum/segredo-no-commit" in sys.argv else 0
+        sys.stderr.write("[expx] Erro interno do despachante.\n")
     sys.stdout.flush()
     sys.stderr.flush()
     os._exit(_codigo if isinstance(_codigo, int) else 0)

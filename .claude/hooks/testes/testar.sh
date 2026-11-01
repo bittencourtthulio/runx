@@ -5,6 +5,26 @@ set -uo pipefail
 
 H="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 W="$(mktemp -d)"
+# Python nativo nao interpreta /tmp nem /c dentro de JSON ou de codigo Python.
+# Caminhos mistos C:/... funcionam em Git Bash, Node e Python no Windows.
+if command -v cygpath >/dev/null 2>&1; then
+  H="$(cygpath -m "$H")"
+  W="$(cygpath -m "$W")"
+fi
+# Mesma selecao validada do runtime, sem depender do alias python3 do Windows.
+PYTHON_BIN="$(node - "$H" <<'JS'
+const {spawnSync}=require('node:child_process');
+const {selectPython}=require(process.argv[2]+'/comum/launcher.cjs');
+const p=selectPython();
+const r=spawnSync(p.command,[...p.prefix,'-c','import sys; print(sys.executable)'],{encoding:'utf8'});
+if(r.status !== 0) process.exit(r.status || 1);
+process.stdout.write(r.stdout.trim().replace(/\\/g,'/'));
+JS
+)" || exit 1
+export PYTHONUTF8=1 PYTHONIOENCODING=utf-8
+# Normaliza somente CRLF da saida para comparacoes shell; pipefail preserva falha.
+python3() { "$PYTHON_BIN" "$@" | sed 's/\r$//'; }
+
 # $W e um repositorio git de verdade (nao so um diretorio .git vazio): alguns
 # hooks precisam de raiz_repo() funcionando de verdade, e a suite de arvore
 # limpa precisa de `git status` de verdade. WT e um worktree derivado de $W,
@@ -400,7 +420,7 @@ caso "rastro-suite vermelha"    0 "$H/comum/rastro-suite.py" '{"tool_name":"Bash
 caso "comando comum ignorado"   0 "$H/comum/rastro-suite.py" '{"tool_name":"Bash","tool_input":{"command":"ls -la"},"tool_response":{"exit_code":0}}'
 script_py "rastro-suite grava HEAD e sujos_fora_escopo" '
 import subprocess, json
-subprocess.run(["python3", "'"$H"'/comum/rastro-suite.py"],
+subprocess.run([sys.executable, "'"$H"'/comum/rastro-suite.py"],
                 input=json.dumps({"tool_name":"Bash","tool_input":{"command":"npm test"},"tool_response":{"exit_code":0}}),
                 text=True, cwd="'"$W"'")
 linhas = open("'"$W"'/docs/eventos/OC-2026-0142.jsonl").readlines()
@@ -474,6 +494,7 @@ caso "bloqueio barra sujo fora"   2 "$H/runx/arvore-limpa-antes-da-suite.py" "$(
 rm -f "$W/.expx/hooks.json"
 limpa_sujeira
 SEMGIT="$(mktemp -d)"
+if command -v cygpath >/dev/null 2>&1; then SEMGIT="$(cygpath -m "$SEMGIT")"; fi
 saida=$(printf '{"tool_name":"Bash","tool_input":{"command":"npm test"}}' | (cd "$SEMGIT" && python3 "$H/runx/arvore-limpa-antes-da-suite.py") 2>&1); real=$?
 if [ "$real" -eq 0 ]; then ok=$((ok+1)); printf '  ok   %-46s exit=%s\n' "sem git nunca avisa" "$real"
 else falhou=$((falhou+1)); printf '  FALHA %-45s esperado=0 real=%s\n     %s\n' "sem git nunca avisa" "$real" "$saida"; fi
@@ -507,8 +528,8 @@ dcaso 0 "fora do escopo so avisa"      "$(w src/pedido/outro.ts '"x"')"
 mkdir -p "$W/.expx"; echo '{"hooks":{"escopo-da-ocorrencia":"bloqueio"}}' > "$W/.expx/hooks.json"
 dcaso 2 "modo bloqueio propaga"        "$(w src/pedido/outro.ts '"x"')"
 rm -f "$W/.expx/hooks.json"
-dcaso 0 "stdin vazio"                  ''
-dcaso 0 "json quebrado"                '{quebrado'
+dcaso 2 "stdin vazio"                  ''
+dcaso 2 "json quebrado"                '{quebrado'
 
 echo "== despachante: grupo PreToolUse/Bash com o hook novo =="
 dcaso_bash(){ local esp="$1" desc="$2" ev="$3" c
@@ -533,7 +554,7 @@ print(any(g.get("matcher") == "Bash" for g in d["hooks"]["PreToolUse"]))
 '
 script_py "doctor.py lista nove hooks" '
 import subprocess, re
-r = subprocess.run(["python3", "'"$H"'/comum/doctor.py"], capture_output=True, text=True, cwd="'"$W"'")
+r = subprocess.run([sys.executable, "'"$H"'/comum/doctor.py"], capture_output=True, text=True, cwd="'"$W"'")
 nomes = {"segredo-no-commit","causa-antes-do-plano","regressao-antes-do-fix","task-so-fecha-verde","escopo-da-ocorrencia","sem-jargao-no-uso","uma-ocorrencia-por-arvore","task-reivindicada","arvore-limpa-antes-da-suite"}
 # so a linha da TABELA (nome seguido de espacos e depois "seguranca"/"metodo")
 achados = {m.group(1) for l in r.stdout.splitlines()

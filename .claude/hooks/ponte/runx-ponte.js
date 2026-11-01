@@ -70,7 +70,7 @@ function grupoArgs(hooksJson, evento, matcherAlvo) {
     const cmd = g.hooks && g.hooks[0] && g.hooks[0].command;
     if (!cmd) continue;
     const partes = cmd.split(/\s+/).filter(Boolean);
-    const idx = partes.findIndex((p) => p.includes("despachante.py"));
+    const idx = partes.findIndex((p) => (p.includes("despachante.py") || p.includes("launcher.cjs")));
     return idx >= 0 ? partes.slice(idx + 1) : [];
   }
   return null;
@@ -117,18 +117,14 @@ async function RunxPonte(ctx) {
       args = encontrados;
     }
 
-    let r;
+    const security = args.includes("comum/segredo-no-commit");
     try {
-      r = spawnSync("python3", [despachantePath, ...args], {
-        input: JSON.stringify(payload),
-        encoding: "utf8",
-        timeout: 15000,
-      });
+      const launcher = require(path.join(path.dirname(despachantePath), "launcher.cjs"));
+      const r = launcher.dispatch(args, JSON.stringify(payload), { cwd });
+      return { codigo: r.status, stderr: r.stderr };
     } catch (e) {
-      return { codigo: 0, stderr: "" }; // falha aberta
+      return { codigo: security ? 2 : 0, stderr: "[expx] Ponte sem launcher: " + e.message };
     }
-    const codigo = r.status == null ? 0 : r.status;
-    return { codigo, stderr: r.stderr || "" };
   }
 
   return {
@@ -169,11 +165,12 @@ async function RunxPonte(ctx) {
           args.command != null && output.metadata && typeof output.metadata.exit === "number";
         const payload = {
           hook_event_name: "PostToolUse",
+          expx_require_success: true,
           session_id: input.sessionID,
           cwd,
           tool_name: toolName,
           tool_input: montarToolInput(input.tool, args),
-          tool_response: temExitCode ? { exit_code: output.metadata.exit } : {},
+          tool_response: temExitCode ? { exit_code: output.metadata.exit } : { success: output.metadata?.success === true },
         };
         despachar("PostToolUse", matcher, payload);
       }

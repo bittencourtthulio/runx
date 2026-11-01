@@ -124,75 +124,43 @@ install_hooks() {
   local hooks_abs
   hooks_abs="$(cd "$hooks_dest" && pwd)"
 
-  python3 - "$settings" "$hooks_abs" <<'PY'
-import json, os, sys
-
-settings, raiz = sys.argv[1], sys.argv[2]
-
-# Os mesmos grupos de hooks/hooks.json. Um processo por evento, nao um por
-# hook: cada `python3` custa ~30 ms de partida, e o orcamento por chamada de
-# ferramenta e de 200 ms.
-GRUPOS = {
-    ("PreToolUse", "Write|Edit"): [
-        "comum/segredo-no-commit", "runx/causa-antes-do-plano",
-        "runx/regressao-antes-do-fix", "runx/task-so-fecha-verde",
-        "runx/escopo-da-ocorrencia", "runx/uma-ocorrencia-por-arvore",
-        "runx/task-reivindicada",
-    ],
-    ("PreToolUse", "Bash"): ["runx/arvore-limpa-antes-da-suite"],
-    ("PostToolUse", "Write|Edit"): ["comum/rastro-arquivo", "runx/sem-jargao-no-uso"],
-    ("PostToolUse", "Bash"): ["comum/rastro-suite"],
+  node - "$settings" "$hooks_abs" <<'JS'
+const fs = require('node:fs');
+const path = require('node:path');
+const [settings, root] = process.argv.slice(2);
+// Node recebe caminhos nativos do Git Bash ao iniciar no Windows.
+const groups = [
+  ['PreToolUse', 'Write|Edit', ['comum/segredo-no-commit', 'runx/causa-antes-do-plano',
+    'runx/regressao-antes-do-fix', 'runx/task-so-fecha-verde', 'runx/escopo-da-ocorrencia',
+    'runx/uma-ocorrencia-por-arvore', 'runx/task-reivindicada']],
+  ['PreToolUse', 'Bash', ['runx/arvore-limpa-antes-da-suite']],
+  ['PostToolUse', 'Write|Edit', ['comum/rastro-arquivo', 'runx/sem-jargao-no-uso']],
+  ['PostToolUse', 'Bash', ['comum/rastro-suite']],
+];
+const launcher = path.join(root, 'comum', 'launcher.cjs').replace(/\\/g, '/');
+let conf;
+try { conf = JSON.parse(fs.readFileSync(settings, 'utf8')); }
+catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+  conf = {};
 }
-despachante = os.path.join(raiz, "comum", "despachante.py")
-
-def handler(nomes):
-    return {"type": "command",
-            "command": 'python3 "%s" %s' % (despachante, " ".join(nomes)),
-            "timeout": 15}
-
-try:
-    with open(settings, "r", encoding="utf-8") as fh:
-        conf = json.load(fh)
-except (OSError, json.JSONDecodeError):
-    conf = {}
-
-conf.setdefault("hooks", {})
-novos = 0
-
-def registra(evento, matcher, nomes):
-    global novos
-    entradas = conf["hooks"].setdefault(evento, [])
-    alvo = next((e for e in entradas if e.get("matcher") == matcher), None)
-    if alvo is None:
-        alvo = {"matcher": matcher, "hooks": []}
-        entradas.append(alvo)
-    alvo.setdefault("hooks", [])
-    cmd = handler(nomes)
-    # Idempotente: tira registro antigo do runx (inclusive o formato de um
-    # processo por hook) antes de por o atual.
-    alvo["hooks"] = [h for h in alvo["hooks"]
-                     if "runx-hooks" not in str(h.get("command", ""))]
-    alvo["hooks"].append(cmd)
-    novos += 1
-
-for (evento, matcher), nomes in GRUPOS.items():
-    registra(evento, matcher, nomes)
-
-if os.path.exists(settings):
-    backup = settings + ".runx-backup"
-    if not os.path.exists(backup):
-        with open(settings, "r", encoding="utf-8") as o, open(backup, "w", encoding="utf-8") as d:
-            d.write(o.read())
-        print(f"   backup do settings anterior: {os.path.basename(backup)}")
-
-os.makedirs(os.path.dirname(settings) or ".", exist_ok=True)
-with open(settings, "w", encoding="utf-8") as fh:
-    json.dump(conf, fh, indent=2, ensure_ascii=False)
-    fh.write("\n")
-
-print(f"   ok — {novos} despachante(s) registrado(s), "
-      f"{sum(len(v) for v in GRUPOS.values())} hooks no total")
-PY
+conf.hooks ??= {};
+for (const [event, matcher, names] of groups) {
+  const entries = conf.hooks[event] ??= [];
+  let target = entries.find(entry => entry.matcher === matcher);
+  if (!target) { target = { matcher, hooks: [] }; entries.push(target); }
+  // Substitui os registros antigos do runx, preservando hooks de terceiros.
+  target.hooks = (target.hooks || []).filter(hook => !String(hook.command || '').includes('runx-hooks'));
+  target.hooks.push({ type: 'command', command: `node "${launcher}" ${names.join(' ')}`, timeout: 15 });
+}
+if (fs.existsSync(settings) && !fs.existsSync(settings + '.runx-backup')) {
+  fs.copyFileSync(settings, settings + '.runx-backup');
+  console.log(`   backup do settings anterior: ${path.basename(settings)}.runx-backup`);
+}
+fs.mkdirSync(path.dirname(settings), { recursive: true });
+fs.writeFileSync(settings, JSON.stringify(conf, null, 2) + '\n');
+console.log(`   ok — ${groups.length} despachante(s) registrado(s), ${groups.reduce((sum, group) => sum + group[2].length, 0)} hooks no total`);
+JS
 
   if [ "$DRY" -eq 0 ]; then
     local n_ag; n_ag=$(find "$agents_dest" -name '*.md' | wc -l | tr -d ' ')

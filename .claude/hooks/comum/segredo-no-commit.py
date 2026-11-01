@@ -106,8 +106,6 @@ def main():
 
     achados = []
     for numero, linha in enumerate(conteudo.splitlines(), 1):
-        if len(linha) > 4000:
-            continue
         for padrao, rotulo in PADROES:
             m = re.search(padrao, linha)
             if not m:
